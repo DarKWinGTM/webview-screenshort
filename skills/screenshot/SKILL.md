@@ -1,0 +1,50 @@
+---
+name: screenshot
+description: Capture a real rendered screenshot of a webpage for frontend-development visual review. Use this when Claude needs visual evidence from a live page, especially CSR/SPA pages, before giving layout, UX, UI, or docs-page feedback.
+argument-hint: <url> [--mode fullpage|viewport] [--wait] [--engine auto|headless|aws] [--output FILE]
+allowed-tools: Bash, Read
+---
+
+# Screenshot Skill
+
+Capture a webpage screenshot from `$ARGUMENTS` so Claude can inspect the real rendered UI.
+
+## What this skill is for
+Use it when frontend work needs visual evidence from the real page, for example:
+- layout review
+- UX/UI inspection
+- CSR/hydration verification
+- docs page visual checks
+- dashboard/page-state comparison before recommending changes
+
+## Execution Steps
+
+1. Parse arguments from `$ARGUMENTS`.
+   - first positional arg = URL
+   - optional flags: `--mode`, `--wait`, `--engine`, `--output`
+
+2. Run the screenshot engine from this installed plugin package:
+   ```bash
+   python3 "${CLAUDE_PLUGIN_ROOT}/screenshot.py" $ARGUMENTS
+   ```
+
+3. Prefer adding `--output-format json` when the result will feed a follow-on review workflow.
+
+4. If capture succeeds:
+   - report the exact screenshot file path
+   - if the user wants visual review, read the image file next and continue from the screenshot evidence
+
+4. If capture fails:
+   - report the error clearly
+   - suggest a narrower retry such as `--wait`, `--mode viewport`, or `--engine headless`
+
+## Default Behavior
+- Engine: `auto`
+- Mode: `fullpage`
+- Wait: off by default; turn on for CSR / SPA pages
+
+## Recommended Usage
+```bash
+/screenshot https://example.com --wait --mode viewport
+/screenshot https://example.com/docs --wait --mode fullpage
+```
