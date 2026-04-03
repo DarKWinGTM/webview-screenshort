@@ -86,7 +86,7 @@ Verified now:
 - the package now has plugin scaffolding with `.claude-plugin/`, `skills/`, and `agents/`
 - the package installs through its own repo-root marketplace manifest and exposes `webview-screenshort:webview-vision-assist`
 - skill/agent execution now targets `${CLAUDE_PLUGIN_ROOT}` instead of a source-workspace-only path
-- `screenshot.py` now supports env-driven capture configuration, JSON result output, persisted report-file output, and one-run responsive capture-set output for chaining into frontend review workflows
+- `screenshot.py` now supports env-driven capture configuration, JSON result output, schema-stamped persisted report-file output, and one-run responsive capture-set output for chaining into frontend review workflows
 - public-repo install posture is now validated from the standalone repo root
 
 Checked live examples:
@@ -119,6 +119,8 @@ webview-screenshort/
     frontend-review/
       SKILL.md
     responsive-review/
+      SKILL.md
+    compare-review/
       SKILL.md
   screenshot.py
   screenshot/
@@ -187,6 +189,9 @@ Use this package when the goal is to inspect:
 
 ### For responsive frontend review
 - `/responsive-review <url> --wait --mode viewport`
+
+### For before/after or regression review
+- `/compare-review /path/to/report-a.json /path/to/report-b.json`
 
 Or manually:
 1. capture one responsive set with `--capture-set responsive --output-format json`

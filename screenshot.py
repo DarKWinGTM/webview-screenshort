@@ -42,13 +42,14 @@ import os
 import subprocess
 import sys
 from dataclasses import asdict, dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg"}
 RESPONSIVE_CAPTURE_SET = ("desktop", "tablet", "mobile")
+REPORT_SCHEMA = "webview-screenshort.capture-report/v1"
 
 DEFAULT_PRIMARY_API = "https://service.headless-render-api.com/screenshot"
 DEFAULT_FALLBACK_API = "https://cauhib5bi3.execute-api.ap-south-1.amazonaws.com/default/screenshot"
@@ -529,12 +530,35 @@ def run_responsive_capture_set(url: str, args: argparse.Namespace, reporter: Rep
     return result
 
 
+def load_plugin_version() -> Optional[str]:
+    plugin_json_path = Path(__file__).parent / ".claude-plugin" / "plugin.json"
+    if not plugin_json_path.exists():
+        return None
+    try:
+        with open(plugin_json_path, "r", encoding="utf-8") as file_obj:
+            return json.load(file_obj).get("version")
+    except Exception:
+        return None
+
+
+def build_report_payload(result: Union[CaptureResult, CaptureSetResult], report_path: Path) -> dict:
+    result_payload = asdict(result)
+    result_payload["report_path"] = str(report_path)
+    return {
+        "report_schema": REPORT_SCHEMA,
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
+        "plugin_version": load_plugin_version(),
+        "result_type": "capture_set" if isinstance(result, CaptureSetResult) else "capture",
+        "report_path": str(report_path),
+        "result": result_payload,
+    }
+
+
 def write_report_file(result: Union[CaptureResult, CaptureSetResult], report_path: Optional[Path]) -> Optional[str]:
     if not report_path:
         return None
     ensure_parent_dir(report_path)
-    data = asdict(result)
-    data["report_path"] = str(report_path)
+    data = build_report_payload(result, report_path)
     with open(report_path, "w", encoding="utf-8") as file_obj:
         json.dump(data, file_obj, ensure_ascii=False)
     return str(report_path)

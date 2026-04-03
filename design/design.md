@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.2.0
+> **Current Version:** 2.4.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
@@ -30,6 +30,7 @@ The intended package model is:
 - `skills/screenshot/*.md` = focused frontend vision workflow guidance
 - `skills/frontend-review/SKILL.md` = direct capture-then-review skill surface
 - `skills/responsive-review/SKILL.md` = direct cross-breakpoint capture-then-review skill surface
+- `skills/compare-review/SKILL.md` = report-to-report comparison and regression-review skill surface
 - `agents/webview-vision-assist.md` = optional visual-review companion agent
 - `screenshot.py` = execution engine with focused capture plus one-run responsive capture-set support
 - `screenshot/` = generated screenshots and checked local artifacts
@@ -73,6 +74,7 @@ Need visual frontend review
   → persist a report file when a later step should re-read structured capture metadata directly
   → save screenshot locally
   → read the image
+  → when comparing states, re-read two report files and compare the referenced screenshots
   → analyze layout / UX / UI from the screenshot
   → then recommend code or design changes
 ```
@@ -119,7 +121,7 @@ Checked responsive review validation now also shows:
 
 ## 7) Current limitations
 
-- current workflow still relies on Claude reading the generated image after capture instead of a fully bundled tool-native visual-analysis pipeline, even though report files and review skills now reduce the manual handoff surface
+- current workflow still relies on Claude reading the generated image after capture instead of a fully bundled tool-native visual-analysis pipeline, even though report files, review skills, and compare-review entrypoints now reduce the manual handoff surface
 - plugin install lifecycle for this package is now validated from the standalone repo root through its package-local marketplace manifest, while the shared `darkwingtm` route remains only temporary checked local compatibility context
 - broader CSR validation still needs more than the two currently checked public docs targets
 
