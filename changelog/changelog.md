@@ -24,6 +24,7 @@
 
 ### Changes
 - Reworked `README.md` so the public install path now starts from the standalone repo root instead of the shared `TEMPLATE/PLUGIN` workspace path.
+- Reworked cutover/governance wording so the standalone repo is now package authority and shared-workspace usage is treated only as local compatibility context.
 - Replaced source-side public install examples with repo-root guidance using:
   - `claude plugins marketplace add ./ --scope local`
   - `claude plugins install webview-screenshort@webview-screenshort --scope local`
@@ -36,7 +37,7 @@
 - `claude agents` shows `webview-screenshort:webview-vision-assist` after repo-root install.
 
 ### Summary
-The package now teaches a portable public install story from its own repo root while preserving the shared `darkwingtm` route only as scoped local workspace context.
+The package now treats the standalone repo as its active authority, teaches a portable public install story from that repo root, and keeps the shared `darkwingtm` route only as scoped local compatibility context.
 
 ---
 

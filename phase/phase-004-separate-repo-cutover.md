@@ -17,5 +17,5 @@ Finalize `webview-screenshort` as its own standalone GitHub repo authority witho
 - [x] validate one more CSR-heavy target
 - [x] create/push `DarKWinGTM/webview-screenshort`
 - [x] validate repo-root local marketplace install from `./`
-- [ ] switch authority from shared workspace to standalone repo
-- [ ] retire shared-workspace authority cleanly
+- [x] switch authority from shared workspace to standalone repo at the documentation/source-of-truth level
+- [x] retire shared-workspace authority cleanly from public package posture, while leaving local compatibility usage explicitly scoped

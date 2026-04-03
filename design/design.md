@@ -10,7 +10,7 @@
 
 ## 1) Goal
 
-Provide a governed plugin package that captures real rendered webpages so Claude can use screenshots as visual evidence during frontend development.
+Provide a governed standalone-repo plugin package that captures real rendered webpages so Claude can use screenshots as visual evidence during frontend development.
 
 The target is not only a raw screenshot CLI.
 The target is a frontend-development vision workflow where Claude can:
@@ -31,7 +31,7 @@ The intended package model is:
 - `agents/webview-vision-assist.md` = optional visual-review companion agent
 - `screenshot.py` = execution engine
 - `screenshot/` = generated screenshots and checked local artifacts
-- `design/changelog/TODO/phase/patch` = governance authority
+- `design/changelog/TODO/phase/patch` = governance authority at the standalone repo root
 
 ---
 
@@ -115,7 +115,7 @@ Checked responsive review validation now also shows:
 ## 7) Current limitations
 
 - current workflow still relies on Claude reading the generated image after capture instead of a fully bundled multi-step visual-analysis pipeline
-- plugin install lifecycle for this package is now validated from the standalone repo root through its package-local marketplace manifest, while the shared `darkwingtm` route remains only a checked local workspace-development path
+- plugin install lifecycle for this package is now validated from the standalone repo root through its package-local marketplace manifest, while the shared `darkwingtm` route remains only temporary checked local compatibility context
 - broader CSR validation still needs more than the two currently checked public docs targets
 
 ---

@@ -52,7 +52,8 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - frontend-vision workflow intent is now explicit in docs and skill surfaces
 - package validates and installs through its standalone repo-root marketplace manifest
 - installed agent visibility is confirmed
-- shared `darkwingtm` marketplace usage is now scoped as local workspace-development context rather than public default install authority
+- standalone repo now acts as the package authority at the public documentation/source-of-truth level
+- shared `darkwingtm` marketplace usage is now scoped as local compatibility context rather than public default install authority
 - installed runtime invocation now uses `${CLAUDE_PLUGIN_ROOT}`
 - engine now supports env-driven configuration and JSON result output
 - responsive mobile and tablet presets are validated on a second frontend target

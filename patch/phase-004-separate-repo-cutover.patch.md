@@ -57,10 +57,10 @@ The standalone GitHub repo becomes the source of truth, and the shared workspace
 
 ## 4) Verification
 
-- [ ] standalone repo exists and is pushed
-- [ ] repo-local marketplace manifest validates
-- [ ] package install can target the standalone repo root
-- [ ] shared-workspace authority is explicitly retired
+- [x] standalone repo exists and is pushed
+- [x] repo-local marketplace manifest validates
+- [x] package install can target the standalone repo root
+- [x] shared-workspace authority is explicitly retired from public package posture
 
 ---
 

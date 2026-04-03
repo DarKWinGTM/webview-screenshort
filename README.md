@@ -66,9 +66,9 @@ Why this exact shape matters:
 - `claude plugins update webview-screenshort --scope local` may fail because the installed local plugin is keyed by `webview-screenshort@darkwingtm`
 - the explicit `plugin@marketplace` form matches the installed identifier shown in `claude plugins list`
 
-### Checked local development note
+### Local development compatibility note
 
-The same package is also currently validated through the shared local `darkwingtm` marketplace during workspace development. That shared-marketplace route is a checked local development path, not the public default install story for this repo.
+The same package may still be referenced through the shared local `darkwingtm` marketplace during workspace development, but that route is no longer package authority. The standalone repo is now the intended source of truth, and any remaining shared-workspace usage should be treated as temporary local compatibility only.
 
 ## Current status
 
