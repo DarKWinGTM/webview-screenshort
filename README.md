@@ -88,6 +88,7 @@ Verified now:
 - skill/agent execution now targets `${CLAUDE_PLUGIN_ROOT}` instead of a source-workspace-only path
 - `screenshot.py` now supports env-driven capture configuration, JSON result output, schema-stamped persisted report-file output, and one-run responsive capture-set output for chaining into frontend review workflows
 - `compare_reports.py` now validates persisted reports and emits structured pair metadata for report-to-report comparison workflows
+- `webview-vision-assist` now routes more clearly between focused review, responsive review, and compare-review paths
 - public-repo install posture is now validated from the standalone repo root
 
 Checked live examples:

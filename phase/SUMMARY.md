@@ -1,7 +1,7 @@
 # Webview Screenshort - Phase Summary
 
-> **Current Version:** 2.5.0
-> **Target Design:** [../design/design.md](../design/design.md) v2.4.0
+> **Current Version:** 2.6.0
+> **Target Design:** [../design/design.md](../design/design.md) v2.6.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 > **Status:** In Progress
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)
@@ -39,7 +39,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 ## Global TODO / Changelog Coordination
 
 - `TODO.md` should track only remaining cutover and authority-retirement work.
-- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, and structured compare-helper outcomes only.
+- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, and agent-orchestration hardening outcomes only.
 - `design/design.md` remains the authority for frontend-vision intent, plugin boundaries, and standalone-repo install posture.
 
 ---
@@ -64,5 +64,6 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - compare-review can now compare two persisted report artifacts for regression-style visual checks
 - persisted report artifacts now carry explicit schema/version metadata for reuse
 - `compare_reports.py` now emits structured image-pair metadata for expected/actual and before/after review
+- `webview-vision-assist` now routes more explicitly between focused review, responsive review, and compare-review entrypoints
 
 ---

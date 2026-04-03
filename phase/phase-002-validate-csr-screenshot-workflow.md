@@ -40,3 +40,4 @@ Verify that the package can capture real CSR-heavy pages for frontend visual rev
 - report-file output is evidence-backed for both responsive and focused capture flows
 - persisted report-schema metadata is evidence-backed in current capture artifacts
 - structured compare-helper output is evidence-backed against current responsive report artifacts
+- agent orchestration guidance is now aligned with the current focused/responsive/compare workflow split
