@@ -24,7 +24,7 @@ Use real rendered screenshots as visual evidence for frontend development work.
 ## Workflow
 1. Decide whether the task needs one capture or a responsive set.
 2. For one capture, run `python3 "${CLAUDE_PLUGIN_ROOT}/screenshot.py"` with `--output-format json`.
-3. For responsive review, run three captures with `--device desktop`, `--device tablet`, and `--device mobile`.
+3. For responsive review, prefer one run with `--capture-set responsive` so desktop, tablet, and mobile metadata come back in one JSON payload.
 4. Prefer `--wait` when CSR or delayed hydration is likely.
 5. Prefer `--mode viewport` for above-the-fold inspection and `--mode fullpage` for long docs/pages.
 6. Return the exact screenshot path(s) and capture metadata.

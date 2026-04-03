@@ -17,6 +17,7 @@ Verify that the package can capture real CSR-heavy pages for frontend visual rev
 - [x] capture target docs page in fullpage mode with `--wait`
 - [x] confirm the resulting images show rendered content rather than blank shells
 - [x] record output paths and dimensions
+- [x] validate one-run responsive capture-set output plus per-device image metadata
 
 ## Checked targets
 - `https://claw-frontend-dev.nodenetwork.ovh/docs`
@@ -32,3 +33,4 @@ Verify that the package can capture real CSR-heavy pages for frontend visual rev
 - images show rendered docs content
 - CSR support is evidence-backed for more than one checked target
 - responsive review support is evidence-backed on a real frontend target
+- one-run responsive capture-set output is evidence-backed on a real frontend target

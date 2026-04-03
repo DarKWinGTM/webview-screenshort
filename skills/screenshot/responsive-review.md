@@ -3,8 +3,9 @@
 Use this workflow when frontend review should compare the same page across desktop, tablet, and mobile captures.
 
 ## Recommended sequence
-1. Capture desktop, tablet, and mobile screenshots with `--output-format json`.
-2. Read each JSON result and collect:
+1. Capture the page with `--capture-set responsive --output-format json` when one combined workflow result is preferred.
+2. Read the JSON result and collect each entry from `captures[]`:
+   - `device`
    - `output_path`
    - `viewport_width`
    - `viewport_height`
@@ -21,7 +22,5 @@ Use this workflow when frontend review should compare the same page across deskt
 
 ## Suggested commands
 ```bash
-/screenshot https://example.com --device desktop --wait --mode viewport --output-format json
-/screenshot https://example.com --device tablet --wait --mode viewport --output-format json
-/screenshot https://example.com --device mobile --wait --mode viewport --output-format json
+/screenshot https://example.com --capture-set responsive --wait --mode viewport --output-format json
 ```

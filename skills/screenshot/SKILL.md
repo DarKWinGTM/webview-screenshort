@@ -1,7 +1,7 @@
 ---
 name: screenshot
 description: Capture a real rendered screenshot of a webpage for frontend-development visual review. Use this when Claude needs visual evidence from a live page, especially CSR/SPA pages, before giving layout, UX, UI, or docs-page feedback.
-argument-hint: <url> [--mode fullpage|viewport] [--device desktop|tablet|mobile] [--wait] [--engine auto|headless|aws] [--output FILE] [--output-format json]
+argument-hint: <url> [--mode fullpage|viewport] [--device desktop|tablet|mobile] [--capture-set responsive] [--wait] [--engine auto|headless|aws] [--output FILE] [--output-format json]
 allowed-tools: Bash, Read
 ---
 
@@ -21,7 +21,7 @@ Use it when frontend work needs visual evidence from the real page, for example:
 
 1. Parse arguments from `$ARGUMENTS`.
    - first positional arg = URL
-   - optional flags: `--mode`, `--device`, `--wait`, `--engine`, `--output`, `--output-format`
+   - optional flags: `--mode`, `--device`, `--capture-set`, `--wait`, `--engine`, `--output`, `--output-format`
 
 2. Run the screenshot engine from this installed plugin package:
    ```bash
@@ -30,11 +30,14 @@ Use it when frontend work needs visual evidence from the real page, for example:
 
 3. Prefer adding `--output-format json` when the result will feed a follow-on review workflow.
 
-4. If capture succeeds:
+4. If the task needs one-shot responsive review, prefer `--capture-set responsive` so the tool returns one machine-readable JSON payload with desktop, tablet, and mobile results together.
+
+5. If capture succeeds:
    - report the exact screenshot file path
+   - if `--capture-set responsive` was used, report the per-device screenshot paths and viewport metadata
    - if the user wants visual review, read the image file next and continue from the screenshot evidence
 
-4. If capture fails:
+6. If capture fails:
    - report the error clearly
    - suggest a narrower retry such as `--wait`, `--mode viewport`, or `--engine headless`
 
@@ -47,6 +50,7 @@ Use it when frontend work needs visual evidence from the real page, for example:
 ```bash
 /screenshot https://example.com --wait --mode viewport
 /screenshot https://example.com/docs --wait --mode fullpage --output-format json
+/screenshot https://example.com --capture-set responsive --wait --mode viewport --output-format json
 /screenshot https://example.com --device mobile --wait --mode viewport --output-format json
 /screenshot https://example.com --device tablet --wait --mode viewport --output-format json
 ```

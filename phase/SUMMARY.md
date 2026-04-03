@@ -1,7 +1,7 @@
 # Webview Screenshort - Phase Summary
 
-> **Current Version:** 2.0.0
-> **Target Design:** [../design/design.md](../design/design.md) v2.0.0
+> **Current Version:** 2.2.0
+> **Target Design:** [../design/design.md](../design/design.md) v2.2.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 > **Status:** In Progress
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)
@@ -39,7 +39,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 ## Global TODO / Changelog Coordination
 
 - `TODO.md` should track only remaining cutover and authority-retirement work.
-- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, and repo-root install-normalization outcomes only.
+- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, and responsive capture-set workflow outcomes only.
 - `design/design.md` remains the authority for frontend-vision intent, plugin boundaries, and standalone-repo install posture.
 
 ---
@@ -58,5 +58,6 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - engine now supports env-driven configuration and JSON result output
 - responsive mobile and tablet presets are validated on a second frontend target
 - responsive desktop/tablet/mobile multi-capture workflow is validated on the NodeNetwork docs page
+- one-run responsive capture-set workflow now returns combined desktop/tablet/mobile machine-readable results
 
 ---

@@ -62,8 +62,14 @@ If the plugin is already installed, update it by using the installed identifier 
 claude plugins update webview-screenshort@darkwingtm --scope local
 ```
 
+If this standalone repo was also installed through its own repo-local marketplace, the installed identifier may instead be `webview-screenshort@webview-screenshort`:
+
+```bash
+claude plugins update webview-screenshort@webview-screenshort --scope local
+```
+
 Why this exact shape matters:
-- `claude plugins update webview-screenshort --scope local` may fail because the installed local plugin is keyed by `webview-screenshort@darkwingtm`
+- `claude plugins update webview-screenshort --scope local` may fail because the installed local plugin is keyed by `plugin@marketplace`
 - the explicit `plugin@marketplace` form matches the installed identifier shown in `claude plugins list`
 
 ### Local development compatibility note
@@ -80,13 +86,14 @@ Verified now:
 - the package now has plugin scaffolding with `.claude-plugin/`, `skills/`, and `agents/`
 - the package installs through its own repo-root marketplace manifest and exposes `webview-screenshort:webview-vision-assist`
 - skill/agent execution now targets `${CLAUDE_PLUGIN_ROOT}` instead of a source-workspace-only path
-- `screenshot.py` now supports env-driven capture configuration and JSON result output for chaining into frontend review workflows
+- `screenshot.py` now supports env-driven capture configuration, JSON result output, and one-run responsive capture-set output for chaining into frontend review workflows
 - public-repo install posture is now validated from the standalone repo root
 
 Checked live examples:
 - `https://claw-frontend-dev.nodenetwork.ovh/docs`
   - viewport + wait capture succeeded
   - fullpage + wait capture succeeded
+  - one-run responsive capture-set + wait succeeded
 - `https://developer.mozilla.org/en-US/docs/Web/JavaScript`
   - viewport + wait capture succeeded
   - mobile preset + wait capture succeeded
@@ -153,8 +160,8 @@ Use this package when the goal is to inspect:
 ## Current limitations
 
 - restart/reload lifecycle is now validated for the current installed package path
-- visual analysis orchestration still depends on Claude reading the generated image after capture
-- broader CSR validation still needs more than one checked target
+- visual analysis orchestration still depends on Claude reading the generated image after capture, even though responsive desktop/tablet/mobile capture can now be produced in one machine-readable run
+- broader CSR validation still needs more than the two currently checked public docs targets
 - public-repo wording polish is still in progress outside the now-validated repo-root install path
 
 ---
@@ -164,6 +171,7 @@ Use this package when the goal is to inspect:
 ### For focused capture
 - `/screenshot <url> --wait --mode viewport`
 - `/screenshot <url> --wait --mode fullpage`
+- `/screenshot <url> --capture-set responsive --wait --mode viewport --output-format json`
 
 ### For frontend review
 1. capture first
@@ -172,7 +180,7 @@ Use this package when the goal is to inspect:
 4. only then suggest code or design changes
 
 ### For responsive frontend review
-1. capture desktop, tablet, and mobile variants with `--output-format json`
-2. read each result and image
+1. capture one responsive set with `--capture-set responsive --output-format json`
+2. read the combined JSON result plus each generated image from `captures[].output_path`
 3. compare hierarchy, overflow, spacing, stacking, and readability across breakpoints
 4. summarize which issues are desktop-only, tablet-only, mobile-only, or cross-device

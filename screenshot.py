@@ -2,10 +2,12 @@
 """
 Hybrid Screenshot Tool
 Usage: python screenshot.py <url> [--output FILE] [--output-dir DIR]
-                            [--engine {auto,headless,aws}]
-                            [--mode {viewport,fullpage}]
-                            [--wait]
-                            [--output-format {text,json}]
+                           [--device {desktop,tablet,mobile}]
+                           [--capture-set {responsive}]
+                           [--engine {auto,headless,aws}]
+                           [--mode {viewport,fullpage}]
+                           [--wait]
+                           [--output-format {text,json}]
 
 Strategy:
 1. auto: Try Primary (Headless) -> Fallback to AWS
@@ -41,10 +43,11 @@ import sys
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg"}
+RESPONSIVE_CAPTURE_SET = ("desktop", "tablet", "mobile")
 
 DEFAULT_PRIMARY_API = "https://service.headless-render-api.com/screenshot"
 DEFAULT_FALLBACK_API = "https://cauhib5bi3.execute-api.ap-south-1.amazonaws.com/default/screenshot"
@@ -96,6 +99,22 @@ class CaptureResult:
     file_size_bytes: Optional[int] = None
     image_width: Optional[int] = None
     image_height: Optional[int] = None
+    device: Optional[str] = None
+    warnings: List[str] = field(default_factory=list)
+    error: Optional[str] = None
+
+
+@dataclass
+class CaptureSetResult:
+    success: bool
+    url: str
+    capture_set: str
+    engine_requested: str
+    mode_requested: str
+    wait_requested: bool
+    captures: List[CaptureResult]
+    successful_captures: int
+    failed_captures: int
     warnings: List[str] = field(default_factory=list)
     error: Optional[str] = None
 
@@ -124,19 +143,19 @@ def load_positive_int(env_name: str, default: int) -> int:
     return value
 
 
-def load_device_preset() -> Optional[Tuple[int, int]]:
-    preset_name = os.environ.get("WEBVIEW_SCREENSHORT_DEVICE_PRESET")
-    if not preset_name:
+def load_device_preset(preset_name: Optional[str] = None) -> Optional[Tuple[int, int]]:
+    name = preset_name or os.environ.get("WEBVIEW_SCREENSHORT_DEVICE_PRESET")
+    if not name:
         return None
-    preset = DEVICE_PRESETS.get(preset_name.lower())
+    preset = DEVICE_PRESETS.get(name.lower())
     if not preset:
-        raise SystemExit(f"Unsupported WEBVIEW_SCREENSHORT_DEVICE_PRESET: {preset_name}")
+        raise SystemExit(f"Unsupported WEBVIEW_SCREENSHORT_DEVICE_PRESET: {name}")
     return preset
 
 
-def load_config() -> ScreenshotConfig:
+def load_config(device_override: Optional[str] = None) -> ScreenshotConfig:
     output_dir = os.environ.get("WEBVIEW_SCREENSHORT_OUTPUT_DIR")
-    preset = load_device_preset()
+    preset = load_device_preset(device_override)
     viewport_width = preset[0] if preset else load_positive_int("WEBVIEW_SCREENSHORT_VIEWPORT_WIDTH", DEFAULT_VIEWPORT_WIDTH)
     viewport_height = preset[1] if preset else load_positive_int("WEBVIEW_SCREENSHORT_VIEWPORT_HEIGHT", DEFAULT_VIEWPORT_HEIGHT)
     return ScreenshotConfig(
@@ -169,15 +188,27 @@ def ensure_image_suffix(path: Path) -> Path:
     return path if path.suffix.lower() in IMAGE_SUFFIXES else path.with_suffix(".png")
 
 
+def apply_suffix(path: Path, suffix: Optional[str] = None) -> Path:
+    if not suffix:
+        return path
+    return path.with_name(f"{path.stem}_{suffix}{path.suffix}")
+
+
 def default_output_dir(config: ScreenshotConfig) -> Path:
     if config.output_dir:
         return config.output_dir
     return Path(__file__).parent / "screenshot"
 
 
-def generate_output_path(url: str, config: ScreenshotConfig, provided_path: Optional[str] = None, output_dir: Optional[str] = None) -> Path:
+def generate_output_path(
+    url: str,
+    config: ScreenshotConfig,
+    provided_path: Optional[str] = None,
+    output_dir: Optional[str] = None,
+    suffix: Optional[str] = None,
+) -> Path:
     if provided_path:
-        path = ensure_image_suffix(Path(provided_path).expanduser())
+        path = apply_suffix(ensure_image_suffix(Path(provided_path).expanduser()), suffix)
         path.parent.mkdir(parents=True, exist_ok=True)
         return path
 
@@ -186,7 +217,8 @@ def generate_output_path(url: str, config: ScreenshotConfig, provided_path: Opti
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     domain = url.replace("https://", "").replace("http://", "").split("/")[0].replace(".", "_")
-    return base_dir / f"screenshot_{domain}_{timestamp}.png"
+    path = base_dir / f"screenshot_{domain}_{timestamp}.png"
+    return apply_suffix(path, suffix)
 
 
 def read_png_dimensions(path: Path) -> Tuple[Optional[int], Optional[int]]:
@@ -206,9 +238,21 @@ def validate_png(path: Path) -> bool:
         return file_obj.read(8).startswith(PNG_SIGNATURE)
 
 
-def capture_primary(url: str, output_path: Path, config: ScreenshotConfig, mode: str, wait: bool, reporter: Reporter) -> Tuple[bool, List[str], Optional[str], str, bool]:
-    reporter.log(f"Attempting Primary API (Headless): {config.primary_api}")
-    reporter.log(f"Mode: {mode}, Wait: {wait}")
+def capture_label(device: Optional[str] = None) -> str:
+    return f"[{device}] " if device else ""
+
+
+def capture_primary(
+    url: str,
+    output_path: Path,
+    config: ScreenshotConfig,
+    mode: str,
+    wait: bool,
+    reporter: Reporter,
+    label: str = "",
+) -> Tuple[bool, List[str], Optional[str], str, bool]:
+    reporter.log(f"{label}Attempting Primary API (Headless): {config.primary_api}")
+    reporter.log(f"{label}Mode: {mode}, Wait: {wait}")
 
     target_api = f"{config.primary_api.rstrip('/')}/{url}"
     height = str(config.fullpage_height if mode == "fullpage" else config.viewport_height)
@@ -237,7 +281,7 @@ def capture_primary(url: str, output_path: Path, config: ScreenshotConfig, mode:
         return False, [], f"Primary API curl error: {stderr}", mode, wait
 
     if validate_png(output_path):
-        reporter.log("✅ Primary API Success")
+        reporter.log(f"{label}✅ Primary API Success")
         return True, [], None, mode, wait
 
     if output_path.exists():
@@ -245,16 +289,24 @@ def capture_primary(url: str, output_path: Path, config: ScreenshotConfig, mode:
     return False, [], "Primary API returned invalid data", mode, wait
 
 
-def capture_fallback(url: str, output_path: Path, config: ScreenshotConfig, mode: str, wait: bool, reporter: Reporter) -> Tuple[bool, List[str], Optional[str], str, bool]:
-    reporter.log(f"Attempting Fallback API (AWS): {config.fallback_api}")
+def capture_fallback(
+    url: str,
+    output_path: Path,
+    config: ScreenshotConfig,
+    mode: str,
+    wait: bool,
+    reporter: Reporter,
+    label: str = "",
+) -> Tuple[bool, List[str], Optional[str], str, bool]:
+    reporter.log(f"{label}Attempting Fallback API (AWS): {config.fallback_api}")
 
     warnings = []
     if mode == "fullpage":
         warnings.append("AWS fallback does not support explicit fullpage mode; result is best-effort only.")
-        reporter.log("⚠️ Note: AWS engine does not support explicit 'fullpage' mode settings.")
+        reporter.log(f"{label}⚠️ Note: AWS engine does not support explicit 'fullpage' mode settings.")
     if wait:
         warnings.append("AWS fallback does not support explicit wait mode; extra wait is ignored.")
-        reporter.log("⚠️ Note: AWS engine does not support explicit 'wait' settings.")
+        reporter.log(f"{label}⚠️ Note: AWS engine does not support explicit 'wait' settings.")
 
     payload = json.dumps({"url": url}, separators=(",", ":"))
     cmd = [
@@ -281,7 +333,8 @@ def capture_fallback(url: str, output_path: Path, config: ScreenshotConfig, mode
         return False, warnings, "Fallback API returned invalid JSON", "best-effort", False
 
     if "screenshot" not in data:
-        return False, warnings, f"Fallback API response missing screenshot: {data.get('message', 'Unknown error')}", "best-effort", False
+        message = data.get("message", "Unknown error") if isinstance(data, dict) else "Unknown error"
+        return False, warnings, f"Fallback API response missing screenshot: {message}", "best-effort", False
 
     try:
         img_data = base64.b64decode(data["screenshot"])
@@ -291,7 +344,7 @@ def capture_fallback(url: str, output_path: Path, config: ScreenshotConfig, mode
         return False, warnings, f"Fallback API write error: {exc}", "best-effort", False
 
     if validate_png(output_path):
-        reporter.log("✅ Fallback API Success")
+        reporter.log(f"{label}✅ Fallback API Success")
         return True, warnings, None, "best-effort", False
 
     if output_path.exists():
@@ -299,11 +352,142 @@ def capture_fallback(url: str, output_path: Path, config: ScreenshotConfig, mode
     return False, warnings, "Fallback API produced invalid PNG data", "best-effort", False
 
 
-def emit_result(result: CaptureResult, output_format: str, reporter: Reporter) -> None:
-    if output_format == "json":
-        print(json.dumps(asdict(result), ensure_ascii=False))
-        return
+def execute_capture(
+    url: str,
+    output_path: Path,
+    config: ScreenshotConfig,
+    engine: str,
+    mode: str,
+    wait: bool,
+    reporter: Reporter,
+    device: Optional[str] = None,
+) -> CaptureResult:
+    label = capture_label(device)
+    reporter.log(f"{label}Target: {url}")
+    reporter.log(f"{label}Output: {output_path}")
+    reporter.log(f"{label}Engine: {engine}")
+    reporter.log(f"{label}Mode:   {mode}")
+    reporter.log(f"{label}Wait:   {wait}")
+    reporter.log(f"{label}Viewport: {config.viewport_width}x{config.viewport_height}")
 
+    success = False
+    warnings: List[str] = []
+    error: Optional[str] = None
+    engine_used: Optional[str] = None
+    mode_effective: Optional[str] = mode
+    wait_effective = wait
+
+    if engine == "headless":
+        success, warnings, error, mode_effective, wait_effective = capture_primary(
+            url, output_path, config, mode, wait, reporter, label
+        )
+        engine_used = "headless"
+
+    elif engine == "aws":
+        success, warnings, error, mode_effective, wait_effective = capture_fallback(
+            url, output_path, config, mode, wait, reporter, label
+        )
+        engine_used = "aws"
+
+    else:
+        success, warnings, error, mode_effective, wait_effective = capture_primary(
+            url, output_path, config, mode, wait, reporter, label
+        )
+        engine_used = "headless"
+        if not success:
+            primary_error = error
+            reporter.log(f"{label}🔄 Switching to Fallback Strategy...")
+            (
+                fallback_success,
+                fallback_warnings,
+                fallback_error,
+                fallback_mode_effective,
+                fallback_wait_effective,
+            ) = capture_fallback(url, output_path, config, mode, wait, reporter, label)
+            warnings.extend(fallback_warnings)
+            if fallback_success:
+                success = True
+                engine_used = "aws"
+                mode_effective = fallback_mode_effective
+                wait_effective = fallback_wait_effective
+                error = None
+                warnings.insert(0, "Primary headless capture failed; fallback AWS engine was used.")
+            else:
+                error = f"Primary: {primary_error}; Fallback: {fallback_error or 'unknown error'}"
+
+    file_size = output_path.stat().st_size if success and output_path.exists() else None
+    image_width, image_height = read_png_dimensions(output_path) if success and output_path.exists() else (None, None)
+
+    return CaptureResult(
+        success=success,
+        url=url,
+        output_path=str(output_path),
+        engine_requested=engine,
+        engine_used=engine_used,
+        mode_requested=mode,
+        mode_effective=mode_effective,
+        wait_requested=wait,
+        wait_effective=wait_effective,
+        viewport_width=config.viewport_width,
+        viewport_height=config.viewport_height,
+        file_size_bytes=file_size,
+        image_width=image_width,
+        image_height=image_height,
+        device=device,
+        warnings=warnings,
+        error=error,
+    )
+
+
+def run_responsive_capture_set(url: str, args: argparse.Namespace, reporter: Reporter) -> CaptureSetResult:
+    captures: List[CaptureResult] = []
+    for device_name in RESPONSIVE_CAPTURE_SET:
+        config = load_config(device_name)
+        output_path = generate_output_path(
+            url,
+            config,
+            provided_path=args.output,
+            output_dir=args.output_dir,
+            suffix=device_name,
+        )
+        captures.append(
+            execute_capture(
+                url=url,
+                output_path=output_path,
+                config=config,
+                engine=args.engine,
+                mode=args.mode,
+                wait=args.wait,
+                reporter=reporter,
+                device=device_name,
+            )
+        )
+
+    successful_captures = sum(1 for capture in captures if capture.success)
+    failed_captures = len(captures) - successful_captures
+    warnings: List[str] = []
+    error: Optional[str] = None
+
+    if failed_captures:
+        error = "One or more responsive captures failed. Check the per-device errors in `captures`."
+        warnings.append("Responsive capture set is partially complete.")
+
+    return CaptureSetResult(
+        success=failed_captures == 0,
+        url=url,
+        capture_set="responsive",
+        engine_requested=args.engine,
+        mode_requested=args.mode,
+        wait_requested=args.wait,
+        captures=captures,
+        successful_captures=successful_captures,
+        failed_captures=failed_captures,
+        warnings=warnings,
+        error=error,
+    )
+
+
+def emit_single_capture_text(result: CaptureResult, reporter: Reporter) -> None:
     if result.success:
         reporter.log(f"Screenshot saved: {result.output_path}")
         if result.file_size_bytes is not None:
@@ -313,93 +497,87 @@ def emit_result(result: CaptureResult, output_format: str, reporter: Reporter) -
         if result.warnings:
             for warning in result.warnings:
                 reporter.log(f"⚠️ {warning}")
-    else:
-        if result.warnings:
-            for warning in result.warnings:
-                reporter.log(f"⚠️ {warning}")
-        reporter.log(f"❌ Screenshot capture failed: {result.error}")
+        return
+
+    if result.warnings:
+        for warning in result.warnings:
+            reporter.log(f"⚠️ {warning}")
+    reporter.log(f"❌ Screenshot capture failed: {result.error}")
+
+
+def emit_capture_set_text(result: CaptureSetResult, reporter: Reporter) -> None:
+    reporter.log(
+        f"Responsive capture set complete: {result.successful_captures}/{len(result.captures)} capture(s) succeeded"
+    )
+    for capture in result.captures:
+        status = "✅" if capture.success else "❌"
+        reporter.log(f"{status} {capture.device}: {capture.output_path}")
+        if capture.file_size_bytes is not None:
+            reporter.log(f"   Size: {capture.file_size_bytes:,} bytes")
+        if capture.image_width and capture.image_height:
+            reporter.log(f"   Dimensions: {capture.image_width}x{capture.image_height}")
+        if capture.warnings:
+            for warning in capture.warnings:
+                reporter.log(f"   ⚠️ {warning}")
+        if capture.error:
+            reporter.log(f"   Error: {capture.error}")
+
+    if result.warnings:
+        for warning in result.warnings:
+            reporter.log(f"⚠️ {warning}")
+    if result.error:
+        reporter.log(f"❌ Capture set failed: {result.error}")
+
+
+def emit_result(result: Union[CaptureResult, CaptureSetResult], output_format: str, reporter: Reporter) -> None:
+    if output_format == "json":
+        print(json.dumps(asdict(result), ensure_ascii=False))
+        return
+
+    if isinstance(result, CaptureSetResult):
+        emit_capture_set_text(result, reporter)
+        return
+
+    emit_single_capture_text(result, reporter)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Hybrid Screenshot Tool")
     parser.add_argument("url", help="URL to capture")
-    parser.add_argument("--output", "-o", help="Output file path")
+    parser.add_argument("--output", "-o", help="Output file path or base file path when using --capture-set")
     parser.add_argument("--output-dir", help="Output directory for generated screenshots")
-    parser.add_argument("--device", choices=["desktop", "tablet", "mobile"], help="Viewport preset override for frontend review")
+    parser.add_argument("--device", choices=["desktop", "tablet", "mobile"], help="Viewport preset override for focused frontend review")
+    parser.add_argument("--capture-set", choices=["responsive"], help="Capture a predefined multi-device screenshot set in one run")
     parser.add_argument("--engine", "-e", choices=["auto", "headless", "aws"], default="auto", help="Select screenshot engine (default: auto)")
     parser.add_argument("--mode", "-m", choices=["viewport", "fullpage"], default="fullpage", help="Capture mode: 'viewport' or 'fullpage' (default: fullpage)")
     parser.add_argument("--wait", "-w", action="store_true", help="Wait extra time for dynamic content (Headless engine only)")
     parser.add_argument("--output-format", choices=["text", "json"], default="text", help="Result output format (default: text)")
     args = parser.parse_args()
 
-    if args.device:
-        os.environ["WEBVIEW_SCREENSHORT_DEVICE_PRESET"] = args.device
+    if args.capture_set and args.device:
+        raise SystemExit("--capture-set cannot be combined with --device. Use either one device or one capture set.")
 
-    config = load_config()
     reporter = Reporter(args.output_format)
-
     url = normalize_url(args.url)
-    output_path = generate_output_path(url, config, args.output, args.output_dir)
 
-    reporter.log(f"Target: {url}")
-    reporter.log(f"Output: {output_path}")
-    reporter.log(f"Engine: {args.engine}")
-    reporter.log(f"Mode:   {args.mode}")
-    reporter.log(f"Wait:   {args.wait}")
-    reporter.log(f"Viewport: {config.viewport_width}x{config.viewport_height}")
-
-    success = False
-    warnings: List[str] = []
-    error: Optional[str] = None
-    engine_used: Optional[str] = None
-    mode_effective: Optional[str] = args.mode
-    wait_effective = args.wait
-
-    if args.engine == "headless":
-        success, warnings, error, mode_effective, wait_effective = capture_primary(url, output_path, config, args.mode, args.wait, reporter)
-        engine_used = "headless"
-
-    elif args.engine == "aws":
-        success, warnings, error, mode_effective, wait_effective = capture_fallback(url, output_path, config, args.mode, args.wait, reporter)
-        engine_used = "aws"
-
+    if args.capture_set == "responsive":
+        result: Union[CaptureResult, CaptureSetResult] = run_responsive_capture_set(url, args, reporter)
     else:
-        success, warnings, error, mode_effective, wait_effective = capture_primary(url, output_path, config, args.mode, args.wait, reporter)
-        engine_used = "headless"
-        if not success:
-            reporter.log("🔄 Switching to Fallback Strategy...")
-            fallback_success, fallback_warnings, fallback_error, fallback_mode_effective, fallback_wait_effective = capture_fallback(url, output_path, config, args.mode, args.wait, reporter)
-            success = fallback_success
-            warnings.extend(fallback_warnings)
-            error = fallback_error if fallback_success else fallback_error or error
-            engine_used = "aws" if fallback_success else engine_used
-            mode_effective = fallback_mode_effective if fallback_success else mode_effective
-            wait_effective = fallback_wait_effective if fallback_success else wait_effective
-
-    file_size = output_path.stat().st_size if success and output_path.exists() else None
-    image_width, image_height = read_png_dimensions(output_path) if success and output_path.exists() else (None, None)
-
-    result = CaptureResult(
-        success=success,
-        url=url,
-        output_path=str(output_path),
-        engine_requested=args.engine,
-        engine_used=engine_used,
-        mode_requested=args.mode,
-        mode_effective=mode_effective,
-        wait_requested=args.wait,
-        wait_effective=wait_effective,
-        viewport_width=config.viewport_width,
-        viewport_height=config.viewport_height,
-        file_size_bytes=file_size,
-        image_width=image_width,
-        image_height=image_height,
-        warnings=warnings,
-        error=error,
-    )
+        config = load_config(args.device)
+        output_path = generate_output_path(url, config, args.output, args.output_dir)
+        result = execute_capture(
+            url=url,
+            output_path=output_path,
+            config=config,
+            engine=args.engine,
+            mode=args.mode,
+            wait=args.wait,
+            reporter=reporter,
+            device=args.device,
+        )
 
     emit_result(result, args.output_format, reporter)
-    sys.exit(0 if success else 1)
+    sys.exit(0 if result.success else 1)
 
 
 if __name__ == "__main__":

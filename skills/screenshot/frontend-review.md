@@ -5,7 +5,7 @@ Use this screenshot skill before giving UI/UX/layout feedback when the real rend
 
 ## Suggested sequence
 1. Capture the target URL.
-2. Confirm the screenshot file path.
+2. Confirm the screenshot file path, or the per-device paths if `--capture-set responsive` was used.
 3. Read the image.
 4. Analyze visual evidence.
 5. Only then recommend UI/UX/layout changes.
@@ -23,6 +23,7 @@ Use this screenshot skill before giving UI/UX/layout feedback when the real rend
 ```bash
 /screenshot https://example.com --wait --mode viewport --output-format json
 /screenshot https://example.com/docs --wait --mode fullpage --output-format json
+/screenshot https://example.com --capture-set responsive --wait --mode viewport --output-format json
 /screenshot https://example.com --device mobile --wait --mode viewport --output-format json
 /screenshot https://example.com --device tablet --wait --mode viewport --output-format json
 ```

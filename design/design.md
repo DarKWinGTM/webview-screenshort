@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.0.0
+> **Current Version:** 2.2.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
@@ -29,7 +29,7 @@ The intended package model is:
 - `skills/screenshot/SKILL.md` = primary runtime entrypoint
 - `skills/screenshot/*.md` = focused frontend vision workflow guidance
 - `agents/webview-vision-assist.md` = optional visual-review companion agent
-- `screenshot.py` = execution engine
+- `screenshot.py` = execution engine with focused capture plus one-run responsive capture-set support
 - `screenshot/` = generated screenshots and checked local artifacts
 - `design/changelog/TODO/phase/patch` = governance authority at the standalone repo root
 
@@ -65,7 +65,8 @@ Need visual frontend review
   → capture the page
   → use --wait when CSR/SPA rendering is likely
   → choose viewport or fullpage
-  → choose desktop / tablet / mobile preset when responsive review matters
+  → choose desktop / tablet / mobile preset when focused responsive review matters
+  → prefer `--capture-set responsive` when the same page should be checked across all three breakpoints in one run
   → prefer JSON result output for workflow chaining
   → save screenshot locally
   → read the image
@@ -92,6 +93,7 @@ This is evidence that the current engine can already support more than one real 
 
 Checked responsive review validation now also shows:
 - `https://claw-frontend-dev.nodenetwork.ovh/docs` captures successfully in desktop, tablet, and mobile viewport presets
+- the same page also captures successfully through one responsive capture-set run that returns combined JSON metadata plus per-device image outputs
 - the package can therefore support same-page cross-breakpoint review rather than only one-off single captures
 
 ---
@@ -130,5 +132,6 @@ This package is considered successful for the current wave when:
 - the package clearly supports frontend visual review workflows
 - `screenshot.py` supports late-bound config for endpoints/timeouts
 - `screenshot.py` supports machine-readable JSON output for workflow chaining
+- `screenshot.py` supports one-run responsive capture-set output for desktop/tablet/mobile review
 - `screenshot.py` supports mobile and tablet viewport presets for responsive review
 - governance docs describe the real current state rather than the older project-local skill state
