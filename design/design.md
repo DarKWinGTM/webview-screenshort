@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.13.0
+> **Current Version:** 2.14.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
@@ -32,6 +32,7 @@ The intended package model is:
 - `skills/responsive-review/SKILL.md` = direct cross-breakpoint capture-then-review skill surface
 - `skills/compare-review/SKILL.md` = report-to-report comparison and regression-review skill surface
 - `skills/reference-bundles/SKILL.md` = bundle lifecycle surface for listing, creating, and applying reusable baseline artifacts
+- `skills/reference-live-review/SKILL.md` = live baseline replay surface for saved expected bundles plus fresh live URLs
 - `agents/webview-vision-assist.md` = optional visual-review companion agent
 - `screenshot.py` = execution engine with focused capture plus one-run responsive capture-set support
 - `compare_reports.py` = report comparison helper for expected/actual and before/after review workflows
@@ -40,6 +41,7 @@ The intended package model is:
 - `list_compare_sessions.py` = compare-session index/history helper for reusable QA browsing
 - `create_reference_bundle.py` = expected-reference bundle helper for reusable baseline artifacts
 - `apply_reference_bundle.py` = apply-reference helper for re-running expected/actual QA against fresh reports
+- `reference_live_bundle.py` = higher-level helper that captures a fresh current report from a live URL and applies a saved bundle automatically
 - `list_reference_bundles.py` = reference-bundle browser helper for reusable baseline discovery
 - `screenshot/` = generated screenshots and checked local artifacts
 - `design/changelog/TODO/phase/patch` = governance authority at the standalone repo root
@@ -87,6 +89,7 @@ Need visual frontend review
   → list or reopen saved compare sessions when QA history should be reused
   → create a reference bundle when a saved expected state should become a reusable baseline
   → apply a saved reference bundle when a fresh actual state should be checked against that baseline automatically
+  → replay a saved reference bundle directly against a live URL when the current actual report should be captured on demand in the same flow
   → browse saved reference bundles when the reusable baseline set should be discoverable later
   → analyze layout / UX / UI from the screenshot
   → then recommend code or design changes
@@ -108,6 +111,13 @@ Checked local verification now shows:
 - the same MDN page also renders successfully with `--device mobile` and `--device tablet` presets using structured JSON output
 
 This is evidence that the current engine can already support more than one real frontend docs workflow and can now contribute to responsive frontend review, not only desktop capture.
+
+Checked baseline-replay validation now also shows:
+- a saved reference bundle can now carry explicit `reference_side` and `reference_report_path` metadata instead of relying only on implicit left-side session interpretation
+- newly created reference bundles now include a bundled reference report payload plus copied baseline images so replay does not depend only on the original external report path surviving
+- `apply_reference_bundle.py` now supports optional diff-output enrichment while replaying a saved baseline against a current report
+- `compare_reports.py` now fails the top-level comparison when paired diff analysis fails instead of silently blessing non-diffable comparisons
+- `reference_live_bundle.py` can capture a fresh responsive current report from a live URL and emit a new expected/actual compare session in one run
 
 Checked responsive review validation now also shows:
 - `https://claw-frontend-dev.nodenetwork.ovh/docs` captures successfully in desktop, tablet, and mobile viewport presets
@@ -134,7 +144,7 @@ Checked responsive review validation now also shows:
 
 ## 7) Current limitations
 
-- current workflow still relies on Claude reading the generated image after capture instead of a fully bundled tool-native visual-analysis pipeline, even though report files, review skills, compare-review entrypoints, helper-generated pair metadata, diff images, named compare sessions, compare-session history browsing, reference bundles, apply-reference workflows, and reference-bundle browsing now reduce the manual handoff surface
+- current workflow still relies on Claude reading the generated image after capture instead of a fully bundled tool-native visual-analysis pipeline, even though report files, review skills, compare-review entrypoints, helper-generated pair metadata, diff images, named compare sessions, compare-session history browsing, reference bundles, apply-reference workflows, live bundle replay, and reference-bundle browsing now reduce the manual handoff surface
 - plugin install lifecycle for this package is now validated from the standalone repo root through its package-local marketplace manifest, while the shared `darkwingtm` route remains only temporary checked local compatibility context
 - broader CSR validation still needs more than the two currently checked public docs targets
 
@@ -153,4 +163,8 @@ This package is considered successful for the current wave when:
 - `compare_reports.py` supports structured report-to-report pairing for expected/actual and regression-style review
 - `screenshot.py` supports one-run responsive capture-set output for desktop/tablet/mobile review
 - `screenshot.py` supports mobile and tablet viewport presets for responsive review
+- saved reference bundles carry explicit reference-side/report metadata for more reliable replay
+- newly created reference bundles store a bundled reference report payload and copied baseline images instead of depending only on the original external report path
+- the package can replay a saved baseline directly against a live URL without requiring the caller to capture the current report separately first
+- non-diffable paired comparisons are now treated as failed instead of being reported as successful replay sessions
 - governance docs describe the real current state rather than the older project-local skill state

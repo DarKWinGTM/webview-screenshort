@@ -27,15 +27,17 @@ Use real rendered screenshots as visual evidence for frontend development work.
    - same live page across breakpoints → responsive review path
    - two persisted capture reports to compare → compare review path
    - saved bundle/session lifecycle work → reference-bundle path
+   - saved reference bundle + live URL replay → reference-live-review path
 2. For one live page, prefer the installed `/frontend-review` surface or run `python3 "${CLAUDE_PLUGIN_ROOT}/screenshot.py"` with `--output-format json --report-file ...`.
 3. For responsive review, prefer the installed `/responsive-review` surface or one run with `--capture-set responsive` so desktop, tablet, and mobile metadata come back in one JSON payload.
 4. For before/after or expected/actual work, prefer the installed `/compare-review` surface or run `python3 "${CLAUDE_PLUGIN_ROOT}/compare_reports.py" <report-a> <report-b> --output-format json`.
 5. For bundle/session lifecycle work, prefer the installed `/reference-bundles` surface or run the bundle helpers directly.
-6. Prefer `--wait` when CSR or delayed hydration is likely.
-7. Prefer `--mode viewport` for above-the-fold inspection and `--mode fullpage` for long docs/pages.
-8. Return the exact screenshot/report path(s) and structured metadata.
-9. If the user wants analysis, read the image(s) and use them as evidence.
-10. Summarize visible layout, spacing, readability, responsive differences, comparison deltas, and likely UX/UI issues.
+6. For saved baseline + live page replay, prefer the installed `/reference-live-review` surface or run `python3 "${CLAUDE_PLUGIN_ROOT}/reference_live_bundle.py" ...` so capture + apply-reference happen in one flow.
+7. Prefer `--wait` when CSR or delayed hydration is likely.
+8. Prefer `--mode viewport` for above-the-fold inspection and `--mode fullpage` for long docs/pages.
+9. Return the exact screenshot/report path(s) and structured metadata.
+10. If the user wants analysis, read the image(s) and use them as evidence.
+11. Summarize visible layout, spacing, readability, responsive differences, comparison deltas, and likely UX/UI issues.
 
 ## Output
 - exact screenshot path or paths
@@ -46,4 +48,5 @@ Use real rendered screenshots as visual evidence for frontend development work.
 - visible layout/UX/UI issues when analysis was requested
 - comparison-pair metadata when compare-review was used
 - reference-bundle/session artifact paths when bundle helpers were used
+- exact live replay artifact paths when saved baseline + live URL review was used
 - any obvious capture limitation or follow-up need

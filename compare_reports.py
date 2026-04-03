@@ -81,7 +81,14 @@ def require_valid_report(payload: Dict[str, Any], report_path: Path) -> Dict[str
     return result
 
 
-def collect_images(result: Dict[str, Any], report_label: str) -> List[ComparedImage]:
+def resolve_image_path(image_path: Any, report_path: Path) -> str:
+    path = Path(str(image_path or "")).expanduser()
+    if not path.is_absolute():
+        path = (report_path.parent / path).resolve()
+    return str(path)
+
+
+def collect_images(result: Dict[str, Any], report_label: str, report_path: Path) -> List[ComparedImage]:
     result_type = result.get("capture_set")
     if result_type == "responsive":
         images = []
@@ -90,7 +97,7 @@ def collect_images(result: Dict[str, Any], report_label: str) -> List[ComparedIm
                 ComparedImage(
                     report_label=report_label,
                     device=str(capture.get("device") or "unknown"),
-                    image_path=str(capture.get("output_path")),
+                    image_path=resolve_image_path(capture.get("output_path"), report_path),
                     width=capture.get("image_width"),
                     height=capture.get("image_height"),
                 )
@@ -101,7 +108,7 @@ def collect_images(result: Dict[str, Any], report_label: str) -> List[ComparedIm
         ComparedImage(
             report_label=report_label,
             device=str(result.get("device") or "default"),
-            image_path=str(result.get("output_path")),
+            image_path=resolve_image_path(result.get("output_path"), report_path),
             width=result.get("image_width"),
             height=result.get("image_height"),
         )
@@ -209,8 +216,8 @@ def main() -> None:
     left_result = require_valid_report(left_payload, left_path)
     right_result = require_valid_report(right_payload, right_path)
 
-    left_images = collect_images(left_result, "left")
-    right_images = collect_images(right_result, "right")
+    left_images = collect_images(left_result, "left", left_path)
+    right_images = collect_images(right_result, "right", right_path)
     pairs = build_pairs(left_images, right_images)
     warnings: List[str] = []
 
@@ -225,18 +232,31 @@ def main() -> None:
     if pairs:
         enrich_pairs_with_diff(pairs, diff_dir)
 
+    failed_pairs = [pair.device for pair in pairs if not pair.diff or not pair.diff.success]
+    if failed_pairs:
+        warnings.append(
+            "Diff analysis failed for device pair(s): " + ", ".join(failed_pairs) + "."
+        )
+
+    success = bool(pairs) and not failed_pairs
+    error = None
+    if not pairs:
+        error = "No comparable image pairs found."
+    elif failed_pairs:
+        error = "Diff analysis failed for device pair(s): " + ", ".join(failed_pairs) + "."
+
     result = ComparisonResult(
-        success=bool(pairs),
+        success=success,
         left_report=str(left_path),
         right_report=str(right_path),
         report_schema=REPORT_SCHEMA,
         left_result_type=str(left_payload.get("result_type") or "unknown"),
         right_result_type=str(right_payload.get("result_type") or "unknown"),
-        compatible=bool(pairs),
+        compatible=success,
         comparison_mode=mode,
         pairs=pairs,
         warnings=warnings,
-        error=None if pairs else "No comparable image pairs found.",
+        error=error,
     )
 
     if args.output_format == "json":

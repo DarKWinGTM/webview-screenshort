@@ -4,7 +4,7 @@
 
 > **Current Version:** 1.0
 > **Status:** Implemented - Pending Review
-> **Target Design:** [../design/design.md](../design/design.md) v2.0.0
+> **Target Design:** [../design/design.md](../design/design.md) v2.14.0
 > **Target Phase:** [../phase/phase-002-validate-csr-screenshot-workflow.md](../phase/phase-002-validate-csr-screenshot-workflow.md)
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)

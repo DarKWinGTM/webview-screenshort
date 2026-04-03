@@ -38,8 +38,10 @@ def main() -> None:
                 "name": payload.get("name"),
                 "generated_at": payload.get("generated_at"),
                 "reference_label": payload.get("reference_label"),
+                "reference_side": payload.get("reference_side") or "left",
+                "reference_report_path": payload.get("reference_report_path") or session.get("left", {}).get("report_path"),
                 "session_name": session.get("name"),
-                "comparison_mode": comparison.get("comparison_mode"),
+                "comparison_mode": payload.get("comparison_mode") or comparison.get("comparison_mode"),
                 "pair_count": len(comparison.get("pairs", [])),
                 "success": comparison.get("success"),
             }

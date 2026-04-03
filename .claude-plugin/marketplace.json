@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Standalone marketplace manifest for the webview-screenshort plugin repo.",
-    "version": "2.13.0"
+    "version": "2.14.0"
   },
   "plugins": [
     {

@@ -93,9 +93,15 @@ Verified now:
 - `list_compare_sessions.py` now lists and summarizes persisted compare-session artifacts for practical QA history browsing
 - `create_reference_bundle.py` now builds reusable expected-reference bundle artifacts on top of saved compare sessions
 - `apply_reference_bundle.py` now applies a saved reference bundle to a current report and emits a fresh expected/actual compare session automatically
+- `reference_live_bundle.py` now captures a fresh current report from a live URL and replays a saved baseline in one flow
 - `list_reference_bundles.py` now lists and summarizes saved reference bundles for practical baseline browsing
 - `skills/reference-bundles/SKILL.md` now exposes bundle lifecycle work through a dedicated front-door skill surface
-- `webview-vision-assist` now routes more clearly between focused review, responsive review, compare review, and bundle-lifecycle paths
+- `skills/reference-live-review/SKILL.md` now exposes saved-baseline replay against a live URL from one front door
+- reference bundles now carry explicit reference-side/report metadata instead of relying only on implicit left-side session interpretation
+- newly created reference bundles now include a bundled reference report payload plus copied baseline images so replay is less fragile if the original temp report disappears
+- `compare_reports.py` now treats non-diffable paired comparisons as failed instead of silently reporting success just because device labels matched
+- `diff_images.py` now counts non-zero RGBA diff pixels directly so visual differences are measured more honestly when screenshot colors change without alpha changes
+- `webview-vision-assist` now routes more clearly between focused review, responsive review, compare review, bundle-lifecycle paths, and live baseline replay paths
 - public-repo install posture is now validated from the standalone repo root
 
 Checked live examples:
@@ -131,6 +137,10 @@ webview-screenshort/
       SKILL.md
     compare-review/
       SKILL.md
+    reference-bundles/
+      SKILL.md
+    reference-live-review/
+      SKILL.md
   screenshot.py
   compare_reports.py
   diff_images.py
@@ -138,6 +148,7 @@ webview-screenshort/
   list_compare_sessions.py
   create_reference_bundle.py
   apply_reference_bundle.py
+  reference_live_bundle.py
   list_reference_bundles.py
   screenshot/
   design/
@@ -216,8 +227,14 @@ Use this package when the goal is to inspect:
 - `/reference-bundles list /path/to/bundles`
 - `/reference-bundles create /path/to/compare-session.json bundle-name /path/to/bundle.json`
 - `/reference-bundles apply /path/to/bundle.json /path/to/current-report.json session-name /path/to/comparison.json /path/to/session.json`
+- optional diff enrichment now flows through `--diff-dir` on the helper layer when compare images should also be written during baseline replay
 - use this surface when saved QA artifacts should be browsed, turned into reusable baselines, or replayed against fresh actual reports
 - browse saved reference bundles when baseline assets should be reused without remembering exact paths
+
+### For saved baseline replay against a live URL
+- `/reference-live-review --bundle /path/to/bundle.json --url https://example.com/page --current-report /tmp/current.json --comparison-json /tmp/compare.json --session-output /tmp/session.json --session-name current-vs-expected --capture-set responsive --mode viewport --wait --diff-dir /tmp/diffs`
+- use this surface when the baseline already exists but the current live page still needs to be captured first
+- the flow now captures a fresh current report, applies the bundle automatically, and emits a new expected/actual compare session in one run
 
 Or manually:
 1. capture one responsive set with `--capture-set responsive --output-format json`

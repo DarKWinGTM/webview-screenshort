@@ -1,6 +1,6 @@
 # Webview Screenshort - TODO
 
-> **Last Updated:** 2026-04-03
+> **Last Updated:** 2026-04-04
 
 ---
 
@@ -46,7 +46,9 @@
 - [x] Add reference-bundle browsing so saved baseline artifacts can be listed and reused more easily.
 - [x] Add a dedicated bundle-lifecycle skill surface so baseline artifacts can be listed, created, and applied from one front door.
 - [x] Add reference-bundle apply/browse ergonomics so repo-local baseline workflows can be reused with less path hunting.
-- [x] Harden `webview-vision-assist` so it routes more clearly between focused, responsive, and compare-review paths.
+- [x] Add live baseline replay so a saved reference bundle can capture a fresh current report from a URL and emit a new expected/actual compare session automatically.
+- [x] Harden reference-bundle metadata so reusable baselines carry explicit reference-side/report information.
+- [x] Harden `webview-vision-assist` so it routes more clearly between focused, responsive, compare-review, and live baseline replay paths.
 - [x] Validate `/reload-plugins` and restart-time visibility for the installed package.
 
 ---
@@ -55,8 +57,8 @@
 
 | Date | Changes |
 |------|---------|
-| 2026-04-04 | Added `skills/reference-bundles/SKILL.md`, lifted bundle lifecycle operations into a dedicated front-door skill surface, and bumped the plugin/marketplace package versions to `2.13.0`. |
-| 2026-04-04 | Added `skills/reference-bundles/SKILL.md`, registered the repo-local `webview-screenshort` marketplace, installed `webview-screenshort@webview-screenshort`, and lifted bundle lifecycle operations into a dedicated front-door skill surface for `2.13.0`. |
+| 2026-04-04 | Added `reference_live_bundle.py`, added `skills/reference-live-review/SKILL.md`, hardened bundle metadata with explicit reference-side/report fields, made newly created bundles self-contained with bundled baseline report assets, fixed RGBA diff-pixel counting, tightened compare success semantics so non-diffable pairs fail replay, validated live baseline replay against the NodeClaw docs page, and bumped the plugin/marketplace package versions to `2.14.0`. |
+| 2026-04-04 | Added `skills/reference-bundles/SKILL.md`, lifted bundle lifecycle operations into a dedicated front-door skill surface, registered the repo-local `webview-screenshort` marketplace, installed `webview-screenshort@webview-screenshort`, and shipped the `2.13.0` bundle-lifecycle wave. |
 | 2026-04-04 | Added `list_reference_bundles.py`, validated reference-bundle browsing against saved baseline artifacts, and bumped the plugin/marketplace package versions to `2.12.0`. |
 | 2026-04-04 | Added `apply_reference_bundle.py`, validated replaying a saved reference bundle against a fresh report, and bumped the plugin/marketplace package versions to `2.11.0`. |
 | 2026-04-04 | Added `create_reference_bundle.py`, validated reusable expected-reference bundle artifacts, and bumped the plugin/marketplace package versions to `2.10.0`. |

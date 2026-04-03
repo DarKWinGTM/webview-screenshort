@@ -94,8 +94,7 @@ def main() -> None:
     bbox = diff.getbbox()
     diff_pixels = 0
     if bbox:
-        alpha = diff.getchannel("A")
-        diff_pixels = sum(1 for value in alpha.getdata() if value != 0)
+        diff_pixels = sum(1 for pixel in diff.getdata() if pixel != (0, 0, 0, 0))
     total_pixels = left_width * left_height
     diff_ratio = diff_pixels / total_pixels if total_pixels else 0.0
 

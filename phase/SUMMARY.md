@@ -1,9 +1,9 @@
 # Webview Screenshort - Phase Summary
 
-> **Current Version:** 2.13.0
-> **Target Design:** [../design/design.md](../design/design.md) v2.13.0
+> **Current Version:** 2.14.0
+> **Target Design:** [../design/design.md](../design/design.md) v2.14.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
-> **Status:** In Progress
+> **Status:** Implemented - Pending Review
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)
 
 ---
@@ -22,6 +22,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 002 | `phase-002-validate-csr-screenshot-workflow.md` | `design/design.md` CSR support model | `../patch/phase-002-validate-csr-screenshot-workflow.patch.md` | Validate real CSR capture, responsive presets, and frontend-vision use case | Real CSR page capture and responsive review support are evidence-backed |
 | 003 | `phase-003-install-and-lifecycle-validation.md` | `design/design.md` runtime contract | `none` | Validate plugin install, skill visibility, and runtime lifecycle | Package works as installed plugin |
 | 004 | `phase-004-separate-repo-cutover.md` | `design/design.md` plus package-local marketplace cutover posture | `../patch/phase-004-separate-repo-cutover.patch.md` | Prepare authority migration from the shared workspace into a standalone `webview-screenshort` repo | Package can cut over to its own repo without duplicate authority |
+| 005 | `phase-005-live-baseline-replay.md` | `design/design.md` live baseline replay and reusable baseline model | `../patch/phase-005-live-baseline-replay.patch.md` | Add saved-bundle + live-URL replay as a first-class frontend QA workflow | Reusable baselines can be replayed directly against current live pages in one flow |
 
 ---
 
@@ -33,13 +34,14 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 002 | Implemented - Pending Review | `phase-002-validate-csr-screenshot-workflow.md` | Validate real CSR capture and responsive frontend review workflows |
 | 003 | Implemented - Pending Review | `phase-003-install-and-lifecycle-validation.md` | Validate install/lifecycle through plugin flow |
 | 004 | Implemented - Pending Review | `phase-004-separate-repo-cutover.md` | Finalize standalone repo authority and retire shared-workspace authority posture |
+| 005 | Implemented - Pending Review | `phase-005-live-baseline-replay.md` | Add saved-bundle + live-URL replay as a first-class reusable frontend QA workflow |
 
 ---
 
 ## Global TODO / Changelog Coordination
 
 - `TODO.md` should track only remaining cutover and authority-retirement work.
-- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, diff-assisted compare outcomes, named compare-session outcomes, compare-session history outcomes, expected-reference bundle outcomes, apply-reference workflow outcomes, reference-bundle browsing outcomes, bundle-lifecycle skill-surface outcomes, repo-local marketplace install outcomes, and agent-orchestration hardening outcomes only.
+- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, diff-assisted compare outcomes, named compare-session outcomes, compare-session history outcomes, expected-reference bundle outcomes, apply-reference workflow outcomes, reference-bundle browsing outcomes, bundle-lifecycle skill-surface outcomes, live baseline replay outcomes, repo-local marketplace install outcomes, and agent-orchestration hardening outcomes only.
 - `design/design.md` remains the authority for frontend-vision intent, plugin boundaries, and standalone-repo install posture.
 
 ---
@@ -71,7 +73,10 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - `apply_reference_bundle.py` now replays a saved baseline against a fresh report to emit a new expected/actual session
 - `list_reference_bundles.py` now exposes saved baseline bundles for lightweight QA browsing
 - `skills/reference-bundles/SKILL.md` now exposes bundle listing, creation, and apply-reference work from one front door
+- `reference_live_bundle.py` now captures a fresh current report from a live URL and replays a saved baseline automatically
+- `skills/reference-live-review/SKILL.md` now exposes saved-baseline replay against a live URL from one front door
+- reference bundles now carry explicit `reference_side` and `reference_report_path` metadata for more reliable replay
 - repo-local marketplace path now installs `webview-screenshort@webview-screenshort` directly from the standalone repo root
-- `webview-vision-assist` now routes more explicitly between focused review, responsive review, compare-review, and bundle-lifecycle entrypoints
+- `webview-vision-assist` now routes more explicitly between focused review, responsive review, compare-review, bundle-lifecycle, and live baseline replay entrypoints
 
 ---

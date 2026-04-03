@@ -18,6 +18,13 @@ def load_json(path: Path):
         return json.load(file_obj)
 
 
+def resolve_report_path(raw_path: str, bundle_path: Path) -> Path:
+    path = Path(raw_path).expanduser()
+    if not path.is_absolute():
+        path = (bundle_path.parent / path).resolve()
+    return path
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Apply a reference bundle to a current report")
     parser.add_argument("--bundle", required=True, help="Path to reference bundle JSON")
@@ -26,6 +33,7 @@ def main() -> None:
     parser.add_argument("--session-output", required=True, help="Output path for compare-session JSON")
     parser.add_argument("--session-name", required=True, help="Name for the new compare session")
     parser.add_argument("--current-label", default="actual")
+    parser.add_argument("--diff-dir", help="Optional diff image output directory for compare_reports")
     args = parser.parse_args()
 
     bundle_path = Path(args.bundle).expanduser()
@@ -37,9 +45,10 @@ def main() -> None:
     if session.get("session_schema") != SESSION_SCHEMA:
         raise SystemExit("Reference bundle does not contain a valid compare session")
 
-    left_report = session.get("left", {}).get("report_path")
+    left_report = bundle.get("bundled_reference_report_path") or bundle.get("reference_report_path") or session.get("left", {}).get("report_path")
     if not left_report:
         raise SystemExit("Reference bundle is missing the reference report path")
+    left_report_path = resolve_report_path(left_report, bundle_path)
 
     comparison_json_path = Path(args.comparison_json).expanduser()
     comparison_json_path.parent.mkdir(parents=True, exist_ok=True)
@@ -48,11 +57,13 @@ def main() -> None:
     compare_cmd = [
         sys.executable,
         str(compare_helper),
-        left_report,
+        str(left_report_path),
         str(Path(args.current_report).expanduser()),
         "--output-format",
         "json",
     ]
+    if args.diff_dir:
+        compare_cmd.extend(["--diff-dir", str(Path(args.diff_dir).expanduser())])
     result = subprocess.run(compare_cmd, capture_output=True, text=True)
     if result.returncode != 0:
         raise SystemExit(result.stderr.strip() or "compare_reports.py failed")
@@ -67,7 +78,7 @@ def main() -> None:
         "--name",
         args.session_name,
         "--left-report",
-        left_report,
+        str(left_report_path),
         "--right-report",
         str(Path(args.current_report).expanduser()),
         "--left-label",
@@ -83,7 +94,14 @@ def main() -> None:
     if session_result.returncode != 0:
         raise SystemExit(session_result.stderr.strip() or "compare_session.py failed")
 
-    print(session_result.stdout.strip())
+    session_payload = json.loads(session_result.stdout)
+    session_payload["bundle_path"] = str(bundle_path)
+    session_payload["reference_report_path"] = str(left_report_path)
+    session_payload["current_report_path"] = str(Path(args.current_report).expanduser())
+    if args.diff_dir:
+        session_payload["diff_dir"] = str(Path(args.diff_dir).expanduser())
+
+    print(json.dumps(session_payload, ensure_ascii=False))
 
 
 if __name__ == "__main__":

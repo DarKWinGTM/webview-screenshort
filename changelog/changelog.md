@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.13.0
+> **Current Version:** 2.14.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.14.0 | 2026-04-04 | **[Added live baseline replay workflow](#version-2140)** | Added `reference_live_bundle.py`, exposed live baseline replay from a dedicated skill surface, and made saved reference bundles easier to re-run directly against current live pages. |
 | 2.13.0 | 2026-04-04 | **[Added bundle-lifecycle skill surface](#version-2130)** | Added `skills/reference-bundles/SKILL.md`, lifted bundle helpers into a clearer front-door workflow surface, and made baseline artifact lifecycle operations easier to invoke directly. |
 | 2.12.0 | 2026-04-04 | **[Added reference-bundle browsing](#version-2120)** | Added `list_reference_bundles.py`, introduced lightweight browsing of saved baseline bundles, and pushed the compare workflow closer to a practical reusable QA asset system. |
 | 2.11.0 | 2026-04-04 | **[Added apply-reference workflow](#version-2110)** | Added `apply_reference_bundle.py`, introduced a way to replay expected/actual QA against saved reference bundles, and pushed the compare workflow closer to a reusable baseline-application system. |
@@ -25,6 +26,33 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2140"></a>
+## Version 2.14.0: Added live baseline replay workflow
+
+**Date:** 2026-04-04
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added `reference_live_bundle.py` so a saved reference bundle can capture a fresh current report from a live URL and emit a new expected/actual compare session in one flow.
+- Added `skills/reference-live-review/SKILL.md` so live baseline replay has a dedicated front-door skill surface.
+- Hardened `create_reference_bundle.py`, `apply_reference_bundle.py`, and `list_reference_bundles.py` so reusable baseline artifacts now carry explicit reference-side/report metadata, newer bundles carry bundled reference-report assets, and replay exposes richer metadata.
+- Hardened `compare_reports.py` so non-diffable paired comparisons now fail the top-level comparison instead of being reported as successful replay runs just because device labels matched.
+- Fixed `diff_images.py` so diff-pixel counting now reflects non-zero RGBA visual changes instead of relying only on alpha-channel differences.
+- Hardened `agents/webview-vision-assist.md`, README, design, and TODO wording so the new live baseline replay path is reflected in the visible product surface.
+- Bumped plugin and marketplace package versions to `2.14.0`.
+
+### Validation
+- `python3 -m py_compile screenshot.py compare_reports.py compare_session.py create_reference_bundle.py apply_reference_bundle.py list_reference_bundles.py diff_images.py reference_live_bundle.py` succeeds.
+- `python3 create_reference_bundle.py --name nodeclaw-docs-reference-v3 --session /tmp/webview_compare_session.json --output /tmp/webview_reference_bundles/nodeclaw-docs-reference-v3.json --reference-label expected` succeeds and emits bundled reference-report assets.
+- `python3 reference_live_bundle.py --bundle /tmp/webview_reference_bundles/nodeclaw-docs-reference-v3.json --url https://claw-frontend-dev.nodenetwork.ovh/docs --current-report /tmp/webview_live_current_report_v3.json --comparison-json /tmp/webview_live_compare_v3.json --session-output /tmp/webview_live_session_v3.json --session-name nodeclaw-docs-live-baseline-v3 --current-label actual --capture-set responsive --mode viewport --wait --diff-dir /tmp/webview_live_diff_outputs_v3` succeeds.
+- `python3 apply_reference_bundle.py --bundle /tmp/webview_reference_bundles/nodeclaw-docs-reference-v2.json --current-report /tmp/webview_24_responsive_report.json --comparison-json /tmp/webview_apply_v2_compare.json --session-output /tmp/webview_apply_v2_session.json --session-name nodeclaw-docs-reference-v2-apply --current-label actual --diff-dir /tmp/webview_apply_v2_diffs` succeeds.
+- `python3 list_reference_bundles.py /tmp/webview_reference_bundles --output-format json` now shows explicit `reference_side` and `reference_report_path` for newly created bundles, while older bundles still get useful fallback values.
+
+### Summary
+The package now moves one step closer to a real reusable frontend QA system by letting saved baselines be replayed directly against current live pages, while also making comparison success stricter and newly created baseline bundles more durable.
 
 ---
 
