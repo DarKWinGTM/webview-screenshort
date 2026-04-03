@@ -10,13 +10,14 @@
 
 ## Objective
 
-Validate the package through the installed plugin flow and confirm runtime lifecycle behavior.
+Validate the package through the primary installed plugin flow and confirm runtime lifecycle behavior, while keeping older shared-marketplace installs clearly scoped as compatibility-only.
 
 ## Checked current state
 
 - plugin manifest validates
 - marketplace manifest validates
-- `webview-screenshort@darkwingtm` installs in local scope
+- `webview-screenshort@webview-screenshort` installs from the standalone repo-local marketplace
+- `webview-screenshort@darkwingtm` remains a checked local compatibility install path only
 - `claude agents` shows `webview-screenshort:webview-vision-assist`
 
 ## Action points / execution checklist

@@ -57,6 +57,7 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-04 | Fixed remaining authority/update drift after `2.14.0` so README and phase docs now point to repo-local marketplace update/install posture first, keep `darkwingtm` explicitly compatibility-only, and bumped the plugin/marketplace package versions to `2.14.1`. |
 | 2026-04-04 | Added `reference_live_bundle.py`, added `skills/reference-live-review/SKILL.md`, hardened bundle metadata with explicit reference-side/report fields, made newly created bundles self-contained with bundled baseline report assets, fixed RGBA diff-pixel counting, tightened compare success semantics so non-diffable pairs fail replay, validated live baseline replay against the NodeClaw docs page, and bumped the plugin/marketplace package versions to `2.14.0`. |
 | 2026-04-04 | Added `skills/reference-bundles/SKILL.md`, lifted bundle lifecycle operations into a dedicated front-door skill surface, registered the repo-local `webview-screenshort` marketplace, installed `webview-screenshort@webview-screenshort`, and shipped the `2.13.0` bundle-lifecycle wave. |
 | 2026-04-04 | Added `list_reference_bundles.py`, validated reference-bundle browsing against saved baseline artifacts, and bumped the plugin/marketplace package versions to `2.12.0`. |

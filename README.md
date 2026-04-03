@@ -56,16 +56,16 @@ Checked local validation from the repo root:
 
 ### Update an installed plugin
 
-If the plugin is already installed, update it by using the installed identifier shape `plugin@marketplace`:
-
-```bash
-claude plugins update webview-screenshort@darkwingtm --scope local
-```
-
-If this standalone repo was also installed through its own repo-local marketplace, the installed identifier may instead be `webview-screenshort@webview-screenshort`:
+If the plugin was installed from this standalone repo-local marketplace, update it by using the installed identifier shape `plugin@marketplace`:
 
 ```bash
 claude plugins update webview-screenshort@webview-screenshort --scope local
+```
+
+If you still have an older local install through the shared compatibility marketplace, the installed identifier may instead be `webview-screenshort@darkwingtm`:
+
+```bash
+claude plugins update webview-screenshort@darkwingtm --scope local
 ```
 
 Why this exact shape matters:
