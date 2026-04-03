@@ -91,6 +91,7 @@ Verified now:
 - `diff_images.py` now adds optional image-diff metrics and diff-image outputs for richer compare-review workflows
 - `compare_session.py` now persists named compare-session artifacts with expected/actual-style labels for later QA review
 - `list_compare_sessions.py` now lists and summarizes persisted compare-session artifacts for practical QA history browsing
+- `create_reference_bundle.py` now builds reusable expected-reference bundle artifacts on top of saved compare sessions
 - `webview-vision-assist` now routes more clearly between focused review, responsive review, and compare-review paths
 - public-repo install posture is now validated from the standalone repo root
 
@@ -132,6 +133,7 @@ webview-screenshort/
   diff_images.py
   compare_session.py
   list_compare_sessions.py
+  create_reference_bundle.py
   screenshot/
   design/
     design.md
@@ -205,6 +207,7 @@ Use this package when the goal is to inspect:
 - use diff-assisted compare flow when you want image-diff metrics and generated diff images in addition to pair metadata
 - persist a named compare session when QA work should be saved as an expected/actual or before/after artifact
 - list saved compare sessions when QA history should be browsed or reused later
+- create a reusable expected-reference bundle when the saved QA state should become a reusable baseline
 
 Or manually:
 1. capture one responsive set with `--capture-set responsive --output-format json`

@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.9.0
+> **Current Version:** 2.10.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
@@ -37,6 +37,7 @@ The intended package model is:
 - `diff_images.py` = image-diff helper for richer compare-review evidence
 - `compare_session.py` = named compare-session helper for reusable expected/actual QA artifacts
 - `list_compare_sessions.py` = compare-session index/history helper for reusable QA browsing
+- `create_reference_bundle.py` = expected-reference bundle helper for reusable baseline artifacts
 - `screenshot/` = generated screenshots and checked local artifacts
 - `design/changelog/TODO/phase/patch` = governance authority at the standalone repo root
 
@@ -81,6 +82,7 @@ Need visual frontend review
   → when comparing states, re-read two report files and compare the referenced screenshots through structured pair metadata
   → persist a named compare session when the expected/actual review should remain reusable later
   → list or reopen saved compare sessions when QA history should be reused
+  → create a reference bundle when a saved expected state should become a reusable baseline
   → analyze layout / UX / UI from the screenshot
   → then recommend code or design changes
 ```
@@ -127,7 +129,7 @@ Checked responsive review validation now also shows:
 
 ## 7) Current limitations
 
-- current workflow still relies on Claude reading the generated image after capture instead of a fully bundled tool-native visual-analysis pipeline, even though report files, review skills, compare-review entrypoints, helper-generated pair metadata, diff images, named compare sessions, and compare-session history browsing now reduce the manual handoff surface
+- current workflow still relies on Claude reading the generated image after capture instead of a fully bundled tool-native visual-analysis pipeline, even though report files, review skills, compare-review entrypoints, helper-generated pair metadata, diff images, named compare sessions, compare-session history browsing, and reference bundles now reduce the manual handoff surface
 - plugin install lifecycle for this package is now validated from the standalone repo root through its package-local marketplace manifest, while the shared `darkwingtm` route remains only temporary checked local compatibility context
 - broader CSR validation still needs more than the two currently checked public docs targets
 
