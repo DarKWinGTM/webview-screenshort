@@ -42,4 +42,5 @@ Verify that the package can capture real CSR-heavy pages for frontend visual rev
 - structured compare-helper output is evidence-backed against current responsive report artifacts
 - diff-assisted compare output is evidence-backed against current responsive report artifacts
 - named compare-session output is evidence-backed against current responsive report artifacts
+- compare-session history output is evidence-backed against saved compare-session artifacts
 - agent orchestration guidance is now aligned with the current focused/responsive/compare workflow split

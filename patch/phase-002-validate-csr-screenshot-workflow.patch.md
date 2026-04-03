@@ -72,6 +72,7 @@ Dimension: 1920x10000
 - [x] structured compare-helper output completed successfully against current responsive reports
 - [x] diff-assisted compare output completed successfully against current responsive reports
 - [x] named compare-session output completed successfully against current responsive reports
+- [x] compare-session history output completed successfully against saved compare-session artifacts
 - [x] agent orchestration guidance now matches the current focused/responsive/compare workflow split
 - [x] resulting images show rendered docs content
 - [x] CSR support is evidence-backed for more than one checked target
