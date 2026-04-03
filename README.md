@@ -54,6 +54,18 @@ Checked local validation from the repo root:
 - `claude plugins install webview-screenshort@webview-screenshort --scope local` succeeds
 - `claude agents` shows `webview-screenshort:webview-vision-assist`
 
+### Update an installed plugin
+
+If the plugin is already installed, update it by using the installed identifier shape `plugin@marketplace`:
+
+```bash
+claude plugins update webview-screenshort@darkwingtm --scope local
+```
+
+Why this exact shape matters:
+- `claude plugins update webview-screenshort --scope local` may fail because the installed local plugin is keyed by `webview-screenshort@darkwingtm`
+- the explicit `plugin@marketplace` form matches the installed identifier shown in `claude plugins list`
+
 ### Checked local development note
 
 The same package is also currently validated through the shared local `darkwingtm` marketplace during workspace development. That shared-marketplace route is a checked local development path, not the public default install story for this repo.
