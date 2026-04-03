@@ -10,8 +10,33 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-210"></a>
+## Version 2.1.0: Normalized public install docs to repo-root marketplace guidance
+
+**Date:** 2026-04-03
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Reworked `README.md` so the public install path now starts from the standalone repo root instead of the shared `TEMPLATE/PLUGIN` workspace path.
+- Replaced source-side public install examples with repo-root guidance using:
+  - `claude plugins marketplace add ./ --scope local`
+  - `claude plugins install webview-screenshort@webview-screenshort --scope local`
+- Kept the shared `darkwingtm` marketplace route documented only as a checked local development note rather than the public default install story.
+- Added repo-root install validation evidence to the package-level public readiness story.
+
+### Validation
+- `claude plugins marketplace add ./ --scope local` succeeds from the repo root.
+- `claude plugins install webview-screenshort@webview-screenshort --scope local` succeeds from the repo root.
+- `claude agents` shows `webview-screenshort:webview-vision-assist` after repo-root install.
+
+### Summary
+The package now teaches a portable public install story from its own repo root while preserving the shared `darkwingtm` route only as scoped local workspace context.
 
 ---
 
@@ -33,6 +58,10 @@
 - Added the package to the shared `darkwingtm` marketplace and verified install plus agent visibility.
 - Switched runtime invocation to `${CLAUDE_PLUGIN_ROOT}` for installed-plugin portability.
 - Refactored `screenshot.py` to support env-driven endpoints/timeouts and machine-readable JSON result output.
+- Added mobile and tablet device presets for responsive frontend review.
+- Verified a second frontend docs target (`https://developer.mozilla.org/en-US/docs/Web/JavaScript`) in desktop/mobile/tablet viewport capture with structured JSON output.
+- Validated a responsive multi-capture workflow on `https://claw-frontend-dev.nodenetwork.ovh/docs` across desktop, tablet, and mobile presets.
+- Verified that the installed package remains visible from a fresh CLI process, closing the current restart-time lifecycle check.
 
 ### Summary
 The package is now moving from an old project-local screenshot utility toward a governed frontend-vision plugin package with real CSR capture evidence.

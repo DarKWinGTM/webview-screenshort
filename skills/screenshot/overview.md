@@ -13,5 +13,7 @@ Recommended capture defaults:
 - use `--wait` for CSR / SPA pages
 - use `--mode viewport` for focused above-the-fold review
 - use `--mode fullpage` for docs, settings pages, and long flows
+- use `--device mobile` or `--device tablet` when frontend review should inspect responsive behavior
+- use `--output-format json` when the screenshot result should feed a follow-on review workflow
 
 After capture, Claude should read the image file and continue with visual analysis if needed.

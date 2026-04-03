@@ -64,8 +64,11 @@ Dimension: 1920x10000
 
 - [x] viewport capture completed successfully
 - [x] fullpage capture completed successfully
+- [x] responsive mobile/tablet preset capture completed successfully on a second frontend target
+- [x] responsive desktop/tablet/mobile multi-capture completed successfully on the NodeNetwork docs page
 - [x] resulting images show rendered docs content
-- [x] CSR support is evidence-backed for the checked target
+- [x] CSR support is evidence-backed for more than one checked target
+- [x] responsive review support is evidence-backed on a real frontend target
 
 ---
 

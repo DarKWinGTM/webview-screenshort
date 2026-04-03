@@ -1,7 +1,7 @@
 ---
 name: screenshot
 description: Capture a real rendered screenshot of a webpage for frontend-development visual review. Use this when Claude needs visual evidence from a live page, especially CSR/SPA pages, before giving layout, UX, UI, or docs-page feedback.
-argument-hint: <url> [--mode fullpage|viewport] [--wait] [--engine auto|headless|aws] [--output FILE]
+argument-hint: <url> [--mode fullpage|viewport] [--device desktop|tablet|mobile] [--wait] [--engine auto|headless|aws] [--output FILE] [--output-format json]
 allowed-tools: Bash, Read
 ---
 
@@ -21,7 +21,7 @@ Use it when frontend work needs visual evidence from the real page, for example:
 
 1. Parse arguments from `$ARGUMENTS`.
    - first positional arg = URL
-   - optional flags: `--mode`, `--wait`, `--engine`, `--output`
+   - optional flags: `--mode`, `--device`, `--wait`, `--engine`, `--output`, `--output-format`
 
 2. Run the screenshot engine from this installed plugin package:
    ```bash
@@ -46,5 +46,7 @@ Use it when frontend work needs visual evidence from the real page, for example:
 ## Recommended Usage
 ```bash
 /screenshot https://example.com --wait --mode viewport
-/screenshot https://example.com/docs --wait --mode fullpage
+/screenshot https://example.com/docs --wait --mode fullpage --output-format json
+/screenshot https://example.com --device mobile --wait --mode viewport --output-format json
+/screenshot https://example.com --device tablet --wait --mode viewport --output-format json
 ```

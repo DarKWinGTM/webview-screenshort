@@ -18,11 +18,17 @@ Verify that the package can capture real CSR-heavy pages for frontend visual rev
 - [x] confirm the resulting images show rendered content rather than blank shells
 - [x] record output paths and dimensions
 
-## Checked target
+## Checked targets
 - `https://claw-frontend-dev.nodenetwork.ovh/docs`
+- `https://developer.mozilla.org/en-US/docs/Web/JavaScript`
 
 ## Verification
-- viewport capture succeeded
-- fullpage capture succeeded
+- NodeNetwork docs viewport capture succeeded
+- NodeNetwork docs fullpage capture succeeded
+- NodeNetwork docs responsive desktop/tablet/mobile capture succeeded
+- MDN JavaScript viewport capture succeeded
+- MDN JavaScript mobile preset capture succeeded
+- MDN JavaScript tablet preset capture succeeded
 - images show rendered docs content
-- CSR support is evidence-backed for this checked target
+- CSR support is evidence-backed for more than one checked target
+- responsive review support is evidence-backed on a real frontend target

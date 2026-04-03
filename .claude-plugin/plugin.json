@@ -3,7 +3,11 @@
   "version": "2.0.0",
   "description": "Frontend-development screenshot skill for capturing real rendered web pages, including CSR-heavy pages, for visual review workflows.",
   "author": {
-    "name": "DarKWinGTM"
+    "name": "DarKWinGTM",
+    "url": "https://github.com/DarKWinGTM"
   },
+  "homepage": "https://github.com/DarKWinGTM/webview-screenshort",
+  "repository": "https://github.com/DarKWinGTM/webview-screenshort",
+  "license": "UNLICENSED",
   "keywords": ["screenshot", "frontend", "ui", "ux", "csr"]
 }

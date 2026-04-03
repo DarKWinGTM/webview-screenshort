@@ -30,8 +30,10 @@
 
 ### Frontend Vision Workflow
 - [x] Add a higher-level review skill flow that captures first and then guides screenshot-based UI analysis.
-- [ ] Validate workflow on at least one more CSR-heavy frontend target.
-- [ ] Validate `/reload-plugins` and restart-time visibility for the installed package.
+- [x] Validate workflow on at least one more CSR-heavy frontend target.
+- [x] Add mobile and tablet viewport presets for frontend responsive review.
+- [x] Add responsive multi-capture workflow guidance for desktop/tablet/mobile review.
+- [x] Validate `/reload-plugins` and restart-time visibility for the installed package.
 - [ ] Complete separate-repo cutover and retire shared-workspace authority once the standalone repo becomes the source of truth.
 
 ---
@@ -40,5 +42,6 @@
 
 | Date | Changes |
 |------|---------|
-| 2026-04-03 | Refactored the old project-local screenshot skill into governed plugin layout, added a frontend-vision workflow surface, verified real CSR capture against the NodeNetwork docs page, added the package to the shared `darkwingtm` marketplace, verified installed agent/skill surfaces, made runtime execution plugin-root portable, and added config-driven plus structured JSON output support in `screenshot.py`. |
+| 2026-04-03 | Normalized public install docs to the standalone repo root, validated `claude plugins marketplace add ./ --scope local` plus `claude plugins install webview-screenshort@webview-screenshort --scope local` from the repo root in an isolated HOME, and kept the shared `darkwingtm` path scoped as checked local workspace-development context. |
+| 2026-04-03 | Refactored the old project-local screenshot skill into governed plugin layout, added a frontend-vision workflow surface, verified real CSR capture against the NodeNetwork docs page, added the package to the shared `darkwingtm` marketplace, verified installed agent/skill surfaces, made runtime execution plugin-root portable, added config-driven plus structured JSON output support in `screenshot.py`, closed current lifecycle checks, validated responsive mobile/tablet presets against a second frontend target (MDN JavaScript docs), and validated a responsive multi-capture desktop/tablet/mobile workflow against the NodeNetwork docs page. |
 | 2026-01-28 | Initial TODO created |

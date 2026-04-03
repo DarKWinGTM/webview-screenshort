@@ -18,30 +18,21 @@ It is meant for workflows where Claude should:
 
 ## Path notation
 
-- `<workspace-root>` = this plugin package root
-- `<marketplace-root>` = the current shared local marketplace root that contains package directories plus `.claude-plugin/marketplace.json`
-- `<repo-marketplace-root>` = this package root when it becomes its own standalone plugin repo with local marketplace support
+- `<repo-root>` = this standalone repo root and the preferred public source-side path for install commands
+- `<workspace-root>` = the current local working copy of the same package
 
 ## Installation and activation
 
-### Local marketplace install in the current shared workspace
-Add the shared marketplace once:
+### Recommended public install path
+This package now has its own standalone GitHub repo at:
+- `https://github.com/DarKWinGTM/webview-screenshort`
+
+Clone once, then run the install from the repo root:
 
 ```bash
-claude plugins marketplace add "/home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN" --scope local
-```
-
-Install this package:
-
-```bash
-claude plugins install webview-screenshort@darkwingtm --scope local
-```
-
-### Standalone-repo local marketplace install target
-When this package becomes its own repo, the intended local marketplace shape is:
-
-```bash
-claude plugins marketplace add "<repo-marketplace-root>" --scope local
+git clone https://github.com/DarKWinGTM/webview-screenshort.git
+cd webview-screenshort
+claude plugins marketplace add ./ --scope local
 claude plugins install webview-screenshort@webview-screenshort --scope local
 ```
 
@@ -58,21 +49,36 @@ claude plugins list
 claude agents
 ```
 
+Checked local validation from the repo root:
+- `claude plugins marketplace add ./ --scope local` succeeds
+- `claude plugins install webview-screenshort@webview-screenshort --scope local` succeeds
+- `claude agents` shows `webview-screenshort:webview-vision-assist`
+
+### Checked local development note
+
+The same package is also currently validated through the shared local `darkwingtm` marketplace during workspace development. That shared-marketplace route is a checked local development path, not the public default install story for this repo.
+
 ## Current status
 
 Verified now:
 - `screenshot.py` captures live webpages successfully
 - CSR-heavy page capture works when `--wait` is used
 - viewport and fullpage capture both work
+- mobile and tablet viewport presets now work for responsive frontend review
 - the package now has plugin scaffolding with `.claude-plugin/`, `skills/`, and `agents/`
-- the package installs through the shared `darkwingtm` marketplace and exposes `webview-screenshort:webview-vision-assist`
+- the package installs through its own repo-root marketplace manifest and exposes `webview-screenshort:webview-vision-assist`
 - skill/agent execution now targets `${CLAUDE_PLUGIN_ROOT}` instead of a source-workspace-only path
 - `screenshot.py` now supports env-driven capture configuration and JSON result output for chaining into frontend review workflows
+- public-repo install posture is now validated from the standalone repo root
 
-Checked live example:
+Checked live examples:
 - `https://claw-frontend-dev.nodenetwork.ovh/docs`
-- viewport + wait capture succeeded
-- fullpage + wait capture succeeded
+  - viewport + wait capture succeeded
+  - fullpage + wait capture succeeded
+- `https://developer.mozilla.org/en-US/docs/Web/JavaScript`
+  - viewport + wait capture succeeded
+  - mobile preset + wait capture succeeded
+  - tablet preset + wait capture succeeded
 
 ---
 
@@ -134,10 +140,10 @@ Use this package when the goal is to inspect:
 
 ## Current limitations
 
-- restart/reload lifecycle for this package is not yet closed
+- restart/reload lifecycle is now validated for the current installed package path
 - visual analysis orchestration still depends on Claude reading the generated image after capture
 - broader CSR validation still needs more than one checked target
-- separate-repo authority cutover is not yet complete
+- public-repo wording polish is still in progress outside the now-validated repo-root install path
 
 ---
 
@@ -152,3 +158,9 @@ Use this package when the goal is to inspect:
 2. read the image
 3. analyze the visible layout/UI from the screenshot
 4. only then suggest code or design changes
+
+### For responsive frontend review
+1. capture desktop, tablet, and mobile variants with `--output-format json`
+2. read each result and image
+3. compare hierarchy, overflow, spacing, stacking, and readability across breakpoints
+4. summarize which issues are desktop-only, tablet-only, mobile-only, or cross-device

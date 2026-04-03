@@ -21,6 +21,8 @@ Use this screenshot skill before giving UI/UX/layout feedback when the real rend
 
 ## Typical commands
 ```bash
-/screenshot https://example.com --wait --mode viewport
-/screenshot https://example.com/docs --wait --mode fullpage
+/screenshot https://example.com --wait --mode viewport --output-format json
+/screenshot https://example.com/docs --wait --mode fullpage --output-format json
+/screenshot https://example.com --device mobile --wait --mode viewport --output-format json
+/screenshot https://example.com --device tablet --wait --mode viewport --output-format json
 ```

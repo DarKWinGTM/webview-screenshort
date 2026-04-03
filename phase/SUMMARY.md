@@ -19,9 +19,9 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | Phase | Phase File | Design Source | Patch Source | Derived Execution Work | Target Outcome |
 |---|---|---|---|---|---|
 | 001 | `phase-001-convert-to-plugin-package.md` | `design/design.md` active package model | `../patch/phase-001-convert-to-plugin-package.patch.md` | Convert old project-local layout into governed plugin package structure | Package has standard plugin layout |
-| 002 | `phase-002-validate-csr-screenshot-workflow.md` | `design/design.md` CSR support model | `../patch/phase-002-validate-csr-screenshot-workflow.patch.md` | Validate real CSR capture and frontend-vision use case | Real CSR page capture is evidence-backed |
+| 002 | `phase-002-validate-csr-screenshot-workflow.md` | `design/design.md` CSR support model | `../patch/phase-002-validate-csr-screenshot-workflow.patch.md` | Validate real CSR capture, responsive presets, and frontend-vision use case | Real CSR page capture and responsive review support are evidence-backed |
 | 003 | `phase-003-install-and-lifecycle-validation.md` | `design/design.md` runtime contract | `none` | Validate plugin install, skill visibility, and runtime lifecycle | Package works as installed plugin |
-| 004 | `phase-004-separate-repo-cutover.md` | `design/design.md` plus package-local marketplace cutover posture | `none` | Prepare authority migration from the shared workspace into a standalone `webview-screenshort` repo | Package can cut over to its own repo without duplicate authority |
+| 004 | `phase-004-separate-repo-cutover.md` | `design/design.md` plus package-local marketplace cutover posture | `../patch/phase-004-separate-repo-cutover.patch.md` | Prepare authority migration from the shared workspace into a standalone `webview-screenshort` repo | Package can cut over to its own repo without duplicate authority |
 
 ---
 
@@ -30,16 +30,17 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | Phase | Status | File | Objective |
 |---|---|---|---|
 | 001 | Implemented - Pending Review | `phase-001-convert-to-plugin-package.md` | Convert the old utility into governed plugin package structure |
-| 002 | Implemented - Pending Review | `phase-002-validate-csr-screenshot-workflow.md` | Validate real CSR capture for frontend visual workflows |
-| 003 | In Progress | `phase-003-install-and-lifecycle-validation.md` | Validate install/lifecycle through plugin flow |
+| 002 | Implemented - Pending Review | `phase-002-validate-csr-screenshot-workflow.md` | Validate real CSR capture and responsive frontend review workflows |
+| 003 | Implemented - Pending Review | `phase-003-install-and-lifecycle-validation.md` | Validate install/lifecycle through plugin flow |
+| 004 | Implemented - Pending Review | `phase-004-separate-repo-cutover.md` | Finalize standalone repo authority and retire shared-workspace authority posture |
 
 ---
 
 ## Global TODO / Changelog Coordination
 
-- `TODO.md` should track remaining install and code-hardening work only.
-- `changelog/changelog.md` should record shipped plugin-structure and CSR-validation outcomes only.
-- `design/design.md` remains the authority for frontend-vision intent and plugin boundaries.
+- `TODO.md` should track only remaining cutover and authority-retirement work.
+- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, and repo-root install-normalization outcomes only.
+- `design/design.md` remains the authority for frontend-vision intent, plugin boundaries, and standalone-repo install posture.
 
 ---
 
@@ -49,9 +50,12 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - real CSR docs page capture verified in viewport and fullpage modes
 - stale project-local skill path identified and removed
 - frontend-vision workflow intent is now explicit in docs and skill surfaces
-- package validates and installs through the shared `darkwingtm` marketplace
+- package validates and installs through its standalone repo-root marketplace manifest
 - installed agent visibility is confirmed
+- shared `darkwingtm` marketplace usage is now scoped as local workspace-development context rather than public default install authority
 - installed runtime invocation now uses `${CLAUDE_PLUGIN_ROOT}`
 - engine now supports env-driven configuration and JSON result output
+- responsive mobile and tablet presets are validated on a second frontend target
+- responsive desktop/tablet/mobile multi-capture workflow is validated on the NodeNetwork docs page
 
 ---

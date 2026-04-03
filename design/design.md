@@ -65,6 +65,7 @@ Need visual frontend review
   → capture the page
   → use --wait when CSR/SPA rendering is likely
   → choose viewport or fullpage
+  → choose desktop / tablet / mobile preset when responsive review matters
   → prefer JSON result output for workflow chaining
   → save screenshot locally
   → read the image
@@ -84,8 +85,14 @@ CSR support is considered sufficient when:
 Checked local verification now shows:
 - `https://claw-frontend-dev.nodenetwork.ovh/docs` renders successfully in viewport mode with `--wait`
 - the same page also renders successfully in fullpage mode with `--wait`
+- `https://developer.mozilla.org/en-US/docs/Web/JavaScript` renders successfully in viewport mode with `--wait`
+- the same MDN page also renders successfully with `--device mobile` and `--device tablet` presets using structured JSON output
 
-This is evidence that the current engine can already support at least one real CSR-heavy docs page workflow.
+This is evidence that the current engine can already support more than one real frontend docs workflow and can now contribute to responsive frontend review, not only desktop capture.
+
+Checked responsive review validation now also shows:
+- `https://claw-frontend-dev.nodenetwork.ovh/docs` captures successfully in desktop, tablet, and mobile viewport presets
+- the package can therefore support same-page cross-breakpoint review rather than only one-off single captures
 
 ---
 
@@ -95,7 +102,7 @@ This is evidence that the current engine can already support at least one real C
 - screenshot capture for frontend development
 - visual evidence generation for Claude review
 - CSR-aware webpage capture with optional wait behavior
-- a future plugin skill that fits local marketplace install workflows
+- a standalone plugin skill that now supports repo-root local marketplace install workflows
 
 ### What this package is not
 - a full browser automation suite
@@ -108,8 +115,8 @@ This is evidence that the current engine can already support at least one real C
 ## 7) Current limitations
 
 - current workflow still relies on Claude reading the generated image after capture instead of a fully bundled multi-step visual-analysis pipeline
-- plugin install lifecycle for this package is now validated through the shared local marketplace, but reload/restart lifecycle is still not yet closed
-- broader CSR validation still needs more than one checked target
+- plugin install lifecycle for this package is now validated from the standalone repo root through its package-local marketplace manifest, while the shared `darkwingtm` route remains only a checked local workspace-development path
+- broader CSR validation still needs more than the two currently checked public docs targets
 
 ---
 
@@ -123,4 +130,5 @@ This package is considered successful for the current wave when:
 - the package clearly supports frontend visual review workflows
 - `screenshot.py` supports late-bound config for endpoints/timeouts
 - `screenshot.py` supports machine-readable JSON output for workflow chaining
+- `screenshot.py` supports mobile and tablet viewport presets for responsive review
 - governance docs describe the real current state rather than the older project-local skill state

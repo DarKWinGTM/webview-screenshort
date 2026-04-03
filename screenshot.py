@@ -29,6 +29,7 @@ Environment overrides:
 - WEBVIEW_SCREENSHORT_PRIMARY_WAIT_TIMEOUT
 - WEBVIEW_SCREENSHORT_FALLBACK_TIMEOUT
 - WEBVIEW_SCREENSHORT_OUTPUT_DIR
+- WEBVIEW_SCREENSHORT_DEVICE_PRESET
 """
 
 import argparse
@@ -56,6 +57,11 @@ DEFAULT_FULLPAGE_HEIGHT = 20000
 DEFAULT_PRIMARY_TIMEOUT = 45
 DEFAULT_PRIMARY_WAIT_TIMEOUT = 60
 DEFAULT_FALLBACK_TIMEOUT = 60
+DEVICE_PRESETS = {
+    "desktop": (1920, 1080),
+    "tablet": (1024, 1366),
+    "mobile": (430, 932),
+}
 
 
 @dataclass
@@ -85,6 +91,8 @@ class CaptureResult:
     mode_effective: Optional[str]
     wait_requested: bool
     wait_effective: bool
+    viewport_width: int
+    viewport_height: int
     file_size_bytes: Optional[int] = None
     image_width: Optional[int] = None
     image_height: Optional[int] = None
@@ -116,8 +124,21 @@ def load_positive_int(env_name: str, default: int) -> int:
     return value
 
 
+def load_device_preset() -> Optional[Tuple[int, int]]:
+    preset_name = os.environ.get("WEBVIEW_SCREENSHORT_DEVICE_PRESET")
+    if not preset_name:
+        return None
+    preset = DEVICE_PRESETS.get(preset_name.lower())
+    if not preset:
+        raise SystemExit(f"Unsupported WEBVIEW_SCREENSHORT_DEVICE_PRESET: {preset_name}")
+    return preset
+
+
 def load_config() -> ScreenshotConfig:
     output_dir = os.environ.get("WEBVIEW_SCREENSHORT_OUTPUT_DIR")
+    preset = load_device_preset()
+    viewport_width = preset[0] if preset else load_positive_int("WEBVIEW_SCREENSHORT_VIEWPORT_WIDTH", DEFAULT_VIEWPORT_WIDTH)
+    viewport_height = preset[1] if preset else load_positive_int("WEBVIEW_SCREENSHORT_VIEWPORT_HEIGHT", DEFAULT_VIEWPORT_HEIGHT)
     return ScreenshotConfig(
         primary_api=os.environ.get("WEBVIEW_SCREENSHORT_PRIMARY_API", DEFAULT_PRIMARY_API),
         fallback_api=os.environ.get("WEBVIEW_SCREENSHORT_FALLBACK_API", DEFAULT_FALLBACK_API),
@@ -126,8 +147,8 @@ def load_config() -> ScreenshotConfig:
         ),
         fallback_origin=os.environ.get("WEBVIEW_SCREENSHORT_FALLBACK_ORIGIN", DEFAULT_FALLBACK_ORIGIN),
         fallback_referer=os.environ.get("WEBVIEW_SCREENSHORT_FALLBACK_REFERER", DEFAULT_FALLBACK_REFERER),
-        viewport_width=load_positive_int("WEBVIEW_SCREENSHORT_VIEWPORT_WIDTH", DEFAULT_VIEWPORT_WIDTH),
-        viewport_height=load_positive_int("WEBVIEW_SCREENSHORT_VIEWPORT_HEIGHT", DEFAULT_VIEWPORT_HEIGHT),
+        viewport_width=viewport_width,
+        viewport_height=viewport_height,
         fullpage_height=load_positive_int("WEBVIEW_SCREENSHORT_FULLPAGE_HEIGHT", DEFAULT_FULLPAGE_HEIGHT),
         primary_timeout=load_positive_int("WEBVIEW_SCREENSHORT_PRIMARY_TIMEOUT", DEFAULT_PRIMARY_TIMEOUT),
         primary_wait_timeout=load_positive_int(
@@ -304,11 +325,15 @@ def main() -> None:
     parser.add_argument("url", help="URL to capture")
     parser.add_argument("--output", "-o", help="Output file path")
     parser.add_argument("--output-dir", help="Output directory for generated screenshots")
+    parser.add_argument("--device", choices=["desktop", "tablet", "mobile"], help="Viewport preset override for frontend review")
     parser.add_argument("--engine", "-e", choices=["auto", "headless", "aws"], default="auto", help="Select screenshot engine (default: auto)")
     parser.add_argument("--mode", "-m", choices=["viewport", "fullpage"], default="fullpage", help="Capture mode: 'viewport' or 'fullpage' (default: fullpage)")
     parser.add_argument("--wait", "-w", action="store_true", help="Wait extra time for dynamic content (Headless engine only)")
     parser.add_argument("--output-format", choices=["text", "json"], default="text", help="Result output format (default: text)")
     args = parser.parse_args()
+
+    if args.device:
+        os.environ["WEBVIEW_SCREENSHORT_DEVICE_PRESET"] = args.device
 
     config = load_config()
     reporter = Reporter(args.output_format)
@@ -321,6 +346,7 @@ def main() -> None:
     reporter.log(f"Engine: {args.engine}")
     reporter.log(f"Mode:   {args.mode}")
     reporter.log(f"Wait:   {args.wait}")
+    reporter.log(f"Viewport: {config.viewport_width}x{config.viewport_height}")
 
     success = False
     warnings: List[str] = []
@@ -363,6 +389,8 @@ def main() -> None:
         mode_effective=mode_effective,
         wait_requested=args.wait,
         wait_effective=wait_effective,
+        viewport_width=config.viewport_width,
+        viewport_height=config.viewport_height,
         file_size_bytes=file_size,
         image_width=image_width,
         image_height=image_height,

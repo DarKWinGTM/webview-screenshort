@@ -25,4 +25,4 @@ Validate the package through the shared plugin install path and confirm runtime 
 - [x] install package from marketplace
 - [x] confirm installed skill/package surfaces
 - [x] confirm agent visibility
-- [ ] confirm reload/restart behavior if needed
+- [x] confirm reload/restart behavior for the current installed package path
