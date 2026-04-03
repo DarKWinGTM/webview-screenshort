@@ -38,6 +38,7 @@
 - [x] Add persisted report-file output plus direct `frontend-review` / `responsive-review` skill surfaces.
 - [x] Add compare-review skill support plus hardened report-schema metadata for reusable regression-style review.
 - [x] Add a structured comparison helper so report-to-report review has reusable pair metadata instead of only manual interpretation.
+- [x] Add diff-assisted compare evidence so compare-review can surface diff metrics and generated diff images.
 - [x] Harden `webview-vision-assist` so it routes more clearly between focused, responsive, and compare-review paths.
 - [x] Validate `/reload-plugins` and restart-time visibility for the installed package.
 
@@ -47,6 +48,7 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-03 | Added `diff_images.py`, upgraded compare-report output with diff metrics and generated diff images, and bumped the plugin/marketplace package versions to `2.7.0`. |
 | 2026-04-03 | Hardened `webview-vision-assist` so it routes more clearly between focused, responsive, and compare-review surfaces, and bumped the plugin/marketplace package versions to `2.6.0`. |
 | 2026-04-03 | Added `compare_reports.py`, upgraded compare-review to use structured report pairing, validated the helper output against persisted responsive reports, and bumped the plugin/marketplace package versions to `2.5.0`. |
 | 2026-04-03 | Hardened persisted report artifacts with explicit schema metadata, added `compare-review`, validated the new report format on focused and responsive flows, and bumped the plugin/marketplace package versions to `2.4.0`. |

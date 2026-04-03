@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.6.0
+> **Current Version:** 2.7.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
@@ -34,6 +34,7 @@ The intended package model is:
 - `agents/webview-vision-assist.md` = optional visual-review companion agent
 - `screenshot.py` = execution engine with focused capture plus one-run responsive capture-set support
 - `compare_reports.py` = report comparison helper for expected/actual and before/after review workflows
+- `diff_images.py` = image-diff helper for richer compare-review evidence
 - `screenshot/` = generated screenshots and checked local artifacts
 - `design/changelog/TODO/phase/patch` = governance authority at the standalone repo root
 
@@ -122,7 +123,7 @@ Checked responsive review validation now also shows:
 
 ## 7) Current limitations
 
-- current workflow still relies on Claude reading the generated image after capture instead of a fully bundled tool-native visual-analysis pipeline, even though report files, review skills, compare-review entrypoints, and helper-generated pair metadata now reduce the manual handoff surface
+- current workflow still relies on Claude reading the generated image after capture instead of a fully bundled tool-native visual-analysis pipeline, even though report files, review skills, compare-review entrypoints, helper-generated pair metadata, and diff images now reduce the manual handoff surface
 - plugin install lifecycle for this package is now validated from the standalone repo root through its package-local marketplace manifest, while the shared `darkwingtm` route remains only temporary checked local compatibility context
 - broader CSR validation still needs more than the two currently checked public docs targets
 

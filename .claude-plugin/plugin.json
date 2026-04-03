@@ -1,6 +1,6 @@
 {
   "name": "webview-screenshort",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "Frontend-development screenshot skill for capturing real rendered web pages, including CSR-heavy pages, for visual review workflows.",
   "author": {
     "name": "DarKWinGTM",

@@ -6,6 +6,7 @@ report-to-report visual review workflows.
 
 import argparse
 import json
+import subprocess
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -24,6 +25,23 @@ class ComparedImage:
 
 
 @dataclass
+class ImageDiff:
+    success: bool
+    left_image: str
+    right_image: str
+    same_size: bool
+    left_width: int
+    left_height: int
+    right_width: int
+    right_height: int
+    diff_pixels: int
+    diff_ratio: float
+    bounding_box: Optional[tuple[int, int, int, int]]
+    diff_image_path: Optional[str]
+    error: Optional[str] = None
+
+
+@dataclass
 class ComparisonPair:
     pair_key: str
     device: str
@@ -31,6 +49,7 @@ class ComparisonPair:
     right: ComparedImage
     width_delta: Optional[int]
     height_delta: Optional[int]
+    diff: Optional[ImageDiff] = None
 
 
 @dataclass
@@ -126,11 +145,60 @@ def determine_mode(left_result: Dict[str, Any], right_result: Dict[str, Any]) ->
     return "mixed"
 
 
+def run_diff_helper(diff_helper: Path, left_image: str, right_image: str, diff_output: Optional[Path]) -> ImageDiff:
+    cmd = [
+        sys.executable,
+        str(diff_helper),
+        left_image,
+        right_image,
+        "--output-format",
+        "json",
+    ]
+    if diff_output:
+        diff_output.parent.mkdir(parents=True, exist_ok=True)
+        cmd.extend(["--diff-output", str(diff_output)])
+
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        try:
+            payload = json.loads(result.stdout)
+            return ImageDiff(**payload)
+        except Exception:
+            return ImageDiff(
+                success=False,
+                left_image=left_image,
+                right_image=right_image,
+                same_size=False,
+                left_width=0,
+                left_height=0,
+                right_width=0,
+                right_height=0,
+                diff_pixels=0,
+                diff_ratio=0.0,
+                bounding_box=None,
+                diff_image_path=None,
+                error=result.stderr.strip() or "diff helper failed",
+            )
+
+    payload = json.loads(result.stdout)
+    return ImageDiff(**payload)
+
+
+def enrich_pairs_with_diff(pairs: List[ComparisonPair], diff_dir: Optional[Path]) -> None:
+    diff_helper = Path(__file__).with_name("diff_images.py")
+    for pair in pairs:
+        diff_output = None
+        if diff_dir:
+            diff_output = diff_dir / f"{pair.device}_diff.png"
+        pair.diff = run_diff_helper(diff_helper, pair.left.image_path, pair.right.image_path, diff_output)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Compare two persisted webview capture reports")
     parser.add_argument("left_report", help="Path to the first capture report")
     parser.add_argument("right_report", help="Path to the second capture report")
     parser.add_argument("--output-format", choices=["text", "json"], default="json")
+    parser.add_argument("--diff-dir", help="Optional directory for generated diff images")
     args = parser.parse_args()
 
     left_path = Path(args.left_report).expanduser()
@@ -152,6 +220,10 @@ def main() -> None:
     mode = determine_mode(left_result, right_result)
     if mode == "mixed":
         warnings.append("Reports represent different capture shapes; only shared device labels were paired.")
+
+    diff_dir = Path(args.diff_dir).expanduser() if args.diff_dir else None
+    if pairs:
+        enrich_pairs_with_diff(pairs, diff_dir)
 
     result = ComparisonResult(
         success=bool(pairs),
@@ -175,6 +247,12 @@ def main() -> None:
     print(f"Pairs: {len(result.pairs)}")
     for pair in result.pairs:
         print(f"- {pair.device}: {pair.left.image_path} ↔ {pair.right.image_path}")
+        if pair.diff:
+            print(f"  diff_pixels={pair.diff.diff_pixels} diff_ratio={pair.diff.diff_ratio:.6f}")
+            if pair.diff.bounding_box:
+                print(f"  bbox={pair.diff.bounding_box}")
+            if pair.diff.diff_image_path:
+                print(f"  diff_image={pair.diff.diff_image_path}")
     for warning in result.warnings:
         print(f"⚠️ {warning}")
     if result.error:

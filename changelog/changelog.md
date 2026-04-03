@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.6.0
+> **Current Version:** 2.7.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.7.0 | 2026-04-03 | **[Added diff-assisted compare evidence](#version-270)** | Added `diff_images.py`, upgraded report comparison to include diff metrics and generated diff images, and pushed compare-review closer to a practical expected/actual QA workflow. |
 | 2.6.0 | 2026-04-03 | **[Hardened agent orchestration flow](#version-260)** | Updated `webview-vision-assist` so it routes more explicitly between focused review, responsive review, and compare-review paths, reducing ambiguity at the product entry layer. |
 | 2.5.0 | 2026-04-03 | **[Added structured compare helper flow](#version-250)** | Added `compare_reports.py`, upgraded compare-review to use structured pair metadata, and pushed the package closer to a reusable expected/actual visual QA surface. |
 | 2.4.0 | 2026-04-03 | **[Added compare-review workflow and hardened report schema](#version-240)** | Added a report-to-report comparison skill, hardened persisted report artifacts with explicit schema metadata, and pushed the package closer to a reusable frontend regression-review surface. |
@@ -18,6 +19,28 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-270"></a>
+## Version 2.7.0: Added diff-assisted compare evidence
+
+**Date:** 2026-04-03
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added `diff_images.py` so compare workflows can compute image-diff metrics and optionally write visual diff images.
+- Upgraded `compare_reports.py` so comparison pairs now include diff metadata rather than only pairing information.
+- Updated README and design wording so compare-review now explicitly covers diff-assisted expected/actual workflows.
+- Bumped plugin and marketplace package versions to `2.7.0`.
+
+### Validation
+- `python3 -m py_compile compare_reports.py diff_images.py` succeeds.
+- `python3 compare_reports.py /tmp/webview_24_responsive_report.json /tmp/webview_24_responsive_report.json --diff-dir /tmp/webview_diff_outputs --output-format json` succeeds.
+- diff image files are generated for desktop, tablet, and mobile pairs.
+
+### Summary
+The package now exposes richer comparison evidence by pairing persisted reports with diff metrics and optional diff images, making compare-review more useful for expected/actual QA work.
 
 ---
 
