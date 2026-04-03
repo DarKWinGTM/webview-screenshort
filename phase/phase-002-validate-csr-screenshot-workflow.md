@@ -20,6 +20,7 @@ Verify that the package can capture real CSR-heavy pages for frontend visual rev
 - [x] validate one-run responsive capture-set output plus per-device image metadata
 - [x] validate report-file output for both responsive and focused capture flows
 - [x] validate hardened report-schema metadata for persisted capture artifacts
+- [x] validate structured compare-helper output against persisted responsive reports
 
 ## Checked targets
 - `https://claw-frontend-dev.nodenetwork.ovh/docs`
@@ -38,3 +39,4 @@ Verify that the package can capture real CSR-heavy pages for frontend visual rev
 - one-run responsive capture-set output is evidence-backed on a real frontend target
 - report-file output is evidence-backed for both responsive and focused capture flows
 - persisted report-schema metadata is evidence-backed in current capture artifacts
+- structured compare-helper output is evidence-backed against current responsive report artifacts

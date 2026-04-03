@@ -33,6 +33,7 @@ The intended package model is:
 - `skills/compare-review/SKILL.md` = report-to-report comparison and regression-review skill surface
 - `agents/webview-vision-assist.md` = optional visual-review companion agent
 - `screenshot.py` = execution engine with focused capture plus one-run responsive capture-set support
+- `compare_reports.py` = report comparison helper for expected/actual and before/after review workflows
 - `screenshot/` = generated screenshots and checked local artifacts
 - `design/changelog/TODO/phase/patch` = governance authority at the standalone repo root
 
@@ -74,7 +75,7 @@ Need visual frontend review
   → persist a report file when a later step should re-read structured capture metadata directly
   → save screenshot locally
   → read the image
-  → when comparing states, re-read two report files and compare the referenced screenshots
+  → when comparing states, re-read two report files and compare the referenced screenshots through structured pair metadata
   → analyze layout / UX / UI from the screenshot
   → then recommend code or design changes
 ```
@@ -121,7 +122,7 @@ Checked responsive review validation now also shows:
 
 ## 7) Current limitations
 
-- current workflow still relies on Claude reading the generated image after capture instead of a fully bundled tool-native visual-analysis pipeline, even though report files, review skills, and compare-review entrypoints now reduce the manual handoff surface
+- current workflow still relies on Claude reading the generated image after capture instead of a fully bundled tool-native visual-analysis pipeline, even though report files, review skills, compare-review entrypoints, and helper-generated pair metadata now reduce the manual handoff surface
 - plugin install lifecycle for this package is now validated from the standalone repo root through its package-local marketplace manifest, while the shared `darkwingtm` route remains only temporary checked local compatibility context
 - broader CSR validation still needs more than the two currently checked public docs targets
 
@@ -137,6 +138,7 @@ This package is considered successful for the current wave when:
 - the package clearly supports frontend visual review workflows
 - `screenshot.py` supports late-bound config for endpoints/timeouts
 - `screenshot.py` supports machine-readable JSON output and persisted report-file output for workflow chaining
+- `compare_reports.py` supports structured report-to-report pairing for expected/actual and regression-style review
 - `screenshot.py` supports one-run responsive capture-set output for desktop/tablet/mobile review
 - `screenshot.py` supports mobile and tablet viewport presets for responsive review
 - governance docs describe the real current state rather than the older project-local skill state

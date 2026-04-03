@@ -87,6 +87,7 @@ Verified now:
 - the package installs through its own repo-root marketplace manifest and exposes `webview-screenshort:webview-vision-assist`
 - skill/agent execution now targets `${CLAUDE_PLUGIN_ROOT}` instead of a source-workspace-only path
 - `screenshot.py` now supports env-driven capture configuration, JSON result output, schema-stamped persisted report-file output, and one-run responsive capture-set output for chaining into frontend review workflows
+- `compare_reports.py` now validates persisted reports and emits structured pair metadata for report-to-report comparison workflows
 - public-repo install posture is now validated from the standalone repo root
 
 Checked live examples:
@@ -123,6 +124,7 @@ webview-screenshort/
     compare-review/
       SKILL.md
   screenshot.py
+  compare_reports.py
   screenshot/
   design/
     design.md
@@ -192,6 +194,7 @@ Use this package when the goal is to inspect:
 
 ### For before/after or regression review
 - `/compare-review /path/to/report-a.json /path/to/report-b.json`
+- compare two `webview-screenshort.capture-report/v1` artifacts and inspect the paired screenshots
 
 Or manually:
 1. capture one responsive set with `--capture-set responsive --output-format json`

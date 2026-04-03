@@ -37,6 +37,7 @@
 - [x] Add one-run responsive capture-set support with combined machine-readable output for desktop/tablet/mobile review.
 - [x] Add persisted report-file output plus direct `frontend-review` / `responsive-review` skill surfaces.
 - [x] Add compare-review skill support plus hardened report-schema metadata for reusable regression-style review.
+- [x] Add a structured comparison helper so report-to-report review has reusable pair metadata instead of only manual interpretation.
 - [x] Validate `/reload-plugins` and restart-time visibility for the installed package.
 
 ---
@@ -45,6 +46,7 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-03 | Added `compare_reports.py`, upgraded compare-review to use structured report pairing, validated the helper output against persisted responsive reports, and bumped the plugin/marketplace package versions to `2.5.0`. |
 | 2026-04-03 | Hardened persisted report artifacts with explicit schema metadata, added `compare-review`, validated the new report format on focused and responsive flows, and bumped the plugin/marketplace package versions to `2.4.0`. |
 | 2026-04-03 | Added persisted report-file output to `screenshot.py`, added direct `frontend-review` and `responsive-review` skills, validated both responsive and focused report-file flows, and bumped the plugin/marketplace package versions to `2.3.0`. |
 | 2026-04-03 | Added one-run responsive capture-set support to `screenshot.py`, validated combined desktop/tablet/mobile JSON output against the NodeNetwork docs page, synced the responsive-review docs/agent workflow, and bumped the plugin/marketplace package versions to `2.2.0`. |
