@@ -42,6 +42,7 @@
 - [x] Add named compare sessions so expected/actual review state can be persisted as a reusable artifact.
 - [x] Add compare-session history browsing so saved QA artifacts can be listed and reused more easily.
 - [x] Add expected-reference bundles so saved compare sessions can be promoted into reusable QA baselines.
+- [x] Add apply-reference workflow so saved baselines can be replayed against fresh reports automatically.
 - [x] Harden `webview-vision-assist` so it routes more clearly between focused, responsive, and compare-review paths.
 - [x] Validate `/reload-plugins` and restart-time visibility for the installed package.
 
@@ -51,6 +52,7 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-04 | Added `apply_reference_bundle.py`, validated replaying a saved reference bundle against a fresh report, and bumped the plugin/marketplace package versions to `2.11.0`. |
 | 2026-04-04 | Added `create_reference_bundle.py`, validated reusable expected-reference bundle artifacts, and bumped the plugin/marketplace package versions to `2.10.0`. |
 | 2026-04-04 | Added `list_compare_sessions.py`, validated compare-session history browsing against saved QA artifacts, and bumped the plugin/marketplace package versions to `2.9.0`. |
 | 2026-04-04 | Added `compare_session.py`, validated reusable expected/actual compare-session artifacts, and bumped the plugin/marketplace package versions to `2.8.0`. |

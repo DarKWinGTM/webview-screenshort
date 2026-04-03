@@ -1,7 +1,7 @@
 # Webview Screenshort - Phase Summary
 
-> **Current Version:** 2.10.0
-> **Target Design:** [../design/design.md](../design/design.md) v2.10.0
+> **Current Version:** 2.11.0
+> **Target Design:** [../design/design.md](../design/design.md) v2.11.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 > **Status:** In Progress
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)
@@ -39,7 +39,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 ## Global TODO / Changelog Coordination
 
 - `TODO.md` should track only remaining cutover and authority-retirement work.
-- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, diff-assisted compare outcomes, named compare-session outcomes, compare-session history outcomes, expected-reference bundle outcomes, and agent-orchestration hardening outcomes only.
+- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, diff-assisted compare outcomes, named compare-session outcomes, compare-session history outcomes, expected-reference bundle outcomes, apply-reference workflow outcomes, and agent-orchestration hardening outcomes only.
 - `design/design.md` remains the authority for frontend-vision intent, plugin boundaries, and standalone-repo install posture.
 
 ---
@@ -68,6 +68,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - `compare_session.py` now persists named expected/actual compare sessions for later QA review
 - `list_compare_sessions.py` now exposes saved compare-session history for lightweight QA browsing
 - `create_reference_bundle.py` now promotes saved compare sessions into reusable expected-reference bundles
+- `apply_reference_bundle.py` now replays a saved baseline against a fresh report to emit a new expected/actual session
 - `webview-vision-assist` now routes more explicitly between focused review, responsive review, and compare-review entrypoints
 
 ---

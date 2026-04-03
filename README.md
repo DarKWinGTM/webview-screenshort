@@ -92,6 +92,7 @@ Verified now:
 - `compare_session.py` now persists named compare-session artifacts with expected/actual-style labels for later QA review
 - `list_compare_sessions.py` now lists and summarizes persisted compare-session artifacts for practical QA history browsing
 - `create_reference_bundle.py` now builds reusable expected-reference bundle artifacts on top of saved compare sessions
+- `apply_reference_bundle.py` now applies a saved reference bundle to a current report and emits a fresh expected/actual compare session automatically
 - `webview-vision-assist` now routes more clearly between focused review, responsive review, and compare-review paths
 - public-repo install posture is now validated from the standalone repo root
 
@@ -134,6 +135,7 @@ webview-screenshort/
   compare_session.py
   list_compare_sessions.py
   create_reference_bundle.py
+  apply_reference_bundle.py
   screenshot/
   design/
     design.md
@@ -208,6 +210,7 @@ Use this package when the goal is to inspect:
 - persist a named compare session when QA work should be saved as an expected/actual or before/after artifact
 - list saved compare sessions when QA history should be browsed or reused later
 - create a reusable expected-reference bundle when the saved QA state should become a reusable baseline
+- apply a saved reference bundle to a fresh report when expected/actual QA should be re-run automatically
 
 Or manually:
 1. capture one responsive set with `--capture-set responsive --output-format json`

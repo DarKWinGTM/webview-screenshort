@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.10.0
+> **Current Version:** 2.11.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.11.0 | 2026-04-04 | **[Added apply-reference workflow](#version-2110)** | Added `apply_reference_bundle.py`, introduced a way to replay expected/actual QA against saved reference bundles, and pushed the compare workflow closer to a reusable baseline-application system. |
 | 2.10.0 | 2026-04-04 | **[Added expected-reference bundles](#version-2100)** | Added `create_reference_bundle.py`, introduced reusable expected-reference bundle artifacts, and pushed the compare workflow closer to a reusable baseline-driven QA system. |
 | 2.9.0 | 2026-04-04 | **[Added compare-session history browsing](#version-290)** | Added `list_compare_sessions.py`, introduced a reusable compare-session index/history surface, and pushed compare-review closer to a practical QA archive workflow. |
 | 2.8.0 | 2026-04-04 | **[Added named compare sessions](#version-280)** | Added `compare_session.py`, introduced reusable expected/actual compare-session artifacts, and moved compare-review closer to a durable QA workflow rather than one-off terminal output. |
@@ -22,6 +23,27 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2110"></a>
+## Version 2.11.0: Added apply-reference workflow
+
+**Date:** 2026-04-04
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added `apply_reference_bundle.py` so a saved reference bundle can be applied to a fresh report and turned into a new expected/actual compare session automatically.
+- Extended README and design guidance so reference bundles are not only stored but also actively reusable in later QA runs.
+- Bumped plugin and marketplace package versions to `2.11.0`.
+
+### Validation
+- `python3 -m py_compile apply_reference_bundle.py` succeeds.
+- `python3 apply_reference_bundle.py --bundle /tmp/webview_reference_bundle.json --current-report /tmp/webview_24_responsive_report.json --comparison-json /tmp/webview_applied_compare.json --session-output /tmp/webview_applied_session.json --session-name nodeclaw-docs-actual-run --current-label actual` succeeds.
+- the apply-reference workflow emits a fresh compare session from the saved baseline bundle plus the current report.
+
+### Summary
+The package now supports replaying expected/actual QA from saved reference bundles, moving the comparison flow closer to a reusable baseline-application system instead of static archive artifacts only.
 
 ---
 
