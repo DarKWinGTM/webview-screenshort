@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.12.0
+> **Current Version:** 2.13.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
@@ -31,6 +31,7 @@ The intended package model is:
 - `skills/frontend-review/SKILL.md` = direct capture-then-review skill surface
 - `skills/responsive-review/SKILL.md` = direct cross-breakpoint capture-then-review skill surface
 - `skills/compare-review/SKILL.md` = report-to-report comparison and regression-review skill surface
+- `skills/reference-bundles/SKILL.md` = bundle lifecycle surface for listing, creating, and applying reusable baseline artifacts
 - `agents/webview-vision-assist.md` = optional visual-review companion agent
 - `screenshot.py` = execution engine with focused capture plus one-run responsive capture-set support
 - `compare_reports.py` = report comparison helper for expected/actual and before/after review workflows

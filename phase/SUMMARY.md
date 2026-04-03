@@ -1,7 +1,7 @@
 # Webview Screenshort - Phase Summary
 
-> **Current Version:** 2.12.0
-> **Target Design:** [../design/design.md](../design/design.md) v2.12.0
+> **Current Version:** 2.13.0
+> **Target Design:** [../design/design.md](../design/design.md) v2.13.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 > **Status:** In Progress
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)
@@ -39,7 +39,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 ## Global TODO / Changelog Coordination
 
 - `TODO.md` should track only remaining cutover and authority-retirement work.
-- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, diff-assisted compare outcomes, named compare-session outcomes, compare-session history outcomes, expected-reference bundle outcomes, apply-reference workflow outcomes, reference-bundle browsing outcomes, and agent-orchestration hardening outcomes only.
+- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, diff-assisted compare outcomes, named compare-session outcomes, compare-session history outcomes, expected-reference bundle outcomes, apply-reference workflow outcomes, reference-bundle browsing outcomes, bundle-lifecycle skill-surface outcomes, repo-local marketplace install outcomes, and agent-orchestration hardening outcomes only.
 - `design/design.md` remains the authority for frontend-vision intent, plugin boundaries, and standalone-repo install posture.
 
 ---
@@ -70,6 +70,8 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - `create_reference_bundle.py` now promotes saved compare sessions into reusable expected-reference bundles
 - `apply_reference_bundle.py` now replays a saved baseline against a fresh report to emit a new expected/actual session
 - `list_reference_bundles.py` now exposes saved baseline bundles for lightweight QA browsing
-- `webview-vision-assist` now routes more explicitly between focused review, responsive review, and compare-review entrypoints
+- `skills/reference-bundles/SKILL.md` now exposes bundle listing, creation, and apply-reference work from one front door
+- repo-local marketplace path now installs `webview-screenshort@webview-screenshort` directly from the standalone repo root
+- `webview-vision-assist` now routes more explicitly between focused review, responsive review, compare-review, and bundle-lifecycle entrypoints
 
 ---

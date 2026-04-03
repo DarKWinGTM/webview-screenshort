@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.12.0
+> **Current Version:** 2.13.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.13.0 | 2026-04-04 | **[Added bundle-lifecycle skill surface](#version-2130)** | Added `skills/reference-bundles/SKILL.md`, lifted bundle helpers into a clearer front-door workflow surface, and made baseline artifact lifecycle operations easier to invoke directly. |
 | 2.12.0 | 2026-04-04 | **[Added reference-bundle browsing](#version-2120)** | Added `list_reference_bundles.py`, introduced lightweight browsing of saved baseline bundles, and pushed the compare workflow closer to a practical reusable QA asset system. |
 | 2.11.0 | 2026-04-04 | **[Added apply-reference workflow](#version-2110)** | Added `apply_reference_bundle.py`, introduced a way to replay expected/actual QA against saved reference bundles, and pushed the compare workflow closer to a reusable baseline-application system. |
 | 2.10.0 | 2026-04-04 | **[Added expected-reference bundles](#version-2100)** | Added `create_reference_bundle.py`, introduced reusable expected-reference bundle artifacts, and pushed the compare workflow closer to a reusable baseline-driven QA system. |
@@ -24,6 +25,27 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2130"></a>
+## Version 2.13.0: Added bundle-lifecycle skill surface
+
+**Date:** 2026-04-04
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added `skills/reference-bundles/SKILL.md` so bundle listing, creation, and apply-reference work now have a dedicated front-door skill surface.
+- Updated README and design guidance so baseline artifact lifecycle work is easier to invoke directly.
+- Bumped plugin and marketplace package versions to `2.13.0`.
+
+### Validation
+- `python3 -m py_compile create_reference_bundle.py apply_reference_bundle.py list_reference_bundles.py` succeeds.
+- the bundle lifecycle helpers remain valid and callable through the new dedicated skill surface.
+- `claude plugins validate /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort` succeeds.
+
+### Summary
+The package now exposes bundle lifecycle work through a clearer front-door skill, reducing friction when users or agents need to browse, create, or apply reusable baseline artifacts.
 
 ---
 

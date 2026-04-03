@@ -94,7 +94,8 @@ Verified now:
 - `create_reference_bundle.py` now builds reusable expected-reference bundle artifacts on top of saved compare sessions
 - `apply_reference_bundle.py` now applies a saved reference bundle to a current report and emits a fresh expected/actual compare session automatically
 - `list_reference_bundles.py` now lists and summarizes saved reference bundles for practical baseline browsing
-- `webview-vision-assist` now routes more clearly between focused review, responsive review, and compare-review paths
+- `skills/reference-bundles/SKILL.md` now exposes bundle lifecycle work through a dedicated front-door skill surface
+- `webview-vision-assist` now routes more clearly between focused review, responsive review, compare review, and bundle-lifecycle paths
 - public-repo install posture is now validated from the standalone repo root
 
 Checked live examples:
@@ -210,9 +211,12 @@ Use this package when the goal is to inspect:
 - compare two `webview-screenshort.capture-report/v1` artifacts and inspect the paired screenshots
 - use diff-assisted compare flow when you want image-diff metrics and generated diff images in addition to pair metadata
 - persist a named compare session when QA work should be saved as an expected/actual or before/after artifact
-- list saved compare sessions when QA history should be browsed or reused later
-- create a reusable expected-reference bundle when the saved QA state should become a reusable baseline
-- apply a saved reference bundle to a fresh report when expected/actual QA should be re-run automatically
+
+### For bundle lifecycle work
+- `/reference-bundles list /path/to/bundles`
+- `/reference-bundles create /path/to/compare-session.json bundle-name /path/to/bundle.json`
+- `/reference-bundles apply /path/to/bundle.json /path/to/current-report.json session-name /path/to/comparison.json /path/to/session.json`
+- use this surface when saved QA artifacts should be browsed, turned into reusable baselines, or replayed against fresh actual reports
 - browse saved reference bundles when baseline assets should be reused without remembering exact paths
 
 Or manually:

@@ -26,14 +26,16 @@ Use real rendered screenshots as visual evidence for frontend development work.
    - one live page to inspect now → focused review path
    - same live page across breakpoints → responsive review path
    - two persisted capture reports to compare → compare review path
+   - saved bundle/session lifecycle work → reference-bundle path
 2. For one live page, prefer the installed `/frontend-review` surface or run `python3 "${CLAUDE_PLUGIN_ROOT}/screenshot.py"` with `--output-format json --report-file ...`.
 3. For responsive review, prefer the installed `/responsive-review` surface or one run with `--capture-set responsive` so desktop, tablet, and mobile metadata come back in one JSON payload.
 4. For before/after or expected/actual work, prefer the installed `/compare-review` surface or run `python3 "${CLAUDE_PLUGIN_ROOT}/compare_reports.py" <report-a> <report-b> --output-format json`.
-5. Prefer `--wait` when CSR or delayed hydration is likely.
-6. Prefer `--mode viewport` for above-the-fold inspection and `--mode fullpage` for long docs/pages.
-7. Return the exact screenshot/report path(s) and structured metadata.
-8. If the user wants analysis, read the image(s) and use them as evidence.
-9. Summarize visible layout, spacing, readability, responsive differences, comparison deltas, and likely UX/UI issues.
+5. For bundle/session lifecycle work, prefer the installed `/reference-bundles` surface or run the bundle helpers directly.
+6. Prefer `--wait` when CSR or delayed hydration is likely.
+7. Prefer `--mode viewport` for above-the-fold inspection and `--mode fullpage` for long docs/pages.
+8. Return the exact screenshot/report path(s) and structured metadata.
+9. If the user wants analysis, read the image(s) and use them as evidence.
+10. Summarize visible layout, spacing, readability, responsive differences, comparison deltas, and likely UX/UI issues.
 
 ## Output
 - exact screenshot path or paths
@@ -43,4 +45,5 @@ Use real rendered screenshots as visual evidence for frontend development work.
 - whether the page appears visually rendered
 - visible layout/UX/UI issues when analysis was requested
 - comparison-pair metadata when compare-review was used
+- reference-bundle/session artifact paths when bundle helpers were used
 - any obvious capture limitation or follow-up need

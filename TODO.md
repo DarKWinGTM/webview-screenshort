@@ -44,6 +44,8 @@
 - [x] Add expected-reference bundles so saved compare sessions can be promoted into reusable QA baselines.
 - [x] Add apply-reference workflow so saved baselines can be replayed against fresh reports automatically.
 - [x] Add reference-bundle browsing so saved baseline artifacts can be listed and reused more easily.
+- [x] Add a dedicated bundle-lifecycle skill surface so baseline artifacts can be listed, created, and applied from one front door.
+- [x] Add reference-bundle apply/browse ergonomics so repo-local baseline workflows can be reused with less path hunting.
 - [x] Harden `webview-vision-assist` so it routes more clearly between focused, responsive, and compare-review paths.
 - [x] Validate `/reload-plugins` and restart-time visibility for the installed package.
 
@@ -53,6 +55,8 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-04 | Added `skills/reference-bundles/SKILL.md`, lifted bundle lifecycle operations into a dedicated front-door skill surface, and bumped the plugin/marketplace package versions to `2.13.0`. |
+| 2026-04-04 | Added `skills/reference-bundles/SKILL.md`, registered the repo-local `webview-screenshort` marketplace, installed `webview-screenshort@webview-screenshort`, and lifted bundle lifecycle operations into a dedicated front-door skill surface for `2.13.0`. |
 | 2026-04-04 | Added `list_reference_bundles.py`, validated reference-bundle browsing against saved baseline artifacts, and bumped the plugin/marketplace package versions to `2.12.0`. |
 | 2026-04-04 | Added `apply_reference_bundle.py`, validated replaying a saved reference bundle against a fresh report, and bumped the plugin/marketplace package versions to `2.11.0`. |
 | 2026-04-04 | Added `create_reference_bundle.py`, validated reusable expected-reference bundle artifacts, and bumped the plugin/marketplace package versions to `2.10.0`. |
