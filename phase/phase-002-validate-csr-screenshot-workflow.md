@@ -45,4 +45,5 @@ Verify that the package can capture real CSR-heavy pages for frontend visual rev
 - compare-session history output is evidence-backed against saved compare-session artifacts
 - expected-reference bundle output is evidence-backed against saved compare-session artifacts
 - apply-reference workflow output is evidence-backed against saved reference bundles plus current reports
+- reference-bundle browsing output is evidence-backed against saved bundle artifacts
 - agent orchestration guidance is now aligned with the current focused/responsive/compare workflow split

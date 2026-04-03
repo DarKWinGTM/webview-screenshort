@@ -75,6 +75,7 @@ Dimension: 1920x10000
 - [x] compare-session history output completed successfully against saved compare-session artifacts
 - [x] expected-reference bundle output completed successfully against saved compare-session artifacts
 - [x] apply-reference workflow output completed successfully against saved reference bundles plus current reports
+- [x] reference-bundle browsing output completed successfully against saved bundle artifacts
 - [x] agent orchestration guidance now matches the current focused/responsive/compare workflow split
 - [x] resulting images show rendered docs content
 - [x] CSR support is evidence-backed for more than one checked target
