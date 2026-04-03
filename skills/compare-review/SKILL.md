@@ -20,15 +20,20 @@ Use this skill when frontend review should compare two already-generated screens
    python3 "${CLAUDE_PLUGIN_ROOT}/compare_reports.py" $ARGUMENTS --output-format json
    ```
 
-3. Read both JSON report files.
+3. If the review should be preserved as a reusable QA artifact, persist a named compare session after the comparison step:
+   ```bash
+   python3 "${CLAUDE_PLUGIN_ROOT}/compare_session.py" --name "session-name" --left-report <report-a.json> --right-report <report-b.json> --comparison-json <comparison.json> --output <session.json>
+   ```
 
-4. Confirm that each report is a valid `webview-screenshort.capture-report/v1` artifact.
+4. Read both JSON report files.
 
-5. Read the helper output and extract the referenced screenshot pairs.
+5. Confirm that each report is a valid `webview-screenshort.capture-report/v1` artifact.
 
-6. Read the referenced image files.
+6. Read the helper output and extract the referenced screenshot pairs.
 
-7. Compare the screenshots and summarize:
+7. Read the referenced image files.
+
+8. Compare the screenshots and summarize:
    - layout differences
    - spacing or hierarchy changes
    - responsive regressions

@@ -41,4 +41,5 @@ Verify that the package can capture real CSR-heavy pages for frontend visual rev
 - persisted report-schema metadata is evidence-backed in current capture artifacts
 - structured compare-helper output is evidence-backed against current responsive report artifacts
 - diff-assisted compare output is evidence-backed against current responsive report artifacts
+- named compare-session output is evidence-backed against current responsive report artifacts
 - agent orchestration guidance is now aligned with the current focused/responsive/compare workflow split

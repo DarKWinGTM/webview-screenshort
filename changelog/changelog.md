@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.7.0
+> **Current Version:** 2.8.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.8.0 | 2026-04-04 | **[Added named compare sessions](#version-280)** | Added `compare_session.py`, introduced reusable expected/actual compare-session artifacts, and moved compare-review closer to a durable QA workflow rather than one-off terminal output. |
 | 2.7.0 | 2026-04-03 | **[Added diff-assisted compare evidence](#version-270)** | Added `diff_images.py`, upgraded report comparison to include diff metrics and generated diff images, and pushed compare-review closer to a practical expected/actual QA workflow. |
 | 2.6.0 | 2026-04-03 | **[Hardened agent orchestration flow](#version-260)** | Updated `webview-vision-assist` so it routes more explicitly between focused review, responsive review, and compare-review paths, reducing ambiguity at the product entry layer. |
 | 2.5.0 | 2026-04-03 | **[Added structured compare helper flow](#version-250)** | Added `compare_reports.py`, upgraded compare-review to use structured pair metadata, and pushed the package closer to a reusable expected/actual visual QA surface. |
@@ -19,6 +20,28 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-280"></a>
+## Version 2.8.0: Added named compare sessions
+
+**Date:** 2026-04-04
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added `compare_session.py` so compare workflows can persist a named compare-session artifact for later QA review.
+- Added expected/actual-style labels to the session artifact model.
+- Updated compare-review guidance and package docs so reusable compare sessions are now part of the intended QA workflow.
+- Bumped plugin and marketplace package versions to `2.8.0`.
+
+### Validation
+- `python3 -m py_compile compare_session.py` succeeds.
+- `python3 compare_session.py --name "nodeclaw-docs-regression" --left-report /tmp/webview_24_responsive_report.json --right-report /tmp/webview_24_responsive_report.json --left-label expected --right-label actual --comparison-json /tmp/webview_compare_diff.json --output /tmp/webview_compare_session.json` succeeds.
+- the compare-session artifact persists the named expected/actual review state plus the structured comparison payload.
+
+### Summary
+The package now supports a more durable QA workflow by persisting named compare sessions instead of forcing every expected/actual review to live only in one-off comparison output.
 
 ---
 

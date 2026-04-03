@@ -89,6 +89,7 @@ Verified now:
 - `screenshot.py` now supports env-driven capture configuration, JSON result output, schema-stamped persisted report-file output, and one-run responsive capture-set output for chaining into frontend review workflows
 - `compare_reports.py` now validates persisted reports and emits structured pair metadata for report-to-report comparison workflows
 - `diff_images.py` now adds optional image-diff metrics and diff-image outputs for richer compare-review workflows
+- `compare_session.py` now persists named compare-session artifacts with expected/actual-style labels for later QA review
 - `webview-vision-assist` now routes more clearly between focused review, responsive review, and compare-review paths
 - public-repo install posture is now validated from the standalone repo root
 
@@ -128,6 +129,7 @@ webview-screenshort/
   screenshot.py
   compare_reports.py
   diff_images.py
+  compare_session.py
   screenshot/
   design/
     design.md
@@ -199,6 +201,7 @@ Use this package when the goal is to inspect:
 - `/compare-review /path/to/report-a.json /path/to/report-b.json`
 - compare two `webview-screenshort.capture-report/v1` artifacts and inspect the paired screenshots
 - use diff-assisted compare flow when you want image-diff metrics and generated diff images in addition to pair metadata
+- persist a named compare session when QA work should be saved as an expected/actual or before/after artifact
 
 Or manually:
 1. capture one responsive set with `--capture-set responsive --output-format json`
