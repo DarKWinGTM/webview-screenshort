@@ -1,7 +1,7 @@
 ---
 name: screenshot
 description: Capture a real rendered screenshot of a webpage for frontend-development visual review. Use this when Claude needs visual evidence from a live page, especially CSR/SPA pages, before giving layout, UX, UI, or docs-page feedback.
-argument-hint: <url> [--mode fullpage|viewport] [--device desktop|tablet|mobile] [--capture-set responsive] [--wait] [--engine auto|headless|aws] [--output FILE] [--output-format json]
+argument-hint: <url> [--mode fullpage|viewport] [--device desktop|tablet|mobile] [--capture-set responsive] [--report-file FILE] [--wait] [--engine auto|headless|aws] [--output FILE] [--output-format json]
 allowed-tools: Bash, Read
 ---
 
@@ -21,7 +21,7 @@ Use it when frontend work needs visual evidence from the real page, for example:
 
 1. Parse arguments from `$ARGUMENTS`.
    - first positional arg = URL
-   - optional flags: `--mode`, `--device`, `--capture-set`, `--wait`, `--engine`, `--output`, `--output-format`
+   - optional flags: `--mode`, `--device`, `--capture-set`, `--report-file`, `--wait`, `--engine`, `--output`, `--output-format`
 
 2. Run the screenshot engine from this installed plugin package:
    ```bash
@@ -34,6 +34,7 @@ Use it when frontend work needs visual evidence from the real page, for example:
 
 5. If capture succeeds:
    - report the exact screenshot file path
+   - if `--report-file` was used, report the exact JSON report path
    - if `--capture-set responsive` was used, report the per-device screenshot paths and viewport metadata
    - if the user wants visual review, read the image file next and continue from the screenshot evidence
 
@@ -49,8 +50,8 @@ Use it when frontend work needs visual evidence from the real page, for example:
 ## Recommended Usage
 ```bash
 /screenshot https://example.com --wait --mode viewport
-/screenshot https://example.com/docs --wait --mode fullpage --output-format json
-/screenshot https://example.com --capture-set responsive --wait --mode viewport --output-format json
+/screenshot https://example.com/docs --wait --mode fullpage --output-format json --report-file /tmp/example_capture.json
+/screenshot https://example.com --capture-set responsive --wait --mode viewport --output-format json --report-file /tmp/example_responsive.json
 /screenshot https://example.com --device mobile --wait --mode viewport --output-format json
 /screenshot https://example.com --device tablet --wait --mode viewport --output-format json
 ```

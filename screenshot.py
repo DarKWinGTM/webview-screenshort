@@ -4,6 +4,7 @@ Hybrid Screenshot Tool
 Usage: python screenshot.py <url> [--output FILE] [--output-dir DIR]
                            [--device {desktop,tablet,mobile}]
                            [--capture-set {responsive}]
+                           [--report-file FILE]
                            [--engine {auto,headless,aws}]
                            [--mode {viewport,fullpage}]
                            [--wait]
@@ -100,6 +101,7 @@ class CaptureResult:
     image_width: Optional[int] = None
     image_height: Optional[int] = None
     device: Optional[str] = None
+    report_path: Optional[str] = None
     warnings: List[str] = field(default_factory=list)
     error: Optional[str] = None
 
@@ -115,6 +117,7 @@ class CaptureSetResult:
     captures: List[CaptureResult]
     successful_captures: int
     failed_captures: int
+    report_path: Optional[str] = None
     warnings: List[str] = field(default_factory=list)
     error: Optional[str] = None
 
@@ -194,6 +197,15 @@ def apply_suffix(path: Path, suffix: Optional[str] = None) -> Path:
     return path.with_name(f"{path.stem}_{suffix}{path.suffix}")
 
 
+def ensure_json_suffix(path: Path) -> Path:
+    return path if path.suffix.lower() == ".json" else path.with_suffix(".json")
+
+
+def ensure_parent_dir(path: Path) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    return path
+
+
 def default_output_dir(config: ScreenshotConfig) -> Path:
     if config.output_dir:
         return config.output_dir
@@ -209,8 +221,7 @@ def generate_output_path(
 ) -> Path:
     if provided_path:
         path = apply_suffix(ensure_image_suffix(Path(provided_path).expanduser()), suffix)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        return path
+        return ensure_parent_dir(path)
 
     base_dir = Path(output_dir).expanduser() if output_dir else default_output_dir(config)
     base_dir.mkdir(parents=True, exist_ok=True)
@@ -218,6 +229,26 @@ def generate_output_path(
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     domain = url.replace("https://", "").replace("http://", "").split("/")[0].replace(".", "_")
     path = base_dir / f"screenshot_{domain}_{timestamp}.png"
+    return apply_suffix(path, suffix)
+
+
+def generate_report_path(
+    url: str,
+    config: ScreenshotConfig,
+    provided_path: Optional[str] = None,
+    output_dir: Optional[str] = None,
+    suffix: Optional[str] = None,
+) -> Path:
+    if provided_path:
+        path = apply_suffix(ensure_json_suffix(Path(provided_path).expanduser()), suffix)
+        return ensure_parent_dir(path)
+
+    base_dir = Path(output_dir).expanduser() if output_dir else default_output_dir(config)
+    base_dir.mkdir(parents=True, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    domain = url.replace("https://", "").replace("http://", "").split("/")[0].replace(".", "_")
+    path = base_dir / f"capture_report_{domain}_{timestamp}.json"
     return apply_suffix(path, suffix)
 
 
@@ -441,6 +472,12 @@ def execute_capture(
 
 def run_responsive_capture_set(url: str, args: argparse.Namespace, reporter: Reporter) -> CaptureSetResult:
     captures: List[CaptureResult] = []
+    report_base_path = generate_report_path(
+        url,
+        load_config(),
+        provided_path=args.report_file,
+        output_dir=args.output_dir,
+    ) if args.report_file else None
     for device_name in RESPONSIVE_CAPTURE_SET:
         config = load_config(device_name)
         output_path = generate_output_path(
@@ -450,18 +487,21 @@ def run_responsive_capture_set(url: str, args: argparse.Namespace, reporter: Rep
             output_dir=args.output_dir,
             suffix=device_name,
         )
-        captures.append(
-            execute_capture(
-                url=url,
-                output_path=output_path,
-                config=config,
-                engine=args.engine,
-                mode=args.mode,
-                wait=args.wait,
-                reporter=reporter,
-                device=device_name,
-            )
+        capture_result = execute_capture(
+            url=url,
+            output_path=output_path,
+            config=config,
+            engine=args.engine,
+            mode=args.mode,
+            wait=args.wait,
+            reporter=reporter,
+            device=device_name,
         )
+        capture_result.report_path = write_report_file(
+            capture_result,
+            apply_suffix(report_base_path, device_name) if report_base_path else None,
+        )
+        captures.append(capture_result)
 
     successful_captures = sum(1 for capture in captures if capture.success)
     failed_captures = len(captures) - successful_captures
@@ -472,7 +512,7 @@ def run_responsive_capture_set(url: str, args: argparse.Namespace, reporter: Rep
         error = "One or more responsive captures failed. Check the per-device errors in `captures`."
         warnings.append("Responsive capture set is partially complete.")
 
-    return CaptureSetResult(
+    result = CaptureSetResult(
         success=failed_captures == 0,
         url=url,
         capture_set="responsive",
@@ -485,6 +525,19 @@ def run_responsive_capture_set(url: str, args: argparse.Namespace, reporter: Rep
         warnings=warnings,
         error=error,
     )
+    result.report_path = write_report_file(result, report_base_path)
+    return result
+
+
+def write_report_file(result: Union[CaptureResult, CaptureSetResult], report_path: Optional[Path]) -> Optional[str]:
+    if not report_path:
+        return None
+    ensure_parent_dir(report_path)
+    data = asdict(result)
+    data["report_path"] = str(report_path)
+    with open(report_path, "w", encoding="utf-8") as file_obj:
+        json.dump(data, file_obj, ensure_ascii=False)
+    return str(report_path)
 
 
 def emit_single_capture_text(result: CaptureResult, reporter: Reporter) -> None:
@@ -494,6 +547,8 @@ def emit_single_capture_text(result: CaptureResult, reporter: Reporter) -> None:
             reporter.log(f"Size: {result.file_size_bytes:,} bytes")
         if result.image_width and result.image_height:
             reporter.log(f"Dimensions: {result.image_width}x{result.image_height}")
+        if result.report_path:
+            reporter.log(f"Report: {result.report_path}")
         if result.warnings:
             for warning in result.warnings:
                 reporter.log(f"⚠️ {warning}")
@@ -519,9 +574,13 @@ def emit_capture_set_text(result: CaptureSetResult, reporter: Reporter) -> None:
         if capture.warnings:
             for warning in capture.warnings:
                 reporter.log(f"   ⚠️ {warning}")
+        if capture.report_path:
+            reporter.log(f"   Report: {capture.report_path}")
         if capture.error:
             reporter.log(f"   Error: {capture.error}")
 
+    if result.report_path:
+        reporter.log(f"Capture-set report: {result.report_path}")
     if result.warnings:
         for warning in result.warnings:
             reporter.log(f"⚠️ {warning}")
@@ -548,6 +607,7 @@ def main() -> None:
     parser.add_argument("--output-dir", help="Output directory for generated screenshots")
     parser.add_argument("--device", choices=["desktop", "tablet", "mobile"], help="Viewport preset override for focused frontend review")
     parser.add_argument("--capture-set", choices=["responsive"], help="Capture a predefined multi-device screenshot set in one run")
+    parser.add_argument("--report-file", help="Write machine-readable capture metadata to a JSON report file")
     parser.add_argument("--engine", "-e", choices=["auto", "headless", "aws"], default="auto", help="Select screenshot engine (default: auto)")
     parser.add_argument("--mode", "-m", choices=["viewport", "fullpage"], default="fullpage", help="Capture mode: 'viewport' or 'fullpage' (default: fullpage)")
     parser.add_argument("--wait", "-w", action="store_true", help="Wait extra time for dynamic content (Headless engine only)")
@@ -574,6 +634,10 @@ def main() -> None:
             wait=args.wait,
             reporter=reporter,
             device=args.device,
+        )
+        result.report_path = write_report_file(
+            result,
+            generate_report_path(url, config, args.report_file, args.output_dir) if args.report_file else None,
         )
 
     emit_result(result, args.output_format, reporter)

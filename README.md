@@ -86,7 +86,7 @@ Verified now:
 - the package now has plugin scaffolding with `.claude-plugin/`, `skills/`, and `agents/`
 - the package installs through its own repo-root marketplace manifest and exposes `webview-screenshort:webview-vision-assist`
 - skill/agent execution now targets `${CLAUDE_PLUGIN_ROOT}` instead of a source-workspace-only path
-- `screenshot.py` now supports env-driven capture configuration, JSON result output, and one-run responsive capture-set output for chaining into frontend review workflows
+- `screenshot.py` now supports env-driven capture configuration, JSON result output, persisted report-file output, and one-run responsive capture-set output for chaining into frontend review workflows
 - public-repo install posture is now validated from the standalone repo root
 
 Checked live examples:
@@ -116,6 +116,10 @@ webview-screenshort/
       SKILL.md
       overview.md
       frontend-review.md
+    frontend-review/
+      SKILL.md
+    responsive-review/
+      SKILL.md
   screenshot.py
   screenshot/
   design/
@@ -172,14 +176,19 @@ Use this package when the goal is to inspect:
 - `/screenshot <url> --wait --mode viewport`
 - `/screenshot <url> --wait --mode fullpage`
 - `/screenshot <url> --capture-set responsive --wait --mode viewport --output-format json`
+- `/screenshot <url> --wait --mode viewport --output-format json --report-file /tmp/capture.json`
 
 ### For frontend review
+- `/frontend-review <url> --wait --mode viewport`
 1. capture first
 2. read the image
 3. analyze the visible layout/UI from the screenshot
 4. only then suggest code or design changes
 
 ### For responsive frontend review
+- `/responsive-review <url> --wait --mode viewport`
+
+Or manually:
 1. capture one responsive set with `--capture-set responsive --output-format json`
 2. read the combined JSON result plus each generated image from `captures[].output_path`
 3. compare hierarchy, overflow, spacing, stacking, and readability across breakpoints

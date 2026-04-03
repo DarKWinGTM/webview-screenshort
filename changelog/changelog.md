@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.2.0
+> **Current Version:** 2.3.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,10 +10,36 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.3.0 | 2026-04-03 | **[Added review-skill and report-file workflow surfaces](#version-230)** | Added persisted report-file output, introduced dedicated `frontend-review` and `responsive-review` skills, and tightened the screenshot workflow so structured metadata can be re-read more directly in follow-on review flows. |
 | 2.2.0 | 2026-04-03 | **[Added one-run responsive capture-set workflow](#version-220)** | Added first-class responsive capture-set support to `screenshot.py`, returned combined machine-readable desktop/tablet/mobile results from one run, and synced the frontend-review docs around the stronger responsive workflow. |
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-230"></a>
+## Version 2.3.0: Added review-skill and report-file workflow surfaces
+
+**Date:** 2026-04-03
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added `--report-file` to `screenshot.py` so capture metadata can be persisted to JSON for later reading and chaining.
+- Added report-file support for both focused captures and responsive capture sets.
+- Added `skills/frontend-review/SKILL.md` as a direct capture-then-review surface.
+- Added `skills/responsive-review/SKILL.md` as a direct responsive capture-then-review surface.
+- Updated README, design, and screenshot skill guidance so the package now exposes stronger product-facing review entrypoints instead of only lower-level capture primitives.
+- Bumped plugin and marketplace package versions to `2.3.0`.
+
+### Validation
+- `python3 -m py_compile screenshot.py` succeeds.
+- `python3 screenshot.py https://claw-frontend-dev.nodenetwork.ovh/docs --capture-set responsive --mode viewport --wait --output-format json --report-file /tmp/webview_responsive_report.json` succeeds.
+- `python3 screenshot.py https://developer.mozilla.org/en-US/docs/Web/JavaScript --device mobile --mode viewport --wait --output-format json --report-file /tmp/webview_single_report.json` succeeds.
+- both responsive and focused flows now write re-readable JSON report artifacts.
+
+### Summary
+The package now moves one step closer to a true frontend-review product surface by persisting capture metadata and exposing dedicated review skills on top of the screenshot engine.
 
 ---
 

@@ -26,8 +26,10 @@ The target is a frontend-development vision workflow where Claude can:
 The intended package model is:
 - `.claude-plugin/plugin.json` = plugin metadata
 - `.claude-plugin/marketplace.json` = standalone repo-local marketplace manifest for cutover and local install from this package root
-- `skills/screenshot/SKILL.md` = primary runtime entrypoint
+- `skills/screenshot/SKILL.md` = primary runtime entrypoint for focused capture
 - `skills/screenshot/*.md` = focused frontend vision workflow guidance
+- `skills/frontend-review/SKILL.md` = direct capture-then-review skill surface
+- `skills/responsive-review/SKILL.md` = direct cross-breakpoint capture-then-review skill surface
 - `agents/webview-vision-assist.md` = optional visual-review companion agent
 - `screenshot.py` = execution engine with focused capture plus one-run responsive capture-set support
 - `screenshot/` = generated screenshots and checked local artifacts
@@ -68,6 +70,7 @@ Need visual frontend review
   → choose desktop / tablet / mobile preset when focused responsive review matters
   → prefer `--capture-set responsive` when the same page should be checked across all three breakpoints in one run
   → prefer JSON result output for workflow chaining
+  → persist a report file when a later step should re-read structured capture metadata directly
   → save screenshot locally
   → read the image
   → analyze layout / UX / UI from the screenshot
@@ -116,7 +119,7 @@ Checked responsive review validation now also shows:
 
 ## 7) Current limitations
 
-- current workflow still relies on Claude reading the generated image after capture instead of a fully bundled multi-step visual-analysis pipeline
+- current workflow still relies on Claude reading the generated image after capture instead of a fully bundled tool-native visual-analysis pipeline, even though report files and review skills now reduce the manual handoff surface
 - plugin install lifecycle for this package is now validated from the standalone repo root through its package-local marketplace manifest, while the shared `darkwingtm` route remains only temporary checked local compatibility context
 - broader CSR validation still needs more than the two currently checked public docs targets
 
@@ -131,7 +134,7 @@ This package is considered successful for the current wave when:
 - real CSR pages can be captured successfully
 - the package clearly supports frontend visual review workflows
 - `screenshot.py` supports late-bound config for endpoints/timeouts
-- `screenshot.py` supports machine-readable JSON output for workflow chaining
+- `screenshot.py` supports machine-readable JSON output and persisted report-file output for workflow chaining
 - `screenshot.py` supports one-run responsive capture-set output for desktop/tablet/mobile review
 - `screenshot.py` supports mobile and tablet viewport presets for responsive review
 - governance docs describe the real current state rather than the older project-local skill state
