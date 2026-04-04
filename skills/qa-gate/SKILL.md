@@ -18,6 +18,7 @@ Use this skill when screenshot QA should end in a threshold-aware gate result in
    ```
 3. Read the returned gate payload.
 4. Report the violated rules and failing devices clearly.
+5. If the source still needs live baseline replay first, prefer `/reference-live-gate` instead of chaining `/reference-live-review` + `/qa-gate` manually.
 
 ## Output expectations
 - overall gate result: `pass` or `fail`

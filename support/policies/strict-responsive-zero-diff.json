@@ -1,0 +1,6 @@
+{
+  "fail_on_invalid": true,
+  "require_devices": ["desktop", "tablet", "mobile"],
+  "max_diff_pixels": 0,
+  "max_diff_ratio": 0.0
+}

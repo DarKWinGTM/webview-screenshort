@@ -25,6 +25,7 @@ Use this skill when a saved expected baseline should be replayed against the cur
    ```bash
    python3 "${CLAUDE_PLUGIN_ROOT}/qa_verdict.py" <live-replay.json> --output-format json
    ```
+9. If the workflow should end in a threshold-aware gate result directly, prefer `/reference-live-gate` instead of chaining verdict + gate manually.
 
 ## Output expectations
 - exact bundle path used

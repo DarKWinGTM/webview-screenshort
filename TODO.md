@@ -50,7 +50,9 @@
 - [x] Harden reference-bundle metadata so reusable baselines carry explicit reference-side/report information.
 - [x] Add a QA verdict layer so compare/live-replay artifacts can end in reusable machine-readable pass/fail output instead of raw pair metadata only.
 - [x] Add a QA gate layer so verdict artifacts can be checked against explicit required-device and diff-threshold policy rules.
-- [x] Harden `webview-vision-assist` so it routes more clearly between focused, responsive, compare-review, live baseline replay, verdict-generation, and gate-evaluation paths.
+- [x] Add a one-step baseline gate workflow so saved bundle + live URL + policy evaluation can finish in one run.
+- [x] Add reusable gate policy presets so common threshold rules do not need to be retyped every time.
+- [x] Harden `webview-vision-assist` so it routes more clearly between focused, responsive, compare-review, live baseline replay, verdict-generation, gate-evaluation, and one-step baseline-gate paths.
 - [x] Validate `/reload-plugins` and restart-time visibility for the installed package.
 
 ---
@@ -59,6 +61,7 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-04 | Added `reference_live_gate.py`, added `skills/reference-live-gate/SKILL.md`, added `support/policies/strict-responsive-zero-diff.json`, validated one-step saved-baseline + live-URL + gate evaluation against the checked NodeClaw docs workflow, and bumped the plugin/marketplace package versions to `2.17.0`. |
 | 2026-04-04 | Added `qa_gate.py`, added `skills/qa-gate/SKILL.md`, validated threshold-aware gate evaluation against the checked live replay/session artifacts, and bumped the plugin/marketplace package versions to `2.16.0`. |
 | 2026-04-04 | Added `qa_verdict.py`, added `skills/qa-verdict/SKILL.md`, validated reusable pass/fail verdict generation against the checked live replay/session artifacts, and bumped the plugin/marketplace package versions to `2.15.0`. |
 | 2026-04-04 | Fixed remaining authority/update drift after `2.14.0` so README and phase docs now point to repo-local marketplace update/install posture first, keep `darkwingtm` explicitly compatibility-only, and bumped the plugin/marketplace package versions to `2.14.1`. |

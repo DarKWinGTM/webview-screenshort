@@ -96,11 +96,13 @@ Verified now:
 - `reference_live_bundle.py` now captures a fresh current report from a live URL and replays a saved baseline in one flow
 - `qa_verdict.py` now turns compare-session, comparison, or live-replay artifacts into machine-readable pass/fail/invalid QA verdicts
 - `qa_gate.py` now applies threshold/policy rules on top of verdict artifacts so screenshot QA can produce reusable gate results
+- `reference_live_gate.py` now captures a live current report, replays a saved baseline, and applies gate policy in one flow
 - `list_reference_bundles.py` now lists and summarizes saved reference bundles for practical baseline browsing
 - `skills/reference-bundles/SKILL.md` now exposes bundle lifecycle work through a dedicated front-door skill surface
 - `skills/reference-live-review/SKILL.md` now exposes saved-baseline replay against a live URL from one front door
 - `skills/qa-verdict/SKILL.md` now exposes a reusable verdict layer for compare/live-replay artifacts
 - `skills/qa-gate/SKILL.md` now exposes a threshold-aware gate layer for policy-based QA pass/fail decisions
+- `skills/reference-live-gate/SKILL.md` now exposes a one-step saved-baseline + live-URL + gate workflow
 - reference bundles now carry explicit reference-side/report metadata instead of relying only on implicit left-side session interpretation
 - newly created reference bundles now include a bundled reference report payload plus copied baseline images so replay is less fragile if the original temp report disappears
 - `compare_reports.py` now treats non-diffable paired comparisons as failed instead of silently reporting success just because device labels matched
@@ -149,10 +151,13 @@ webview-screenshort/
       SKILL.md
     qa-gate/
       SKILL.md
+    reference-live-gate/
+      SKILL.md
   screenshot.py
   compare_reports.py
   qa_verdict.py
   qa_gate.py
+  reference_live_gate.py
   diff_images.py
   compare_session.py
   list_compare_sessions.py
@@ -255,6 +260,11 @@ Use this package when the goal is to inspect:
 - `/qa-gate /path/to/compare-session-or-live-replay.json --require-device desktop --require-device tablet --require-device mobile --fail-on-invalid true --max-diff-ratio 0 --output-format json`
 - use this surface when verdict artifacts should be checked against explicit acceptance rules rather than only summarized
 - the gate layer now returns overall gate status, violated rules, missing required devices, and per-device gate results
+
+### For one-step saved baseline gate against a live URL
+- `/reference-live-gate --bundle /path/to/bundle.json --url https://example.com/page --current-report /tmp/current.json --comparison-json /tmp/compare.json --session-output /tmp/session.json --session-name current-vs-expected --gate-output /tmp/gate.json --policy-file ${CLAUDE_PLUGIN_ROOT}/support/policies/strict-responsive-zero-diff.json --capture-set responsive --mode viewport --wait --diff-dir /tmp/diffs`
+- use this surface when the whole flow should finish in one run: capture current state, replay saved baseline, and apply policy gate
+- the package now includes a reusable strict responsive zero-diff preset under `support/policies/strict-responsive-zero-diff.json`
 
 Or manually:
 1. capture one responsive set with `--capture-set responsive --output-format json`
