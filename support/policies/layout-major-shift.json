@@ -1,4 +1,8 @@
 {
+  "family": "layout",
+  "name": "major-shift",
+  "selector": "layout/major-shift",
+  "aliases": ["layout-major-shift"],
   "description": "Layout-focused policy that fails only for larger visible changes across required responsive breakpoints.",
   "fail_on_invalid": true,
   "require_devices": ["desktop", "tablet", "mobile"],

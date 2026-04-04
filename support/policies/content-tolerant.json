@@ -1,4 +1,8 @@
 {
+  "family": "content",
+  "name": "tolerant",
+  "selector": "content/tolerant",
+  "aliases": ["content-tolerant"],
   "description": "Content-tolerant policy for pages with expected copy/data drift but no major structural regression.",
   "fail_on_invalid": true,
   "require_devices": ["desktop", "tablet", "mobile"],

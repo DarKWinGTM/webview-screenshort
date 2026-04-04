@@ -21,6 +21,8 @@ Use this skill when you want to discover the built-in QA policy preset names ins
 
 ## Output expectations
 - preset names
+- preset families
+- canonical selectors
 - exact preset paths
 - policy payloads when useful
 - next useful qa-gate or reference-live-gate invocation

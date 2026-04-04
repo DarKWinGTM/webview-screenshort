@@ -10,6 +10,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from policy_presets import resolve_policy_preset_record
+
 DEFAULT_POLICY = {
     "fail_on_invalid": True,
     "require_devices": [],
@@ -41,6 +43,7 @@ class GateResult:
     missing_required_devices: List[str]
     devices: List[GateDeviceResult]
     warnings: List[str]
+    selected_policy_preset: Optional[str] = None
     error: Optional[str] = None
 
 
@@ -63,26 +66,19 @@ def load_verdict(source_path: Path) -> Dict[str, Any]:
     return json.loads(result.stdout)
 
 
-def resolve_policy_preset(name: str) -> Path:
-    policy_dir = Path(__file__).parent / "support" / "policies"
-    candidate = policy_dir / f"{name}.json"
-    if not candidate.exists():
-        raise SystemExit(f"Unknown policy preset: {name}")
-    return candidate
-
-
-def load_policy(policy_path: Optional[str], policy_preset: Optional[str]) -> Dict[str, Any]:
+def load_policy(policy_path: Optional[str], policy_preset: Optional[str]) -> tuple[Dict[str, Any], Optional[str]]:
     if policy_preset:
-        payload = load_json(resolve_policy_preset(policy_preset))
+        record = resolve_policy_preset_record(policy_preset)
+        payload = record["policy"]
         merged = dict(DEFAULT_POLICY)
         merged.update(payload)
-        return merged
+        return merged, record["selector"]
     if not policy_path:
-        return dict(DEFAULT_POLICY)
+        return dict(DEFAULT_POLICY), None
     payload = load_json(Path(policy_path).expanduser())
     merged = dict(DEFAULT_POLICY)
     merged.update(payload)
-    return merged
+    return merged, None
 
 
 def evaluate_device(device: Dict[str, Any], policy: Dict[str, Any]) -> GateDeviceResult:
@@ -122,7 +118,7 @@ def evaluate_device(device: Dict[str, Any], policy: Dict[str, Any]) -> GateDevic
     )
 
 
-def apply_gate(verdict_payload: Dict[str, Any], policy: Dict[str, Any], source_path: Path) -> GateResult:
+def apply_gate(verdict_payload: Dict[str, Any], policy: Dict[str, Any], source_path: Path, selected_policy_preset: Optional[str]) -> GateResult:
     devices = [evaluate_device(device, policy) for device in verdict_payload.get("devices") or []]
     present_devices = {device.device for device in devices}
     required_devices = [str(device) for device in policy.get("require_devices") or []]
@@ -168,6 +164,7 @@ def apply_gate(verdict_payload: Dict[str, Any], policy: Dict[str, Any], source_p
         missing_required_devices=missing_required_devices,
         devices=devices,
         warnings=warnings,
+        selected_policy_preset=selected_policy_preset,
         error=error,
     )
 
@@ -175,6 +172,8 @@ def apply_gate(verdict_payload: Dict[str, Any], policy: Dict[str, Any], source_p
 def emit_text(result: GateResult) -> None:
     print(f"overall_gate_status={result.overall_gate_status}")
     print(f"overall_passed={str(result.overall_passed).lower()}")
+    if result.selected_policy_preset:
+        print(f"selected_policy_preset={result.selected_policy_preset}")
     if result.missing_required_devices:
         print(f"missing_required_devices={','.join(result.missing_required_devices)}")
     if result.violated_rules:
@@ -208,7 +207,7 @@ def main() -> None:
     else:
         verdict_payload = load_verdict(source_path)
 
-    policy = load_policy(args.policy_file, args.policy_preset)
+    policy, selected_policy_preset = load_policy(args.policy_file, args.policy_preset)
     if args.fail_on_invalid is not None:
         policy["fail_on_invalid"] = args.fail_on_invalid == "true"
     if args.require_device:
@@ -218,7 +217,7 @@ def main() -> None:
     if args.max_diff_ratio is not None:
         policy["max_diff_ratio"] = args.max_diff_ratio
 
-    result = apply_gate(verdict_payload, policy, source_path)
+    result = apply_gate(verdict_payload, policy, source_path, selected_policy_preset)
 
     if args.output_format == "json":
         print(json.dumps(asdict(result), ensure_ascii=False))

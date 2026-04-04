@@ -1,7 +1,7 @@
 # Webview Screenshort - Phase Summary
 
-> **Current Version:** 2.19.0
-> **Target Design:** [../design/design.md](../design/design.md) v2.19.0
+> **Current Version:** 2.20.0
+> **Target Design:** [../design/design.md](../design/design.md) v2.20.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 > **Status:** Implemented - Pending Review
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)
@@ -41,7 +41,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 ## Global TODO / Changelog Coordination
 
 - `TODO.md` should track the active package work and shipped execution history clearly, not only the earlier cutover slice.
-- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, diff-assisted compare outcomes, named compare-session outcomes, compare-session history outcomes, expected-reference bundle outcomes, apply-reference workflow outcomes, reference-bundle browsing outcomes, bundle-lifecycle skill-surface outcomes, live baseline replay outcomes, qa-verdict outcomes, qa-gate outcomes, one-step baseline gate outcomes, repo-local marketplace install outcomes, and agent-orchestration hardening outcomes only.
+- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, diff-assisted compare outcomes, named compare-session outcomes, compare-session history outcomes, expected-reference bundle outcomes, apply-reference workflow outcomes, reference-bundle browsing outcomes, bundle-lifecycle skill-surface outcomes, live baseline replay outcomes, qa-verdict outcomes, qa-gate outcomes, one-step baseline gate outcomes, semantic preset outcomes, policy-family outcomes, repo-local marketplace install outcomes, and agent-orchestration hardening outcomes only.
 - `design/design.md` remains the authority for frontend-vision intent, plugin boundaries, and standalone-repo install posture.
 
 ---
@@ -78,9 +78,10 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - `qa_verdict.py` now turns compare/live-replay artifacts into reusable machine-readable verdicts
 - `qa_gate.py` now applies threshold-aware policy rules on top of verdict artifacts
 - `reference_live_gate.py` now captures current state, replays a saved baseline, and applies gate policy in one flow
-- reusable strict policy presets now exist under `support/policies/`
+- reusable policy presets now exist under `support/policies/`
+- policy presets now carry family-aware metadata with canonical selectors and legacy aliases
 - reference bundles now carry explicit `reference_side` and `reference_report_path` metadata for more reliable replay
 - repo-local marketplace path now installs `webview-screenshort@webview-screenshort` directly from the standalone repo root
-- `webview-vision-assist` now routes more explicitly between focused review, responsive review, compare-review, bundle-lifecycle, live baseline replay, verdict, gate, and one-step baseline gate entrypoints
+- `webview-vision-assist` now routes more explicitly between focused review, responsive review, compare-review, bundle-lifecycle, live baseline replay, verdict, gate, one-step baseline gate, and preset-discovery entrypoints
 
 ---

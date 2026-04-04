@@ -1,7 +1,7 @@
 ---
 name: reference-live-gate
 description: Capture a fresh live screenshot report from a URL, replay a saved reference bundle, and apply threshold-aware QA gate rules in one flow. Use this when a reusable baseline should be checked against the current live page and the result should end as a policy-based gate decision.
-argument-hint: --bundle <bundle.json> --url <live-url> --current-report <current-report.json> --comparison-json <comparison.json> --session-output <session.json> --session-name <session-name> --gate-output <gate.json> [--policy-preset <name>] [--policy-file <policy.json>] [--mode viewport|fullpage] [--device desktop|tablet|mobile] [--capture-set responsive] [--wait] [--engine auto|headless|aws] [--diff-dir <dir>] [--fail-on-invalid true|false] [--require-device desktop] [--require-device tablet] [--require-device mobile] [--max-diff-pixels <n>] [--max-diff-ratio <n>]
+argument-hint: --bundle <bundle.json> --url <live-url> --current-report <current-report.json> --comparison-json <comparison.json> --session-output <session.json> --session-name <session-name> --gate-output <gate.json> [--policy-preset <family/name-or-alias>] [--policy-file <policy.json>] [--mode viewport|fullpage] [--device desktop|tablet|mobile] [--capture-set responsive] [--wait] [--engine auto|headless|aws] [--diff-dir <dir>] [--fail-on-invalid true|false] [--require-device desktop] [--require-device tablet] [--require-device mobile] [--max-diff-pixels <n>] [--max-diff-ratio <n>]
 allowed-tools: Bash, Read
 ---
 

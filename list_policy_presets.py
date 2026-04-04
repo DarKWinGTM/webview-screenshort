@@ -5,7 +5,8 @@ List built-in QA policy presets for webview-screenshort.
 
 import argparse
 import json
-from pathlib import Path
+
+from policy_presets import list_policy_preset_records, policy_preset_dir
 
 
 def main() -> None:
@@ -13,29 +14,11 @@ def main() -> None:
     parser.add_argument("--output-format", choices=["json", "text"], default="json")
     args = parser.parse_args()
 
-    base_dir = Path(__file__).parent / "support" / "policies"
-    if not base_dir.exists():
-        raise SystemExit(f"Policy preset directory not found: {base_dir}")
-
-    presets = []
-    for path in sorted(base_dir.glob("*.json")):
-        with open(path, "r", encoding="utf-8") as file_obj:
-            payload = json.load(file_obj)
-        presets.append(
-            {
-                "name": path.stem,
-                "path": str(path),
-                "policy": payload,
-            }
-        )
-
-    if not presets:
-        raise SystemExit(f"No built-in policy presets found in: {base_dir}")
-
+    records = list_policy_preset_records()
     result = {
-        "policy_preset_count": len(presets),
-        "directory": str(base_dir),
-        "presets": presets,
+        "policy_preset_count": len(records),
+        "directory": str(policy_preset_dir()),
+        "presets": records,
     }
 
     if args.output_format == "json":
@@ -43,8 +26,8 @@ def main() -> None:
         return
 
     print(f"count={result['policy_preset_count']}")
-    for preset in presets:
-        print(f"- {preset['name']} -> {preset['path']}")
+    for preset in records:
+        print(f"- {preset['selector']} -> {preset['path']}")
 
 
 if __name__ == "__main__":

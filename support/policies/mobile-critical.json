@@ -1,4 +1,8 @@
 {
+  "family": "mobile",
+  "name": "critical",
+  "selector": "mobile/critical",
+  "aliases": ["mobile-critical"],
   "description": "Mobile-critical policy that requires mobile presence and keeps mobile screenshots pixel-stable.",
   "fail_on_invalid": true,
   "require_devices": ["mobile"],

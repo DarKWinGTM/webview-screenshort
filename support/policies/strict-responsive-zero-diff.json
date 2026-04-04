@@ -1,4 +1,9 @@
 {
+  "family": "strict",
+  "name": "responsive-zero-diff",
+  "selector": "strict/responsive-zero-diff",
+  "aliases": ["strict-responsive-zero-diff"],
+  "description": "Strict responsive policy that requires all three breakpoints and zero visible drift.",
   "fail_on_invalid": true,
   "require_devices": ["desktop", "tablet", "mobile"],
   "max_diff_pixels": 0,

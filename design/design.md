@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.19.0
+> **Current Version:** 2.20.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
@@ -181,6 +181,6 @@ This package is considered successful for the current wave when:
 - threshold-aware gate policy can now be applied on top of verdict artifacts with required-device and diff-threshold rules
 - one-step baseline gate flow can now capture current state, replay a saved baseline, and apply policy evaluation in one run
 - multiple semantic QA policy presets now exist for strict, smoke, layout-focused, mobile-critical, and content-tolerant review shapes
-- built-in policy presets can now be selected by name instead of requiring raw policy-file paths in normal usage
+- built-in policy presets can now be selected by canonical family/name selectors or legacy alias names instead of requiring raw policy-file paths in normal usage
 - non-diffable paired comparisons are now treated as failed instead of being reported as successful replay sessions
 - governance docs describe the real current state rather than the older project-local skill state
