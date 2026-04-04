@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.20.0
+> **Current Version:** 2.21.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
@@ -39,9 +39,9 @@ The intended package model is:
 - `skills/policy-presets/SKILL.md` = preset discovery surface for built-in QA gate policy names
 - `agents/webview-vision-assist.md` = optional visual-review companion agent
 - `screenshot.py` = execution engine with focused capture plus one-run responsive capture-set support
-- `compare_reports.py` = report comparison helper for expected/actual and before/after review workflows
-- `qa_verdict.py` = verdict helper for per-device pass/fail/invalid output on top of compare/live-replay artifacts
-- `qa_gate.py` = gate helper for policy/threshold checks on top of verdict output
+- `compare_reports.py` = report comparison helper for expected/actual and before/after review workflows, including pair-level mismatch classification
+- `qa_verdict.py` = verdict helper for per-device pass/fail/invalid output plus mismatch classification summaries on top of compare/live-replay artifacts
+- `qa_gate.py` = gate helper for policy/threshold checks on top of verdict output while preserving mismatch classifications
 - `reference_live_gate.py` = one-step helper that captures a live current report, replays a saved baseline, and evaluates the result against gate policy
 - `list_policy_presets.py` = policy preset discovery helper for reusable named gate policies
 - `diff_images.py` = image-diff helper for richer compare-review evidence
@@ -92,14 +92,14 @@ Need visual frontend review
   → persist a report file when a later step should re-read structured capture metadata directly
   → save screenshot locally
   → read the image
-  → when comparing states, re-read two report files and compare the referenced screenshots through structured pair metadata
+  → when comparing states, re-read two report files and compare the referenced screenshots through structured pair metadata plus mismatch classifications
   → persist a named compare session when the expected/actual review should remain reusable later
   → list or reopen saved compare sessions when QA history should be reused
   → create a reference bundle when a saved expected state should become a reusable baseline
   → apply a saved reference bundle when a fresh actual state should be checked against that baseline automatically
   → replay a saved reference bundle directly against a live URL when the current actual report should be captured on demand in the same flow
   → browse saved reference bundles when the reusable baseline set should be discoverable later
-  → generate a machine-readable QA verdict when compare/live-replay output should become reusable pass/fail evidence
+  → generate a machine-readable QA verdict when compare/live-replay output should become reusable pass/fail evidence with grouped mismatch reasons
   → apply threshold-aware gate rules when explicit acceptance policy should decide pass/fail
   → run one-step baseline gate flow when capture + replay + policy evaluation should finish in one workflow
   → analyze layout / UX / UI from the screenshot
@@ -128,6 +128,7 @@ Checked baseline-replay validation now also shows:
 - newly created reference bundles now include a bundled reference report payload plus copied baseline images so replay does not depend only on the original external report path surviving
 - `apply_reference_bundle.py` now supports optional diff-output enrichment while replaying a saved baseline against a current report
 - `compare_reports.py` now fails the top-level comparison when paired diff analysis fails instead of silently blessing non-diffable comparisons
+- compare, verdict, and gate artifacts now carry machine-readable mismatch classifications such as `exact_match`, `visual_change_region`, `dimension_shift`, `size_mismatch`, and `diff_error`
 - `reference_live_bundle.py` can capture a fresh responsive current report from a live URL and emit a new expected/actual compare session in one run
 
 Checked responsive review validation now also shows:
@@ -177,8 +178,8 @@ This package is considered successful for the current wave when:
 - saved reference bundles carry explicit reference-side/report metadata for more reliable replay
 - newly created reference bundles store a bundled reference report payload and copied baseline images instead of depending only on the original external report path
 - the package can replay a saved baseline directly against a live URL without requiring the caller to capture the current report separately first
-- compare/live-replay artifacts can now be converted into reusable machine-readable verdicts with per-device pass/fail/invalid output
-- threshold-aware gate policy can now be applied on top of verdict artifacts with required-device and diff-threshold rules
+- compare/live-replay artifacts can now be converted into reusable machine-readable verdicts with per-device pass/fail/invalid output plus grouped mismatch classifications
+- threshold-aware gate policy can now be applied on top of verdict artifacts with required-device and diff-threshold rules while preserving mismatch classifications into gate output
 - one-step baseline gate flow can now capture current state, replay a saved baseline, and apply policy evaluation in one run
 - multiple semantic QA policy presets now exist for strict, smoke, layout-focused, mobile-critical, and content-tolerant review shapes
 - built-in policy presets can now be selected by canonical family/name selectors or legacy alias names instead of requiring raw policy-file paths in normal usage

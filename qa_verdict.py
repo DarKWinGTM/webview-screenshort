@@ -21,6 +21,8 @@ class DeviceVerdict:
     verdict: str
     passed: bool
     reason: str
+    classification: str
+    classification_reason: str
     diff_pixels: Optional[int]
     diff_ratio: Optional[float]
     width_delta: Optional[int]
@@ -46,6 +48,7 @@ class VerdictResult:
     match_devices: List[str]
     mismatch_devices: List[str]
     invalid_device_names: List[str]
+    mismatch_classification_summary: Dict[str, List[str]]
     warnings: List[str]
     devices: List[DeviceVerdict]
     session_name: Optional[str] = None
@@ -88,37 +91,56 @@ def extract_source(payload: Dict[str, Any]) -> tuple[str, Optional[dict], Option
     raise SystemExit("Unsupported verdict source. Expected live replay, compare session, or comparison JSON.")
 
 
+def infer_pair_classification(pair: Dict[str, Any]) -> tuple[str, str]:
+    diff = pair.get("diff")
+    if not isinstance(diff, dict) or not diff:
+        return "invalid_diff_payload", "missing_diff_payload"
+    if not diff.get("success"):
+        if diff.get("same_size") is False:
+            return "size_mismatch", "images_are_not_same_size"
+        return "diff_error", "diff_analysis_failed"
+    width_delta = pair.get("width_delta")
+    height_delta = pair.get("height_delta")
+    if width_delta or height_delta:
+        return "dimension_shift", "reported_image_dimensions_changed"
+    if diff.get("diff_pixels"):
+        if diff.get("bounding_box"):
+            return "visual_change_region", "non_zero_diff_pixels_with_bounding_box"
+        return "visual_change", "non_zero_diff_pixels_detected"
+    return "exact_match", "no_visual_difference_detected"
+
+
 def build_device_verdict(pair: Dict[str, Any]) -> DeviceVerdict:
     diff = pair.get("diff") or {}
     warnings: List[str] = []
+    classification = str(pair.get("classification") or "").strip()
+    classification_reason = str(pair.get("classification_reason") or "").strip()
+    if not classification or not classification_reason:
+        classification, classification_reason = infer_pair_classification(pair)
     verdict = "pass"
     reason = "no_visual_difference_detected"
     passed = True
 
-    if not diff:
+    if classification in {"invalid_diff_payload", "diff_error", "size_mismatch"}:
         verdict = "invalid"
-        reason = "missing_diff_payload"
+        reason = classification_reason
         passed = False
-        warnings.append("Pair does not contain diff metadata.")
-    elif not diff.get("success"):
-        verdict = "invalid"
-        reason = "diff_analysis_failed"
-        passed = False
+        if not diff:
+            warnings.append("Pair does not contain diff metadata.")
         if diff.get("error"):
             warnings.append(str(diff.get("error")))
-    else:
-        diff_pixels = diff.get("diff_pixels")
-        diff_ratio = diff.get("diff_ratio")
-        if diff_pixels or diff_ratio:
-            verdict = "fail"
-            reason = "visual_mismatch_detected"
-            passed = False
+    elif classification in {"dimension_shift", "visual_change", "visual_change_region"}:
+        verdict = "fail"
+        reason = classification_reason
+        passed = False
 
     return DeviceVerdict(
         device=str(pair.get("device") or "unknown"),
         verdict=verdict,
         passed=passed,
         reason=reason,
+        classification=classification,
+        classification_reason=classification_reason,
         diff_pixels=diff.get("diff_pixels"),
         diff_ratio=diff.get("diff_ratio"),
         width_delta=pair.get("width_delta"),
@@ -135,7 +157,8 @@ def build_verdict_from_payload(payload: Dict[str, Any], source_path: Path) -> Ve
     source_type, capture_payload, session_payload, session_name, left_label, right_label = extract_source(payload)
     comparison = (session_payload or {}).get("comparison") or {}
     pairs = comparison.get("pairs")
-    if not isinstance(pairs, list):
+    if not isinstance(pairs, list) or not pairs:
+        upstream_error = str(comparison.get("error") or "Missing comparison pairs.")
         return VerdictResult(
             success=False,
             source_type=source_type,
@@ -149,18 +172,24 @@ def build_verdict_from_payload(payload: Dict[str, Any], source_path: Path) -> Ve
             match_devices=[],
             mismatch_devices=[],
             invalid_device_names=[],
-            warnings=[],
+            mismatch_classification_summary={},
+            warnings=list(comparison.get("warnings") or []),
             devices=[],
             session_name=session_name,
             left_label=left_label,
             right_label=right_label,
-            error="Missing comparison pairs.",
+            error=upstream_error,
         )
 
     devices = [build_device_verdict(pair) for pair in pairs]
     match_devices = [device.device for device in devices if device.verdict == "pass"]
     mismatch_devices = [device.device for device in devices if device.verdict == "fail"]
     invalid_device_names = [device.device for device in devices if device.verdict == "invalid"]
+    mismatch_classification_summary: Dict[str, List[str]] = {}
+    for device in devices:
+        if device.verdict != "pass":
+            mismatch_classification_summary.setdefault(device.classification, []).append(device.device)
+    mismatch_classification_summary = dict(sorted(mismatch_classification_summary.items()))
     warnings = list(comparison.get("warnings") or [])
     for device in devices:
         warnings.extend(device.warnings)
@@ -184,6 +213,7 @@ def build_verdict_from_payload(payload: Dict[str, Any], source_path: Path) -> Ve
         match_devices=match_devices,
         mismatch_devices=mismatch_devices,
         invalid_device_names=invalid_device_names,
+        mismatch_classification_summary=mismatch_classification_summary,
         warnings=warnings,
         devices=devices,
         session_name=session_name,
@@ -206,9 +236,13 @@ def emit_text(result: VerdictResult) -> None:
         print(f"mismatch_devices={','.join(result.mismatch_devices)}")
     if result.invalid_device_names:
         print(f"invalid_devices={','.join(result.invalid_device_names)}")
+    if result.mismatch_classification_summary:
+        print("mismatch_classifications=" + ",".join(
+            f"{classification}:{'|'.join(devices)}" for classification, devices in result.mismatch_classification_summary.items()
+        ))
     for device in result.devices:
         print(
-            f"- {device.device}: verdict={device.verdict} diff_pixels={device.diff_pixels} diff_ratio={device.diff_ratio} reason={device.reason}"
+            f"- {device.device}: verdict={device.verdict} classification={device.classification} diff_pixels={device.diff_pixels} diff_ratio={device.diff_ratio} reason={device.reason}"
         )
     for warning in result.warnings:
         print(f"⚠️ {warning}")

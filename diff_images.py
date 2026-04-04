@@ -13,6 +13,20 @@ from typing import Optional
 from PIL import Image, ImageChops
 
 
+def build_difference_mask(diff: Image.Image) -> Image.Image:
+    rgb_mask = diff.convert("RGB").convert("L")
+    alpha_mask = diff.getchannel("A")
+    return ImageChops.lighter(rgb_mask, alpha_mask)
+
+
+def build_visible_diff_image(diff: Image.Image, mask: Image.Image) -> Image.Image:
+    rgb = diff.convert("RGB")
+    if not rgb.getbbox():
+        rgb = Image.merge("RGB", (mask, mask, mask))
+    alpha = mask.point(lambda value: 255 if value else 0)
+    return Image.merge("RGBA", (*rgb.split(), alpha))
+
+
 @dataclass
 class ImageDiffResult:
     success: bool
@@ -91,10 +105,11 @@ def main() -> None:
         sys.exit(1)
 
     diff = ImageChops.difference(left, right)
-    bbox = diff.getbbox()
+    diff_mask = build_difference_mask(diff)
+    bbox = diff_mask.getbbox()
     diff_pixels = 0
     if bbox:
-        diff_pixels = sum(1 for pixel in diff.getdata() if pixel != (0, 0, 0, 0))
+        diff_pixels = sum(diff_mask.histogram()[1:])
     total_pixels = left_width * left_height
     diff_ratio = diff_pixels / total_pixels if total_pixels else 0.0
 
@@ -102,7 +117,7 @@ def main() -> None:
     if args.diff_output:
         output_path = Path(args.diff_output).expanduser()
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        diff.save(output_path)
+        build_visible_diff_image(diff, diff_mask).save(output_path)
         diff_output_path = str(output_path)
 
     result = ImageDiffResult(

@@ -1,7 +1,7 @@
 # Webview Screenshort - Phase Summary
 
-> **Current Version:** 2.20.0
-> **Target Design:** [../design/design.md](../design/design.md) v2.20.0
+> **Current Version:** 2.21.0
+> **Target Design:** [../design/design.md](../design/design.md) v2.21.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 > **Status:** Implemented - Pending Review
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)
@@ -23,6 +23,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 003 | `phase-003-install-and-lifecycle-validation.md` | `design/design.md` runtime contract | `none` | Validate plugin install, skill visibility, and runtime lifecycle | Package works as installed plugin |
 | 004 | `phase-004-separate-repo-cutover.md` | `design/design.md` plus package-local marketplace cutover posture | `../patch/phase-004-separate-repo-cutover.patch.md` | Prepare authority migration from the shared workspace into a standalone `webview-screenshort` repo | Package can cut over to its own repo without duplicate authority |
 | 005 | `phase-005-live-baseline-replay.md` | `design/design.md` live baseline replay and reusable baseline model | `../patch/phase-005-live-baseline-replay.patch.md` | Add saved-bundle + live-URL replay as a first-class frontend QA workflow | Reusable baselines can be replayed directly against current live pages in one flow |
+| 006 | `phase-006-mismatch-classification.md` | `design/design.md` compare/verdict/gate mismatch classification model | `../patch/phase-006-mismatch-classification.patch.md` | Add machine-readable mismatch classifications across compare, verdict, and gate layers | QA artifacts explain why devices failed, not only which devices failed |
 
 ---
 
@@ -35,13 +36,14 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 003 | Implemented - Pending Review | `phase-003-install-and-lifecycle-validation.md` | Validate install/lifecycle through plugin flow |
 | 004 | Implemented - Pending Review | `phase-004-separate-repo-cutover.md` | Finalize standalone repo authority and retire shared-workspace authority posture |
 | 005 | Implemented - Pending Review | `phase-005-live-baseline-replay.md` | Add saved-bundle + live-URL replay as a first-class reusable frontend QA workflow |
+| 006 | Implemented - Pending Review | `phase-006-mismatch-classification.md` | Add machine-readable mismatch classifications across compare, verdict, and gate workflows |
 
 ---
 
 ## Global TODO / Changelog Coordination
 
 - `TODO.md` should track the active package work and shipped execution history clearly, not only the earlier cutover slice.
-- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, diff-assisted compare outcomes, named compare-session outcomes, compare-session history outcomes, expected-reference bundle outcomes, apply-reference workflow outcomes, reference-bundle browsing outcomes, bundle-lifecycle skill-surface outcomes, live baseline replay outcomes, qa-verdict outcomes, qa-gate outcomes, one-step baseline gate outcomes, semantic preset outcomes, policy-family outcomes, repo-local marketplace install outcomes, and agent-orchestration hardening outcomes only.
+- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, diff-assisted compare outcomes, named compare-session outcomes, compare-session history outcomes, expected-reference bundle outcomes, apply-reference workflow outcomes, reference-bundle browsing outcomes, bundle-lifecycle skill-surface outcomes, live baseline replay outcomes, qa-verdict outcomes, qa-gate outcomes, one-step baseline gate outcomes, semantic preset outcomes, policy-family outcomes, mismatch-classification outcomes, repo-local marketplace install outcomes, and agent-orchestration hardening outcomes only.
 - `design/design.md` remains the authority for frontend-vision intent, plugin boundaries, and standalone-repo install posture.
 
 ---
@@ -77,6 +79,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - `skills/reference-live-review/SKILL.md` now exposes saved-baseline replay against a live URL from one front door
 - `qa_verdict.py` now turns compare/live-replay artifacts into reusable machine-readable verdicts
 - `qa_gate.py` now applies threshold-aware policy rules on top of verdict artifacts
+- compare, verdict, and gate artifacts now emit machine-readable mismatch classifications so failures explain why they happened, not only which device failed
 - `reference_live_gate.py` now captures current state, replays a saved baseline, and applies gate policy in one flow
 - reusable policy presets now exist under `support/policies/`
 - policy presets now carry family-aware metadata with canonical selectors and legacy aliases

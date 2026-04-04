@@ -15,7 +15,7 @@ Use this skill when frontend review should compare two already-generated screens
    - first positional arg = report A path
    - second positional arg = report B path
 
-2. Run the installed comparison helper to validate the two reports and emit structured comparison metadata:
+2. Run the installed comparison helper to validate the two reports and emit structured comparison metadata plus pair-level mismatch classifications:
    ```bash
    python3 "${CLAUDE_PLUGIN_ROOT}/compare_reports.py" $ARGUMENTS --output-format json
    ```
@@ -29,7 +29,7 @@ Use this skill when frontend review should compare two already-generated screens
 
 5. Confirm that each report is a valid `webview-screenshort.capture-report/v1` artifact.
 
-6. Read the helper output and extract the referenced screenshot pairs.
+6. Read the helper output and extract the referenced screenshot pairs plus their `classification` / `classification_reason` fields.
 
 7. Read the referenced image files.
 
@@ -51,5 +51,6 @@ Use this skill when frontend review should compare two already-generated screens
 - exact report paths used
 - exact screenshot paths used
 - structured pair metadata from the helper output
+- pair-level mismatch classifications such as `exact_match`, `visual_change_region`, `size_mismatch`, or `diff_error`
 - visible differences grouped clearly
 - concise judgment about improvement, regression, or mixed result

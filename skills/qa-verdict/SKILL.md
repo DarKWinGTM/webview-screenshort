@@ -1,6 +1,6 @@
 ---
 name: qa-verdict
-description: Turn compare-session, comparison, or reference-live-replay artifacts into a machine-readable visual QA verdict with per-device pass/fail/invalid summaries. Use this when screenshot QA should end in a reusable verdict instead of raw comparison JSON only.
+description: Turn compare-session, comparison, or reference-live-replay artifacts into a machine-readable visual QA verdict with per-device pass/fail/invalid summaries and mismatch classifications. Use this when screenshot QA should end in a reusable verdict instead of raw comparison JSON only.
 argument-hint: <compare-session.json|comparison.json|live-replay.json> [--output-format json|text]
 allowed-tools: Bash, Read
 ---
@@ -24,6 +24,7 @@ Use this skill when frontend screenshot QA should end with a concise verdict lay
 - overall verdict: `pass`, `fail`, or `invalid`
 - per-device verdicts for desktop/tablet/mobile or focused captures
 - machine-readable match/mismatch/invalid lists
+- mismatch classification summaries so failures are grouped by why they failed, not only which device failed
 - concise reason for each failed or invalid pair
 - next useful QA or UI follow-up step
 - handoff into `/qa-gate` when explicit thresholds should decide pass/fail

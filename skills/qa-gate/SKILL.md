@@ -26,4 +26,5 @@ Use this skill when screenshot QA should end in a threshold-aware gate result in
 - missing required devices
 - violated rules
 - per-device gate status
+- mismatch classification summary propagated from the verdict layer when failures exist
 - next useful QA or UI follow-up step

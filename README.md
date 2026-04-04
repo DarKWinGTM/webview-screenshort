@@ -87,15 +87,15 @@ Verified now:
 - the package installs through its own repo-root marketplace manifest and exposes `webview-screenshort:webview-vision-assist`
 - skill/agent execution now targets `${CLAUDE_PLUGIN_ROOT}` instead of a source-workspace-only path
 - `screenshot.py` now supports env-driven capture configuration, JSON result output, schema-stamped persisted report-file output, and one-run responsive capture-set output for chaining into frontend review workflows
-- `compare_reports.py` now validates persisted reports and emits structured pair metadata for report-to-report comparison workflows
+- `compare_reports.py` now validates persisted reports, emits structured pair metadata, and classifies each compared device as `exact_match`, `visual_change_region`, `dimension_shift`, `size_mismatch`, or `diff_error`
 - `diff_images.py` now adds optional image-diff metrics and diff-image outputs for richer compare-review workflows
 - `compare_session.py` now persists named compare-session artifacts with expected/actual-style labels for later QA review
 - `list_compare_sessions.py` now lists and summarizes persisted compare-session artifacts for practical QA history browsing
 - `create_reference_bundle.py` now builds reusable expected-reference bundle artifacts on top of saved compare sessions
 - `apply_reference_bundle.py` now applies a saved reference bundle to a current report and emits a fresh expected/actual compare session automatically
 - `reference_live_bundle.py` now captures a fresh current report from a live URL and replays a saved baseline in one flow
-- `qa_verdict.py` now turns compare-session, comparison, or live-replay artifacts into machine-readable pass/fail/invalid QA verdicts
-- `qa_gate.py` now applies threshold/policy rules on top of verdict artifacts so screenshot QA can produce reusable gate results
+- `qa_verdict.py` now turns compare-session, comparison, or live-replay artifacts into machine-readable pass/fail/invalid QA verdicts with mismatch classification summaries
+- `qa_gate.py` now applies threshold/policy rules on top of verdict artifacts so screenshot QA can produce reusable gate results while preserving mismatch classification summaries
 - `reference_live_gate.py` now captures a live current report, replays a saved baseline, and applies gate policy in one flow
 - `list_policy_presets.py` now lists the built-in gate policy presets that can be selected by name
 - the package now ships multiple semantic QA policy presets for smoke, layout, mobile-critical, content-tolerant, and strict responsive review
@@ -242,7 +242,7 @@ Use this package when the goal is to inspect:
 ### For before/after or regression review
 - `/compare-review /path/to/report-a.json /path/to/report-b.json`
 - compare two `webview-screenshort.capture-report/v1` artifacts and inspect the paired screenshots
-- use diff-assisted compare flow when you want image-diff metrics and generated diff images in addition to pair metadata
+- use diff-assisted compare flow when you want image-diff metrics, generated diff images, and pair-level mismatch classifications in addition to pair metadata
 - persist a named compare session when QA work should be saved as an expected/actual or before/after artifact
 
 ### For bundle lifecycle work
@@ -261,12 +261,12 @@ Use this package when the goal is to inspect:
 ### For reusable QA verdict output
 - `/qa-verdict /path/to/compare-session-or-live-replay.json --output-format json`
 - use this surface when compare/live-replay artifacts should end in a reusable per-device verdict instead of raw pair metadata only
-- the verdict layer now returns overall `pass` / `fail` / `invalid` state plus per-device reasons and match/mismatch lists
+- the verdict layer now returns overall `pass` / `fail` / `invalid` state plus per-device reasons, match/mismatch lists, and grouped mismatch classifications
 
 ### For threshold-aware QA gate output
 - `/qa-gate /path/to/compare-session-or-live-replay.json --policy-preset strict-responsive-zero-diff --output-format json`
 - use this surface when verdict artifacts should be checked against explicit acceptance rules rather than only summarized
-- the gate layer now returns overall gate status, violated rules, missing required devices, and per-device gate results
+- the gate layer now returns overall gate status, violated rules, missing required devices, per-device gate results, and propagated mismatch classifications
 
 ### For built-in policy preset discovery
 - `/policy-presets --output-format json`

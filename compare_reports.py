@@ -49,6 +49,8 @@ class ComparisonPair:
     right: ComparedImage
     width_delta: Optional[int]
     height_delta: Optional[int]
+    classification: str
+    classification_reason: str
     diff: Optional[ImageDiff] = None
 
 
@@ -63,6 +65,7 @@ class ComparisonResult:
     compatible: bool
     comparison_mode: str
     pairs: List[ComparisonPair]
+    classification_summary: Dict[str, List[str]]
     warnings: List[str]
     error: Optional[str] = None
 
@@ -137,6 +140,8 @@ def build_pairs(left_images: List[ComparedImage], right_images: List[ComparedIma
                 right=right,
                 width_delta=width_delta,
                 height_delta=height_delta,
+                classification="awaiting_diff",
+                classification_reason="diff_not_run_yet",
             )
         )
     return pairs
@@ -191,6 +196,30 @@ def run_diff_helper(diff_helper: Path, left_image: str, right_image: str, diff_o
     return ImageDiff(**payload)
 
 
+def classify_pair(pair: ComparisonPair) -> tuple[str, str]:
+    diff = pair.diff
+    if not diff:
+        return "invalid_diff_payload", "missing_diff_payload"
+    if not diff.success:
+        if not diff.same_size:
+            return "size_mismatch", "images_are_not_same_size"
+        return "diff_error", "diff_analysis_failed"
+    if pair.width_delta or pair.height_delta:
+        return "dimension_shift", "reported_image_dimensions_changed"
+    if diff.diff_pixels:
+        if diff.bounding_box:
+            return "visual_change_region", "non_zero_diff_pixels_with_bounding_box"
+        return "visual_change", "non_zero_diff_pixels_detected"
+    return "exact_match", "no_visual_difference_detected"
+
+
+def build_classification_summary(pairs: List[ComparisonPair]) -> Dict[str, List[str]]:
+    summary: Dict[str, List[str]] = {}
+    for pair in pairs:
+        summary.setdefault(pair.classification, []).append(pair.device)
+    return dict(sorted(summary.items()))
+
+
 def enrich_pairs_with_diff(pairs: List[ComparisonPair], diff_dir: Optional[Path]) -> None:
     diff_helper = Path(__file__).with_name("diff_images.py")
     for pair in pairs:
@@ -198,6 +227,7 @@ def enrich_pairs_with_diff(pairs: List[ComparisonPair], diff_dir: Optional[Path]
         if diff_dir:
             diff_output = diff_dir / f"{pair.device}_diff.png"
         pair.diff = run_diff_helper(diff_helper, pair.left.image_path, pair.right.image_path, diff_output)
+        pair.classification, pair.classification_reason = classify_pair(pair)
 
 
 def main() -> None:
@@ -255,6 +285,7 @@ def main() -> None:
         compatible=success,
         comparison_mode=mode,
         pairs=pairs,
+        classification_summary=build_classification_summary(pairs),
         warnings=warnings,
         error=error,
     )
@@ -267,6 +298,7 @@ def main() -> None:
     print(f"Pairs: {len(result.pairs)}")
     for pair in result.pairs:
         print(f"- {pair.device}: {pair.left.image_path} ↔ {pair.right.image_path}")
+        print(f"  classification={pair.classification} reason={pair.classification_reason}")
         if pair.diff:
             print(f"  diff_pixels={pair.diff.diff_pixels} diff_ratio={pair.diff.diff_ratio:.6f}")
             if pair.diff.bounding_box:

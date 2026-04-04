@@ -24,6 +24,7 @@ DEFAULT_POLICY = {
 class GateDeviceResult:
     device: str
     verdict: str
+    classification: str
     gate_status: str
     passed_gate: bool
     reason: str
@@ -40,6 +41,7 @@ class GateResult:
     overall_gate_status: str
     overall_passed: bool
     violated_rules: List[str]
+    mismatch_classification_summary: Dict[str, List[str]]
     missing_required_devices: List[str]
     devices: List[GateDeviceResult]
     warnings: List[str]
@@ -84,6 +86,7 @@ def load_policy(policy_path: Optional[str], policy_preset: Optional[str]) -> tup
 def evaluate_device(device: Dict[str, Any], policy: Dict[str, Any]) -> GateDeviceResult:
     violated_rules: List[str] = []
     verdict = str(device.get("verdict") or "invalid")
+    classification = str(device.get("classification") or "unknown_mismatch")
     diff_pixels = device.get("diff_pixels")
     diff_ratio = device.get("diff_ratio")
 
@@ -109,6 +112,7 @@ def evaluate_device(device: Dict[str, Any], policy: Dict[str, Any]) -> GateDevic
     return GateDeviceResult(
         device=str(device.get("device") or "unknown"),
         verdict=verdict,
+        classification=classification,
         gate_status=gate_status,
         passed_gate=passed_gate,
         reason=reason,
@@ -141,6 +145,8 @@ def apply_gate(verdict_payload: Dict[str, Any], policy: Dict[str, Any], source_p
         violated_rules.append(f"missing_required_device:{device}")
     violated_rules.extend(upstream_invalid_reasons)
 
+    mismatch_classification_summary = dict(sorted((verdict_payload.get("mismatch_classification_summary") or {}).items()))
+
     warnings = list(verdict_payload.get("warnings") or [])
     overall_gate_status = "pass"
     overall_passed = True
@@ -161,6 +167,7 @@ def apply_gate(verdict_payload: Dict[str, Any], policy: Dict[str, Any], source_p
         overall_gate_status=overall_gate_status,
         overall_passed=overall_passed,
         violated_rules=violated_rules,
+        mismatch_classification_summary=mismatch_classification_summary,
         missing_required_devices=missing_required_devices,
         devices=devices,
         warnings=warnings,
@@ -178,9 +185,13 @@ def emit_text(result: GateResult) -> None:
         print(f"missing_required_devices={','.join(result.missing_required_devices)}")
     if result.violated_rules:
         print(f"violated_rules={','.join(result.violated_rules)}")
+    if result.mismatch_classification_summary:
+        print("mismatch_classifications=" + ",".join(
+            f"{classification}:{'|'.join(devices)}" for classification, devices in result.mismatch_classification_summary.items()
+        ))
     for device in result.devices:
         print(
-            f"- {device.device}: verdict={device.verdict} gate_status={device.gate_status} diff_pixels={device.diff_pixels} diff_ratio={device.diff_ratio}"
+            f"- {device.device}: verdict={device.verdict} classification={device.classification} gate_status={device.gate_status} diff_pixels={device.diff_pixels} diff_ratio={device.diff_ratio}"
         )
     for warning in result.warnings:
         print(f"⚠️ {warning}")
