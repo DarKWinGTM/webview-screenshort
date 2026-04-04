@@ -95,10 +95,12 @@ Verified now:
 - `apply_reference_bundle.py` now applies a saved reference bundle to a current report and emits a fresh expected/actual compare session automatically
 - `reference_live_bundle.py` now captures a fresh current report from a live URL and replays a saved baseline in one flow
 - `qa_verdict.py` now turns compare-session, comparison, or live-replay artifacts into machine-readable pass/fail/invalid QA verdicts
+- `qa_gate.py` now applies threshold/policy rules on top of verdict artifacts so screenshot QA can produce reusable gate results
 - `list_reference_bundles.py` now lists and summarizes saved reference bundles for practical baseline browsing
 - `skills/reference-bundles/SKILL.md` now exposes bundle lifecycle work through a dedicated front-door skill surface
 - `skills/reference-live-review/SKILL.md` now exposes saved-baseline replay against a live URL from one front door
 - `skills/qa-verdict/SKILL.md` now exposes a reusable verdict layer for compare/live-replay artifacts
+- `skills/qa-gate/SKILL.md` now exposes a threshold-aware gate layer for policy-based QA pass/fail decisions
 - reference bundles now carry explicit reference-side/report metadata instead of relying only on implicit left-side session interpretation
 - newly created reference bundles now include a bundled reference report payload plus copied baseline images so replay is less fragile if the original temp report disappears
 - `compare_reports.py` now treats non-diffable paired comparisons as failed instead of silently reporting success just because device labels matched
@@ -145,9 +147,12 @@ webview-screenshort/
       SKILL.md
     qa-verdict/
       SKILL.md
+    qa-gate/
+      SKILL.md
   screenshot.py
   compare_reports.py
   qa_verdict.py
+  qa_gate.py
   diff_images.py
   compare_session.py
   list_compare_sessions.py
@@ -245,6 +250,11 @@ Use this package when the goal is to inspect:
 - `/qa-verdict /path/to/compare-session-or-live-replay.json --output-format json`
 - use this surface when compare/live-replay artifacts should end in a reusable per-device verdict instead of raw pair metadata only
 - the verdict layer now returns overall `pass` / `fail` / `invalid` state plus per-device reasons and match/mismatch lists
+
+### For threshold-aware QA gate output
+- `/qa-gate /path/to/compare-session-or-live-replay.json --require-device desktop --require-device tablet --require-device mobile --fail-on-invalid true --max-diff-ratio 0 --output-format json`
+- use this surface when verdict artifacts should be checked against explicit acceptance rules rather than only summarized
+- the gate layer now returns overall gate status, violated rules, missing required devices, and per-device gate results
 
 Or manually:
 1. capture one responsive set with `--capture-set responsive --output-format json`

@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.15.0
+> **Current Version:** 2.16.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.16.0 | 2026-04-04 | **[Added threshold-aware QA gate layer](#version-2160)** | Added `qa_gate.py` and a dedicated gate skill so verdict artifacts can be checked against explicit policy rules instead of only summarized. |
 | 2.15.0 | 2026-04-04 | **[Added automated QA verdict layer](#version-2150)** | Added `qa_verdict.py` and a dedicated verdict skill so compare/live-replay artifacts can end in reusable per-device pass/fail output instead of raw pair metadata only. |
 | 2.14.1 | 2026-04-04 | **[Fixed authority/update drift after 2.14.0](#version-2141)** | Corrected the remaining install/update/doc authority drift so repo-local marketplace posture and compatibility-only `darkwingtm` wording now align cleanly. |
 | 2.14.0 | 2026-04-04 | **[Added live baseline replay workflow](#version-2140)** | Added `reference_live_bundle.py`, exposed live baseline replay from a dedicated skill surface, and made saved reference bundles easier to re-run directly against current live pages. |
@@ -28,6 +29,29 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2160"></a>
+## Version 2.16.0: Added threshold-aware QA gate layer
+
+**Date:** 2026-04-04
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added `qa_gate.py` so compare-session, comparison, live-replay, or verdict artifacts can be checked against explicit threshold/policy rules.
+- Added `skills/qa-gate/SKILL.md` so gate evaluation has a dedicated front-door skill surface.
+- Updated `skills/qa-verdict/SKILL.md`, `skills/reference-live-review/SKILL.md`, `skills/compare-review/SKILL.md`, and `agents/webview-vision-assist.md` so verdict and gate layers are now part of the visible workflow.
+- Updated README, design, and TODO wording so the product surface now explicitly includes threshold-aware gate evaluation on top of capture/compare/replay/verdict flows.
+- Bumped plugin and marketplace package versions to `2.16.0`.
+
+### Validation
+- `python3 -m py_compile qa_gate.py` succeeds.
+- `python3 qa_gate.py /tmp/webview_live_session_v3.json --require-device desktop --require-device tablet --require-device mobile --fail-on-invalid true --max-diff-ratio 0 --output-format json` succeeds.
+- the helper returns a machine-readable gate result with policy, violated-rules surface, missing-device checks, and per-device gate status.
+
+### Summary
+The package now adds a true threshold-aware QA gate layer, so screenshot review can end not only with a verdict but also with a policy-based pass/fail decision.
 
 ---
 

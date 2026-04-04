@@ -29,17 +29,19 @@ Use real rendered screenshots as visual evidence for frontend development work.
    - saved bundle/session lifecycle work → reference-bundle path
    - saved reference bundle + live URL replay → reference-live-review path
    - comparison/live-replay artifact needs a reusable verdict → qa-verdict path
+   - verdict needs threshold/policy gating → qa-gate path
 2. For one live page, prefer the installed `/frontend-review` surface or run `python3 "${CLAUDE_PLUGIN_ROOT}/screenshot.py"` with `--output-format json --report-file ...`.
 3. For responsive review, prefer the installed `/responsive-review` surface or one run with `--capture-set responsive` so desktop, tablet, and mobile metadata come back in one JSON payload.
 4. For before/after or expected/actual work, prefer the installed `/compare-review` surface or run `python3 "${CLAUDE_PLUGIN_ROOT}/compare_reports.py" <report-a> <report-b> --output-format json`.
 5. For bundle/session lifecycle work, prefer the installed `/reference-bundles` surface or run the bundle helpers directly.
 6. For saved baseline + live page replay, prefer the installed `/reference-live-review` surface or run `python3 "${CLAUDE_PLUGIN_ROOT}/reference_live_bundle.py" ...` so capture + apply-reference happen in one flow.
 7. For compare/live-replay verdict generation, prefer the installed `/qa-verdict` surface or run `python3 "${CLAUDE_PLUGIN_ROOT}/qa_verdict.py" ...` so raw comparison artifacts become a reusable per-device pass/fail summary.
-8. Prefer `--wait` when CSR or delayed hydration is likely.
-9. Prefer `--mode viewport` for above-the-fold inspection and `--mode fullpage` for long docs/pages.
-10. Return the exact screenshot/report path(s) and structured metadata.
-11. If the user wants analysis, read the image(s) and use them as evidence.
-12. Summarize visible layout, spacing, readability, responsive differences, comparison deltas, and likely UX/UI issues.
+8. For threshold-aware pass/fail policy checks, prefer the installed `/qa-gate` surface or run `python3 "${CLAUDE_PLUGIN_ROOT}/qa_gate.py" ...` so verdict artifacts can be checked against explicit rules.
+9. Prefer `--wait` when CSR or delayed hydration is likely.
+10. Prefer `--mode viewport` for above-the-fold inspection and `--mode fullpage` for long docs/pages.
+11. Return the exact screenshot/report path(s) and structured metadata.
+12. If the user wants analysis, read the image(s) and use them as evidence.
+13. Summarize visible layout, spacing, readability, responsive differences, comparison deltas, likely UX/UI issues, and policy-level QA result when gating was used.
 
 ## Output
 - exact screenshot path or paths

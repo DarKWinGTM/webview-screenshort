@@ -26,3 +26,4 @@ Use this skill when frontend screenshot QA should end with a concise verdict lay
 - machine-readable match/mismatch/invalid lists
 - concise reason for each failed or invalid pair
 - next useful QA or UI follow-up step
+- handoff into `/qa-gate` when explicit thresholds should decide pass/fail
