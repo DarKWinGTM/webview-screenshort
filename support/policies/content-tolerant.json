@@ -1,0 +1,7 @@
+{
+  "description": "Content-tolerant policy for pages with expected copy/data drift but no major structural regression.",
+  "fail_on_invalid": true,
+  "require_devices": ["desktop", "tablet", "mobile"],
+  "max_diff_pixels": 60000,
+  "max_diff_ratio": 0.05
+}

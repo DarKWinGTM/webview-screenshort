@@ -1,0 +1,7 @@
+{
+  "description": "Mobile-critical policy that requires mobile presence and keeps mobile screenshots pixel-stable.",
+  "fail_on_invalid": true,
+  "require_devices": ["mobile"],
+  "max_diff_pixels": 0,
+  "max_diff_ratio": 0.0
+}

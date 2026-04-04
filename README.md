@@ -98,6 +98,7 @@ Verified now:
 - `qa_gate.py` now applies threshold/policy rules on top of verdict artifacts so screenshot QA can produce reusable gate results
 - `reference_live_gate.py` now captures a live current report, replays a saved baseline, and applies gate policy in one flow
 - `list_policy_presets.py` now lists the built-in gate policy presets that can be selected by name
+- the package now ships multiple semantic QA policy presets for smoke, layout, mobile-critical, content-tolerant, and strict responsive review
 - `list_reference_bundles.py` now lists and summarizes saved reference bundles for practical baseline browsing
 - `skills/reference-bundles/SKILL.md` now exposes bundle lifecycle work through a dedicated front-door skill surface
 - `skills/reference-live-review/SKILL.md` now exposes saved-baseline replay against a live URL from one front door
@@ -270,6 +271,12 @@ Use this package when the goal is to inspect:
 - `/policy-presets --output-format json`
 - use this surface when you want to discover reusable built-in policy names before running `/qa-gate` or `/reference-live-gate`
 - preset-name selection now lets QA flows avoid raw `support/policies/*.json` path hunting in normal usage
+- current semantic presets include:
+  - `strict-responsive-zero-diff`
+  - `smoke-responsive`
+  - `layout-major-shift`
+  - `mobile-critical`
+  - `content-tolerant`
 
 ### For one-step saved baseline gate against a live URL
 - `/reference-live-gate --bundle /path/to/bundle.json --url https://example.com/page --current-report /tmp/current.json --comparison-json /tmp/compare.json --session-output /tmp/session.json --session-name current-vs-expected --gate-output /tmp/gate.json --policy-preset strict-responsive-zero-diff --capture-set responsive --mode viewport --wait --diff-dir /tmp/diffs`

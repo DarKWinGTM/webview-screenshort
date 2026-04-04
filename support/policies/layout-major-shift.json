@@ -1,0 +1,7 @@
+{
+  "description": "Layout-focused policy that fails only for larger visible changes across required responsive breakpoints.",
+  "fail_on_invalid": true,
+  "require_devices": ["desktop", "tablet", "mobile"],
+  "max_diff_pixels": 25000,
+  "max_diff_ratio": 0.02
+}

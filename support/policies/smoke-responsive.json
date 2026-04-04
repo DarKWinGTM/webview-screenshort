@@ -1,0 +1,7 @@
+{
+  "description": "Responsive smoke check that requires all three breakpoints but allows visible drift.",
+  "fail_on_invalid": true,
+  "require_devices": ["desktop", "tablet", "mobile"],
+  "max_diff_pixels": null,
+  "max_diff_ratio": null
+}
