@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.17.0
+> **Current Version:** 2.18.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
@@ -36,12 +36,14 @@ The intended package model is:
 - `skills/qa-verdict/SKILL.md` = verdict surface that turns compare/live-replay artifacts into reusable QA outcomes
 - `skills/qa-gate/SKILL.md` = threshold-aware gate surface that applies policy rules on top of verdict artifacts
 - `skills/reference-live-gate/SKILL.md` = one-step gate surface for saved baseline + live URL + policy evaluation
+- `skills/policy-presets/SKILL.md` = preset discovery surface for built-in QA gate policy names
 - `agents/webview-vision-assist.md` = optional visual-review companion agent
 - `screenshot.py` = execution engine with focused capture plus one-run responsive capture-set support
 - `compare_reports.py` = report comparison helper for expected/actual and before/after review workflows
 - `qa_verdict.py` = verdict helper for per-device pass/fail/invalid output on top of compare/live-replay artifacts
 - `qa_gate.py` = gate helper for policy/threshold checks on top of verdict output
 - `reference_live_gate.py` = one-step helper that captures a live current report, replays a saved baseline, and evaluates the result against gate policy
+- `list_policy_presets.py` = policy preset discovery helper for reusable named gate policies
 - `diff_images.py` = image-diff helper for richer compare-review evidence
 - `compare_session.py` = named compare-session helper for reusable expected/actual QA artifacts
 - `list_compare_sessions.py` = compare-session index/history helper for reusable QA browsing
@@ -179,5 +181,6 @@ This package is considered successful for the current wave when:
 - threshold-aware gate policy can now be applied on top of verdict artifacts with required-device and diff-threshold rules
 - one-step baseline gate flow can now capture current state, replay a saved baseline, and apply policy evaluation in one run
 - a reusable strict responsive zero-diff policy preset now exists for immediate gate reuse
+- built-in policy presets can now be selected by name instead of requiring raw policy-file paths in normal usage
 - non-diffable paired comparisons are now treated as failed instead of being reported as successful replay sessions
 - governance docs describe the real current state rather than the older project-local skill state

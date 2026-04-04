@@ -63,7 +63,20 @@ def load_verdict(source_path: Path) -> Dict[str, Any]:
     return json.loads(result.stdout)
 
 
-def load_policy(policy_path: Optional[str]) -> Dict[str, Any]:
+def resolve_policy_preset(name: str) -> Path:
+    policy_dir = Path(__file__).parent / "support" / "policies"
+    candidate = policy_dir / f"{name}.json"
+    if not candidate.exists():
+        raise SystemExit(f"Unknown policy preset: {name}")
+    return candidate
+
+
+def load_policy(policy_path: Optional[str], policy_preset: Optional[str]) -> Dict[str, Any]:
+    if policy_preset:
+        payload = load_json(resolve_policy_preset(policy_preset))
+        merged = dict(DEFAULT_POLICY)
+        merged.update(payload)
+        return merged
     if not policy_path:
         return dict(DEFAULT_POLICY)
     payload = load_json(Path(policy_path).expanduser())
@@ -116,19 +129,37 @@ def apply_gate(verdict_payload: Dict[str, Any], policy: Dict[str, Any], source_p
     missing_required_devices = [device for device in required_devices if device not in present_devices]
 
     violated_rules: List[str] = []
+    upstream_invalid_reasons: List[str] = []
+    if verdict_payload.get("success") is False:
+        upstream_invalid_reasons.append("upstream_verdict_failed")
+    if verdict_payload.get("overall_verdict") == "invalid":
+        upstream_invalid_reasons.append("upstream_verdict_invalid")
+    if verdict_payload.get("error"):
+        upstream_invalid_reasons.append("upstream_verdict_error")
+    if not devices:
+        upstream_invalid_reasons.append("upstream_verdict_has_no_devices")
+
     for device in devices:
         violated_rules.extend(f"{device.device}:{rule}" for rule in device.violated_rules)
     for device in missing_required_devices:
         violated_rules.append(f"missing_required_device:{device}")
+    violated_rules.extend(upstream_invalid_reasons)
 
+    warnings = list(verdict_payload.get("warnings") or [])
     overall_gate_status = "pass"
     overall_passed = True
+    error = None
+    success = True
     if violated_rules:
         overall_gate_status = "fail"
         overall_passed = False
+    if upstream_invalid_reasons:
+        success = False
+        error = "Invalid upstream verdict payload: " + ", ".join(upstream_invalid_reasons)
+        warnings.append(error)
 
     return GateResult(
-        success=True,
+        success=success,
         source_path=str(source_path),
         policy=policy,
         overall_gate_status=overall_gate_status,
@@ -136,8 +167,8 @@ def apply_gate(verdict_payload: Dict[str, Any], policy: Dict[str, Any], source_p
         violated_rules=violated_rules,
         missing_required_devices=missing_required_devices,
         devices=devices,
-        warnings=list(verdict_payload.get("warnings") or []),
-        error=None,
+        warnings=warnings,
+        error=error,
     )
 
 
@@ -162,6 +193,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Apply threshold policy gating on top of a QA verdict source")
     parser.add_argument("source", help="Path to a compare-session, comparison, live-replay, or verdict JSON")
     parser.add_argument("--policy-file", help="Optional JSON file containing gate policy settings")
+    parser.add_argument("--policy-preset", help="Name of a built-in policy preset from support/policies/")
     parser.add_argument("--output-format", choices=["json", "text"], default="json")
     parser.add_argument("--fail-on-invalid", choices=["true", "false"], help="Override fail_on_invalid policy")
     parser.add_argument("--require-device", action="append", default=[], help="Require a device to be present; may be passed multiple times")
@@ -176,7 +208,7 @@ def main() -> None:
     else:
         verdict_payload = load_verdict(source_path)
 
-    policy = load_policy(args.policy_file)
+    policy = load_policy(args.policy_file, args.policy_preset)
     if args.fail_on_invalid is not None:
         policy["fail_on_invalid"] = args.fail_on_invalid == "true"
     if args.require_device:

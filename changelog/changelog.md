@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.17.0
+> **Current Version:** 2.18.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.18.0 | 2026-04-04 | **[Added named policy preset UX](#version-2180)** | Added preset discovery and `--policy-preset` support so gate flows can select built-in QA policies by name instead of raw path. |
 | 2.17.0 | 2026-04-04 | **[Added one-step baseline gate workflow](#version-2170)** | Added `reference_live_gate.py`, a dedicated one-step gate skill, and a reusable strict policy preset so saved baselines can be replayed and gated in one run. |
 | 2.16.0 | 2026-04-04 | **[Added threshold-aware QA gate layer](#version-2160)** | Added `qa_gate.py` and a dedicated gate skill so verdict artifacts can be checked against explicit policy rules instead of only summarized. |
 | 2.15.0 | 2026-04-04 | **[Added automated QA verdict layer](#version-2150)** | Added `qa_verdict.py` and a dedicated verdict skill so compare/live-replay artifacts can end in reusable per-device pass/fail output instead of raw pair metadata only. |
@@ -30,6 +31,29 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2180"></a>
+## Version 2.18.0: Added named policy preset UX
+
+**Date:** 2026-04-04
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added `list_policy_presets.py` so built-in QA policy presets can be discovered directly.
+- Added `skills/policy-presets/SKILL.md` so preset discovery has a dedicated front-door skill surface.
+- Added `--policy-preset` support to `qa_gate.py` and `reference_live_gate.py` so built-in policies can be selected by name instead of raw file path.
+- Updated README, design, TODO, and agent workflow wording so preset discovery and preset-name selection are part of the visible product surface.
+- Bumped plugin and marketplace package versions to `2.18.0`.
+
+### Validation
+- `python3 list_policy_presets.py --output-format json` succeeds and returns the built-in preset list.
+- `python3 qa_gate.py /tmp/webview_gate_preset_session.json --policy-preset strict-responsive-zero-diff --output-format json` succeeds.
+- `python3 reference_live_gate.py --bundle /tmp/webview_reference_bundles/nodeclaw-docs-reference-v3.json --url https://claw-frontend-dev.nodenetwork.ovh/docs --current-report /tmp/webview_gate_preset2_current_report.json --comparison-json /tmp/webview_gate_preset2_compare.json --session-output /tmp/webview_gate_preset2_session.json --session-name nodeclaw-docs-live-gate-preset2 --gate-output /tmp/webview_gate_preset2_result.json --policy-preset strict-responsive-zero-diff --capture-set responsive --mode viewport --wait --diff-dir /tmp/webview_gate_preset2_diffs` succeeds.
+
+### Summary
+The package now makes policy presets easier to use in practice by letting gate flows select built-in QA policies by name rather than forcing raw policy-file paths in normal usage.
 
 ---
 

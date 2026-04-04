@@ -1,7 +1,7 @@
 ---
 name: qa-gate
 description: Apply threshold and policy rules on top of compare/live-replay verdicts so screenshot QA can produce a reusable pass/fail gate result. Use this when verdict output should be checked against explicit acceptance thresholds.
-argument-hint: <compare-session.json|comparison.json|live-replay.json|verdict.json> [--policy-file <policy.json>] [--fail-on-invalid true|false] [--require-device desktop] [--require-device tablet] [--require-device mobile] [--max-diff-pixels <n>] [--max-diff-ratio <n>] [--output-format json|text]
+argument-hint: <compare-session.json|comparison.json|live-replay.json|verdict.json> [--policy-preset <name>] [--policy-file <policy.json>] [--fail-on-invalid true|false] [--require-device desktop] [--require-device tablet] [--require-device mobile] [--max-diff-pixels <n>] [--max-diff-ratio <n>] [--output-format json|text]
 allowed-tools: Bash, Read
 ---
 

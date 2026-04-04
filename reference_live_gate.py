@@ -23,6 +23,7 @@ def main() -> None:
     parser.add_argument("--session-name", required=True, help="Name for the emitted expected/actual compare session")
     parser.add_argument("--gate-output", required=True, help="Output path for QA gate JSON")
     parser.add_argument("--policy-file", help="Optional policy preset JSON for QA gate evaluation")
+    parser.add_argument("--policy-preset", help="Name of a built-in policy preset from support/policies/")
     parser.add_argument("--current-label", default="actual")
     parser.add_argument("--output", help="Optional screenshot output path or base path for responsive capture set")
     parser.add_argument("--output-dir", help="Optional output directory for generated screenshots")
@@ -89,6 +90,8 @@ def main() -> None:
     ]
     if args.policy_file:
         gate_cmd.extend(["--policy-file", args.policy_file])
+    if args.policy_preset:
+        gate_cmd.extend(["--policy-preset", args.policy_preset])
     if args.fail_on_invalid is not None:
         gate_cmd.extend(["--fail-on-invalid", args.fail_on_invalid])
     for device in args.require_device:

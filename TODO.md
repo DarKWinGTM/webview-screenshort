@@ -52,7 +52,8 @@
 - [x] Add a QA gate layer so verdict artifacts can be checked against explicit required-device and diff-threshold policy rules.
 - [x] Add a one-step baseline gate workflow so saved bundle + live URL + policy evaluation can finish in one run.
 - [x] Add reusable gate policy presets so common threshold rules do not need to be retyped every time.
-- [x] Harden `webview-vision-assist` so it routes more clearly between focused, responsive, compare-review, live baseline replay, verdict-generation, gate-evaluation, and one-step baseline-gate paths.
+- [x] Add policy preset discovery so built-in gate policies can be selected by name instead of raw file paths.
+- [x] Harden `webview-vision-assist` so it routes more clearly between focused, responsive, compare-review, live baseline replay, verdict-generation, gate-evaluation, one-step baseline-gate, and preset-discovery paths.
 - [x] Validate `/reload-plugins` and restart-time visibility for the installed package.
 
 ---
@@ -61,6 +62,7 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-04 | Added `list_policy_presets.py`, added `skills/policy-presets/SKILL.md`, added `--policy-preset` support to `qa_gate.py` and `reference_live_gate.py`, validated named preset selection against the checked NodeClaw docs workflow, and bumped the plugin/marketplace package versions to `2.18.0`. |
 | 2026-04-04 | Added `reference_live_gate.py`, added `skills/reference-live-gate/SKILL.md`, added `support/policies/strict-responsive-zero-diff.json`, validated one-step saved-baseline + live-URL + gate evaluation against the checked NodeClaw docs workflow, and bumped the plugin/marketplace package versions to `2.17.0`. |
 | 2026-04-04 | Added `qa_gate.py`, added `skills/qa-gate/SKILL.md`, validated threshold-aware gate evaluation against the checked live replay/session artifacts, and bumped the plugin/marketplace package versions to `2.16.0`. |
 | 2026-04-04 | Added `qa_verdict.py`, added `skills/qa-verdict/SKILL.md`, validated reusable pass/fail verdict generation against the checked live replay/session artifacts, and bumped the plugin/marketplace package versions to `2.15.0`. |
