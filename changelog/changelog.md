@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.14.1
+> **Current Version:** 2.15.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.15.0 | 2026-04-04 | **[Added automated QA verdict layer](#version-2150)** | Added `qa_verdict.py` and a dedicated verdict skill so compare/live-replay artifacts can end in reusable per-device pass/fail output instead of raw pair metadata only. |
 | 2.14.1 | 2026-04-04 | **[Fixed authority/update drift after 2.14.0](#version-2141)** | Corrected the remaining install/update/doc authority drift so repo-local marketplace posture and compatibility-only `darkwingtm` wording now align cleanly. |
 | 2.14.0 | 2026-04-04 | **[Added live baseline replay workflow](#version-2140)** | Added `reference_live_bundle.py`, exposed live baseline replay from a dedicated skill surface, and made saved reference bundles easier to re-run directly against current live pages. |
 | 2.13.0 | 2026-04-04 | **[Added bundle-lifecycle skill surface](#version-2130)** | Added `skills/reference-bundles/SKILL.md`, lifted bundle helpers into a clearer front-door workflow surface, and made baseline artifact lifecycle operations easier to invoke directly. |
@@ -27,6 +28,29 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2150"></a>
+## Version 2.15.0: Added automated QA verdict layer
+
+**Date:** 2026-04-04
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added `qa_verdict.py` so compare-session, comparison, and live-replay artifacts can be converted into reusable machine-readable verdicts.
+- Added `skills/qa-verdict/SKILL.md` so verdict generation has a dedicated front-door skill surface.
+- Updated `skills/compare-review/SKILL.md`, `skills/reference-live-review/SKILL.md`, and `agents/webview-vision-assist.md` so compare/live-replay flows can now continue into a verdict layer directly.
+- Updated README, design, and TODO wording so the product surface now explicitly includes verdict generation on top of capture/compare/replay workflows.
+- Bumped plugin and marketplace package versions to `2.15.0`.
+
+### Validation
+- `python3 -m py_compile qa_verdict.py` succeeds.
+- `python3 qa_verdict.py /tmp/webview_live_session_v3.json --output-format json` succeeds and returns per-device pass/fail verdicts.
+- `python3 qa_verdict.py /tmp/webview_live_compare_v3.json --output-format text` succeeds and returns a concise verdict summary.
+
+### Summary
+The package now moves beyond raw compare artifacts by adding a reusable verdict layer, so screenshot QA can finish with a machine-readable outcome instead of only low-level pair metadata.
 
 ---
 

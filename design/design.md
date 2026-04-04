@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.14.0
+> **Current Version:** 2.15.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
@@ -33,9 +33,11 @@ The intended package model is:
 - `skills/compare-review/SKILL.md` = report-to-report comparison and regression-review skill surface
 - `skills/reference-bundles/SKILL.md` = bundle lifecycle surface for listing, creating, and applying reusable baseline artifacts
 - `skills/reference-live-review/SKILL.md` = live baseline replay surface for saved expected bundles plus fresh live URLs
+- `skills/qa-verdict/SKILL.md` = verdict surface that turns compare/live-replay artifacts into reusable QA outcomes
 - `agents/webview-vision-assist.md` = optional visual-review companion agent
 - `screenshot.py` = execution engine with focused capture plus one-run responsive capture-set support
 - `compare_reports.py` = report comparison helper for expected/actual and before/after review workflows
+- `qa_verdict.py` = verdict helper for per-device pass/fail/invalid output on top of compare/live-replay artifacts
 - `diff_images.py` = image-diff helper for richer compare-review evidence
 - `compare_session.py` = named compare-session helper for reusable expected/actual QA artifacts
 - `list_compare_sessions.py` = compare-session index/history helper for reusable QA browsing
@@ -91,6 +93,7 @@ Need visual frontend review
   → apply a saved reference bundle when a fresh actual state should be checked against that baseline automatically
   → replay a saved reference bundle directly against a live URL when the current actual report should be captured on demand in the same flow
   → browse saved reference bundles when the reusable baseline set should be discoverable later
+  → generate a machine-readable QA verdict when compare/live-replay output should become reusable pass/fail evidence
   → analyze layout / UX / UI from the screenshot
   → then recommend code or design changes
 ```
@@ -144,7 +147,7 @@ Checked responsive review validation now also shows:
 
 ## 7) Current limitations
 
-- current workflow still relies on Claude reading the generated image after capture instead of a fully bundled tool-native visual-analysis pipeline, even though report files, review skills, compare-review entrypoints, helper-generated pair metadata, diff images, named compare sessions, compare-session history browsing, reference bundles, apply-reference workflows, live bundle replay, and reference-bundle browsing now reduce the manual handoff surface
+- current workflow still relies on Claude reading the generated image after capture instead of a fully bundled tool-native visual-analysis pipeline, even though report files, review skills, compare-review entrypoints, helper-generated pair metadata, diff images, named compare sessions, compare-session history browsing, reference bundles, apply-reference workflows, live bundle replay, verdict generation, and reference-bundle browsing now reduce the manual handoff surface
 - plugin install lifecycle for this package is now validated from the standalone repo root through its package-local marketplace manifest, while the shared `darkwingtm` route remains only temporary checked local compatibility context
 - broader CSR validation still needs more than the two currently checked public docs targets
 
@@ -166,5 +169,6 @@ This package is considered successful for the current wave when:
 - saved reference bundles carry explicit reference-side/report metadata for more reliable replay
 - newly created reference bundles store a bundled reference report payload and copied baseline images instead of depending only on the original external report path
 - the package can replay a saved baseline directly against a live URL without requiring the caller to capture the current report separately first
+- compare/live-replay artifacts can now be converted into reusable machine-readable verdicts with per-device pass/fail/invalid output
 - non-diffable paired comparisons are now treated as failed instead of being reported as successful replay sessions
 - governance docs describe the real current state rather than the older project-local skill state

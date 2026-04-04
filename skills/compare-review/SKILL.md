@@ -40,7 +40,12 @@ Use this skill when frontend review should compare two already-generated screens
    - missing/added panels, cards, or nav blocks
    - obvious before/after wins or regressions
 
-7. Keep the output evidence-first and mention which report/image paths were compared.
+9. If the review should end in a reusable machine-readable verdict rather than raw comparison metadata only, run:
+   ```bash
+   python3 "${CLAUDE_PLUGIN_ROOT}/qa_verdict.py" <comparison-or-session.json> --output-format json
+   ```
+
+10. Keep the output evidence-first and mention which report/image paths were compared.
 
 ## Output expectations
 - exact report paths used

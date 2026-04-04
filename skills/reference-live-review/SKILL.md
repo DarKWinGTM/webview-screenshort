@@ -21,6 +21,10 @@ Use this skill when a saved expected baseline should be replayed against the cur
 5. Read the emitted compare session from `session_output_path`.
 6. Read the referenced screenshot evidence from the capture payload and the compare-session comparison pairs.
 7. Continue with expected/actual frontend review using the fresh live capture as evidence.
+8. If the workflow should end in a reusable machine-readable verdict, run:
+   ```bash
+   python3 "${CLAUDE_PLUGIN_ROOT}/qa_verdict.py" <live-replay.json> --output-format json
+   ```
 
 ## Output expectations
 - exact bundle path used

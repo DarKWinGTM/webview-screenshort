@@ -48,7 +48,8 @@
 - [x] Add reference-bundle apply/browse ergonomics so repo-local baseline workflows can be reused with less path hunting.
 - [x] Add live baseline replay so a saved reference bundle can capture a fresh current report from a URL and emit a new expected/actual compare session automatically.
 - [x] Harden reference-bundle metadata so reusable baselines carry explicit reference-side/report information.
-- [x] Harden `webview-vision-assist` so it routes more clearly between focused, responsive, compare-review, and live baseline replay paths.
+- [x] Add a QA verdict layer so compare/live-replay artifacts can end in reusable machine-readable pass/fail output instead of raw pair metadata only.
+- [x] Harden `webview-vision-assist` so it routes more clearly between focused, responsive, compare-review, live baseline replay, and verdict-generation paths.
 - [x] Validate `/reload-plugins` and restart-time visibility for the installed package.
 
 ---
@@ -57,6 +58,7 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-04 | Added `qa_verdict.py`, added `skills/qa-verdict/SKILL.md`, validated reusable pass/fail verdict generation against the checked live replay/session artifacts, and bumped the plugin/marketplace package versions to `2.15.0`. |
 | 2026-04-04 | Fixed remaining authority/update drift after `2.14.0` so README and phase docs now point to repo-local marketplace update/install posture first, keep `darkwingtm` explicitly compatibility-only, and bumped the plugin/marketplace package versions to `2.14.1`. |
 | 2026-04-04 | Added `reference_live_bundle.py`, added `skills/reference-live-review/SKILL.md`, hardened bundle metadata with explicit reference-side/report fields, made newly created bundles self-contained with bundled baseline report assets, fixed RGBA diff-pixel counting, tightened compare success semantics so non-diffable pairs fail replay, validated live baseline replay against the NodeClaw docs page, and bumped the plugin/marketplace package versions to `2.14.0`. |
 | 2026-04-04 | Added `skills/reference-bundles/SKILL.md`, lifted bundle lifecycle operations into a dedicated front-door skill surface, registered the repo-local `webview-screenshort` marketplace, installed `webview-screenshort@webview-screenshort`, and shipped the `2.13.0` bundle-lifecycle wave. |

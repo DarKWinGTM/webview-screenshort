@@ -94,9 +94,11 @@ Verified now:
 - `create_reference_bundle.py` now builds reusable expected-reference bundle artifacts on top of saved compare sessions
 - `apply_reference_bundle.py` now applies a saved reference bundle to a current report and emits a fresh expected/actual compare session automatically
 - `reference_live_bundle.py` now captures a fresh current report from a live URL and replays a saved baseline in one flow
+- `qa_verdict.py` now turns compare-session, comparison, or live-replay artifacts into machine-readable pass/fail/invalid QA verdicts
 - `list_reference_bundles.py` now lists and summarizes saved reference bundles for practical baseline browsing
 - `skills/reference-bundles/SKILL.md` now exposes bundle lifecycle work through a dedicated front-door skill surface
 - `skills/reference-live-review/SKILL.md` now exposes saved-baseline replay against a live URL from one front door
+- `skills/qa-verdict/SKILL.md` now exposes a reusable verdict layer for compare/live-replay artifacts
 - reference bundles now carry explicit reference-side/report metadata instead of relying only on implicit left-side session interpretation
 - newly created reference bundles now include a bundled reference report payload plus copied baseline images so replay is less fragile if the original temp report disappears
 - `compare_reports.py` now treats non-diffable paired comparisons as failed instead of silently reporting success just because device labels matched
@@ -141,8 +143,11 @@ webview-screenshort/
       SKILL.md
     reference-live-review/
       SKILL.md
+    qa-verdict/
+      SKILL.md
   screenshot.py
   compare_reports.py
+  qa_verdict.py
   diff_images.py
   compare_session.py
   list_compare_sessions.py
@@ -235,6 +240,11 @@ Use this package when the goal is to inspect:
 - `/reference-live-review --bundle /path/to/bundle.json --url https://example.com/page --current-report /tmp/current.json --comparison-json /tmp/compare.json --session-output /tmp/session.json --session-name current-vs-expected --capture-set responsive --mode viewport --wait --diff-dir /tmp/diffs`
 - use this surface when the baseline already exists but the current live page still needs to be captured first
 - the flow now captures a fresh current report, applies the bundle automatically, and emits a new expected/actual compare session in one run
+
+### For reusable QA verdict output
+- `/qa-verdict /path/to/compare-session-or-live-replay.json --output-format json`
+- use this surface when compare/live-replay artifacts should end in a reusable per-device verdict instead of raw pair metadata only
+- the verdict layer now returns overall `pass` / `fail` / `invalid` state plus per-device reasons and match/mismatch lists
 
 Or manually:
 1. capture one responsive set with `--capture-set responsive --output-format json`
