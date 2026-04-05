@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.36.0
+> **Current Version:** 2.37.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.37.0 | 2026-04-05 | **[Added README capability map](#version-2370)** | README now exposes the current capture/review/compare/baseline/QA surfaces and artifact outputs in one compact capability section. |
 | 2.36.0 | 2026-04-05 | **[Removed prototype wrapper layer](#version-2360)** | The retained `prototype/` wrapper area is gone, and active docs now describe the direct package CLI structure only. |
 | 2.35.0 | 2026-04-05 | **[Realigned runtime authority wording to darkwingtm](#version-2350)** | README/design/phase/TODO now distinguish standalone repo validation from the maintained local runtime authority, which stays `webview-screenshort@darkwingtm` in this environment. |
 | 2.34.0 | 2026-04-05 | **[Fixed release blockers before publish](#version-2340)** | Higher-level review skills now preserve explicit witness-mode choice, and generated screenshot-side runtime evidence outputs are ignored by default so the release diff stays cleaner. |
@@ -49,6 +50,26 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2370"></a>
+## Version 2.37.0: Added README capability map
+
+**Date:** 2026-04-05
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added a new README capability section that summarizes the current package surfaces for focused capture, responsive capture, witness modes, richer evidence output, frontend review, compare/regression review, compare-session persistence, reference bundles, live baseline replay, verdicts, gates, policy presets, and session-replay auth context.
+- Added an artifact/output table so screenshot/report/evidence-bundle/semantic/verdict/gate artifacts can be understood from one place.
+- Synced package/governance metadata to `2.37.0` for this README capability-documentation wave.
+
+### Validation
+- checked the README now exposes the active capability set in one compact section instead of leaving it spread only across skill and workflow docs.
+- `claude plugins validate /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort` succeeds.
+
+### Summary
+The package is easier to understand operationally now: one README section shows what it can do, which surfaces own each flow, and what artifacts it emits.
 
 ---
 

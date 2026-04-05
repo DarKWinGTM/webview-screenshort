@@ -1,7 +1,7 @@
 # Webview Screenshort - Phase Summary
 
-> **Current Version:** 2.36.0
-> **Target Design:** [../design/design.md](../design/design.md) v2.36.0
+> **Current Version:** 2.37.0
+> **Target Design:** [../design/design.md](../design/design.md) v2.37.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 > **Status:** Implemented - Pending Review
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)
@@ -39,6 +39,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 019 | `phase-019-release-blocker-fixes.md` | `design/design.md` higher-level review-skill witness-mode contract and generated-artifact hygiene | `../patch/phase-019-release-blocker-fixes.patch.md` | Fix release blockers before publish by preserving explicit witness-mode choice and ignoring generated runtime evidence outputs by default | The release surface no longer silently overrides operator witness-mode selection and no longer treats timestamped screenshot-side evidence outputs as normal tracked content |
 | 020 | `phase-020-darkwingtm-runtime-authority-wording.md` | `design/design.md` runtime-authority wording split between source/release authority and maintained local runtime authority | `../patch/phase-020-darkwingtm-runtime-authority-wording.patch.md` | Realign install/update wording so this environment keeps `webview-screenshort@darkwingtm` as the maintained runtime label while the standalone repo remains the code/release source | The docs stop blurring code/release authority with installed runtime authority and now match the real operating model for this environment |
 | 021 | `phase-021-prototype-retirement.md` | `design/design.md` final strategic package-structure cleanup with no retained prototype wrapper layer | `../patch/phase-021-prototype-retirement.patch.md` | Remove the retained `prototype/` wrapper area and normalize active docs/governance around the direct package CLI structure only | The package becomes more fully strategic: one active structure, no retained prototype execution layer, and no active-state docs that still lean on prototype retirement storage |
+| 022 | `phase-022-readme-capability-map.md` | `design/design.md` operator-facing capability visibility for the current package surface | `../patch/phase-022-readme-capability-map.patch.md` | Add a complete current capability map to README so users can see capture/review/compare/baseline/QA surfaces and artifact outputs in one place | The package becomes easier to understand operationally because the active capability set is visible from one README section instead of being scattered across many skill and doc files |
 
 ---
 
@@ -67,6 +68,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 019 | Implemented - Pending Review | `phase-019-release-blocker-fixes.md` | Preserve explicit witness-mode choice in review skills and ignore generated screenshot-side runtime artifacts by default |
 | 020 | Implemented - Pending Review | `phase-020-darkwingtm-runtime-authority-wording.md` | Realign install/update wording so this environment keeps `webview-screenshort@darkwingtm` as the maintained runtime label |
 | 021 | Implemented - Pending Review | `phase-021-prototype-retirement.md` | Remove the retained `prototype/` wrapper area and normalize the package around the direct strategic structure only |
+| 022 | Implemented - Pending Review | `phase-022-readme-capability-map.md` | Add a complete current capability map to README so the package surfaces and artifacts are visible in one place |
 
 ---
 

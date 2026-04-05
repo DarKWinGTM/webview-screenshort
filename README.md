@@ -1,6 +1,6 @@
 # Webview Screenshort
 
-> **Current Version:** 2.36.0
+> **Current Version:** 2.37.0
 
 A governed frontend-development screenshot plugin package for capturing real rendered webpages and giving Claude visual plus semantic page evidence during UI, UX, and layout work.
 
@@ -125,6 +125,47 @@ Verified now:
 - key consumers such as package exports, screenshot CLI, and live replay now import through `webview_screenshort/capture/service.py`, which acts as the newer capture authority surface
 - `capture_service.py` now remains only as a compatibility facade instead of duplicating the active capture implementation
 - public-repo install posture is now validated from the standalone repo root
+
+## Capability map
+
+| Area | What it can do | Main surface |
+|------|----------------|--------------|
+| Focused capture | Capture one live rendered page in `viewport` or `fullpage`, with `desktop` / `tablet` / `mobile` presets | `/screenshot`, `webview_screenshort.cli.screenshot` |
+| Responsive capture | Capture desktop + tablet + mobile in one run via `--capture-set responsive` | `/responsive-review`, `webview_screenshort.cli.screenshot` |
+| Witness modes | `visual`, `frontend-default`, `csr-debug`, `responsive`, `session-replay` (`auth-frontend` alias normalizes to `session-replay`) | `webview_screenshort.cli.screenshot`, `webview_screenshort.capture.witnesses` |
+| Richer evidence | Emit screenshot, report JSON, rendered HTML, rendered text, semantic page witness JSON, and optional evidence bundle JSON | `webview_screenshort.cli.screenshot` |
+| Frontend review | Do evidence-first layout / spacing / hierarchy / UX/UI review on one page | `/frontend-review`, `webview-vision-assist` |
+| Responsive review | Compare hierarchy, overflow, stacking, readability, and breakpoint-specific drift | `/responsive-review`, `webview-vision-assist` |
+| Compare / regression review | Compare two persisted reports or evidence bundles, classify visual/semantic drift, and optionally emit diff metrics/images | `/compare-review`, `webview_screenshort.cli.compare_reports`, `webview_screenshort.cli.diff_images` |
+| Compare-session persistence | Save expected/actual or before/after sessions for reuse | `webview_screenshort.cli.compare_session`, `webview_screenshort.cli.list_compare_sessions` |
+| Reference bundles | Create/list/apply reusable expected baselines | `/reference-bundles`, `webview_screenshort.cli.create_reference_bundle`, `webview_screenshort.cli.apply_reference_bundle`, `webview_screenshort.cli.list_reference_bundles` |
+| Live baseline replay | Capture a fresh live page and replay a saved baseline in one flow | `/reference-live-review`, `webview_screenshort.cli.reference_live_bundle` |
+| QA verdicts | Turn compare/live-replay artifacts into reusable machine-readable pass/fail summaries | `/qa-verdict`, `webview_screenshort.cli.qa_verdict` |
+| QA gate | Apply threshold/policy rules on top of verdict/comparison artifacts | `/qa-gate`, `/reference-live-gate`, `webview_screenshort.cli.qa_gate`, `webview_screenshort.cli.reference_live_gate` |
+| Policy presets | Discover built-in gate presets by selector/alias | `/policy-presets`, `webview_screenshort.cli.list_policy_presets` |
+| Session replay auth context | Reuse operator-provided headers/cookies/session material for logged-in-state capture; does not automate interactive login | `--header`, `--origin-header`, `--cookie`, `--cookie-file` |
+
+### Outputs and artifacts
+
+| Artifact | Purpose |
+|---------|---------|
+| Screenshot image (`.png`) | visual evidence |
+| Capture report (`webview-screenshort.capture-report/v1`) | machine-readable capture metadata and paths |
+| Evidence bundle (`webview-screenshort.evidence-bundle/v1`) | screenshot + richer witness bundle for reuse |
+| Rendered HTML / rendered text | inspect post-render page truth beyond the image |
+| Semantic page witness JSON | quick structure summary for title/headings/links/buttons/forms/page-shape |
+| Compare-session JSON | reusable expected/actual or before/after comparison state |
+| Reference bundle JSON | reusable baseline artifact |
+| Verdict JSON | reusable QA pass/fail/invalid summary |
+| Gate JSON | policy-based QA outcome with violated rules / required-device status |
+
+### Important boundaries
+
+- screenshot-first, evidence-first frontend tool; not a full browser automation suite
+- supports CSR / SPA checks and richer rendered-page witnesses
+- supports logged-in-state capture only through explicit session replay material from the operator
+- does not automate interactive login
+- active execution path now runs directly through `webview_screenshort.cli.*`
 
 Checked live examples:
 - `https://claw-frontend-dev.nodenetwork.ovh/docs`
