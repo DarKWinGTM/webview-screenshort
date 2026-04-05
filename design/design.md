@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.34.0
+> **Current Version:** 2.35.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
@@ -28,7 +28,7 @@ The target is a frontend-development vision workflow where Claude can:
 
 The intended package model is:
 - `.claude-plugin/plugin.json` = plugin metadata
-- `.claude-plugin/marketplace.json` = standalone repo-local marketplace manifest for cutover and local install from this package root
+- `.claude-plugin/marketplace.json` = standalone repo-local marketplace manifest for validation/cutover support from this package root, while the maintained local runtime authority label in this environment remains `webview-screenshort@darkwingtm`
 - `skills/screenshot/SKILL.md` = primary runtime entrypoint for focused capture
 - `skills/screenshot/*.md` = focused frontend vision workflow guidance
 - `skills/frontend-review/SKILL.md` = direct capture-then-review skill surface
@@ -194,7 +194,7 @@ Checked semantic witness validation now also shows:
 - compare/verdict/gate now preserve semantic companion summaries, built-in gate presets can now carry semantic-aware failure rules, and semantic rule granularity can now target title/headings/structure/form/input/link/button drift, but the semantic layer is still a bounded rule set rather than a deeper semantic QA engine
 - logged-in-state capture depends on operator-provided headers/cookies/session material and does not automate interactive login
 - headless-render-api documentation only clearly documents origin forwarding through `Prerendercloud-*` header names plus `Origin-Header-Whitelist`, so logged-in-state capture must stay within that bounded forwarding model unless stronger provider evidence appears
-- plugin install lifecycle for this package is now validated from the standalone repo root through its package-local marketplace manifest, while the shared `darkwingtm` route remains only temporary checked local compatibility context
+- the maintained local runtime install/update authority label in this environment remains `webview-screenshort@darkwingtm`, while the standalone repo-local marketplace manifest remains available for source-side validation/cutover work
 - broader CSR validation still needs more than the two currently checked public docs targets
 
 ---
@@ -237,4 +237,4 @@ This package is considered successful for the current wave when:
 - config/path/witness responsibilities have started moving out of `capture_service.py` into `capture/config.py`, `capture/paths.py`, and `capture/witnesses.py`
 - key consumers such as package exports, screenshot CLI, and live replay now import through `capture.service` instead of pointing only at `capture_service.py`
 - `capture_service.py` now acts as an explicit compatibility facade instead of duplicating the remaining capture implementation
-- governance docs describe the real current state rather than the older project-local skill state
+- public install/update wording for this environment keeps `webview-screenshort@darkwingtm` as the maintained runtime label while still documenting the standalone repo as the code/release source

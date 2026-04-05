@@ -1,6 +1,6 @@
 # Webview Screenshort
 
-> **Current Version:** 2.34.0
+> **Current Version:** 2.35.0
 
 A governed frontend-development screenshot plugin package for capturing real rendered webpages and giving Claude visual plus semantic page evidence during UI, UX, and layout work.
 
@@ -26,18 +26,24 @@ It is meant for workflows where Claude should:
 
 ## Installation and activation
 
-### Recommended public install path
+### Maintained local runtime authority
 This package now has its own standalone GitHub repo at:
 - `https://github.com/DarKWinGTM/webview-screenshort`
 
-Clone once, then run the install from the repo root:
+But in this maintained local runtime environment, the install/update authority label stays:
+- `webview-screenshort@darkwingtm`
+
+Use this for the normal local runtime lifecycle:
 
 ```bash
-git clone https://github.com/DarKWinGTM/webview-screenshort.git
-cd webview-screenshort
-claude plugins marketplace add ./ --scope local
-claude plugins install webview-screenshort@webview-screenshort --scope local
+claude plugins install webview-screenshort@darkwingtm --scope local
+claude plugins update webview-screenshort@darkwingtm --scope local
 ```
+
+Why this exact shape matters:
+- `claude plugins update webview-screenshort --scope local` may fail because the installed local plugin is keyed by `plugin@marketplace`
+- this environment preserves `@darkwingtm` as the stable runtime authority label for the plugin
+- the standalone repo remains the source of truth for code and releases, but not the preferred installed label for this local runtime
 
 Optional reload:
 
@@ -52,32 +58,20 @@ claude plugins list
 claude agents
 ```
 
+### Repo-local validation path
+If you want to validate the standalone repo/package surface directly from the repo root, that package-local marketplace manifest still works as a source-side validation/cutover path:
+
+```bash
+git clone https://github.com/DarKWinGTM/webview-screenshort.git
+cd webview-screenshort
+claude plugins marketplace add ./ --scope local
+claude plugins install webview-screenshort@webview-screenshort --scope local
+```
+
 Checked local validation from the repo root:
 - `claude plugins marketplace add ./ --scope local` succeeds
 - `claude plugins install webview-screenshort@webview-screenshort --scope local` succeeds
 - `claude agents` shows `webview-screenshort:webview-vision-assist`
-
-### Update an installed plugin
-
-If the plugin was installed from this standalone repo-local marketplace, update it by using the installed identifier shape `plugin@marketplace`:
-
-```bash
-claude plugins update webview-screenshort@webview-screenshort --scope local
-```
-
-If you still have an older local install through the shared compatibility marketplace, the installed identifier may instead be `webview-screenshort@darkwingtm`:
-
-```bash
-claude plugins update webview-screenshort@darkwingtm --scope local
-```
-
-Why this exact shape matters:
-- `claude plugins update webview-screenshort --scope local` may fail because the installed local plugin is keyed by `plugin@marketplace`
-- the explicit `plugin@marketplace` form matches the installed identifier shown in `claude plugins list`
-
-### Local development compatibility note
-
-The same package may still be referenced through the shared local `darkwingtm` marketplace during workspace development, but that route is no longer package authority. The standalone repo is now the intended source of truth, and any remaining shared-workspace usage should be treated as temporary local compatibility only.
 
 ## Current status
 
@@ -87,7 +81,8 @@ Verified now:
 - viewport and fullpage capture both work
 - mobile and tablet viewport presets now work for responsive frontend review
 - the package now has plugin scaffolding with `.claude-plugin/`, `skills/`, and `agents/`
-- the package installs through its own repo-root marketplace manifest and exposes `webview-screenshort:webview-vision-assist`
+- the package validates through its own repo-root marketplace manifest and exposes `webview-screenshort:webview-vision-assist`
+- the maintained local runtime authority label in this environment remains `webview-screenshort@darkwingtm`
 - skill/agent execution now targets `${CLAUDE_PLUGIN_ROOT}` instead of a source-workspace-only path
 - the runtime now has an internal `webview_screenshort/` package so root scripts no longer need to remain the only place where orchestration logic lives
 - richer capture output now includes acquisition witness JSON so the package can report how scrape/prerender witnesses were obtained in machine-readable form

@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.34.0
+> **Current Version:** 2.35.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.35.0 | 2026-04-05 | **[Realigned runtime authority wording to darkwingtm](#version-2350)** | README/design/phase/TODO now distinguish standalone repo validation from the maintained local runtime authority, which stays `webview-screenshort@darkwingtm` in this environment. |
 | 2.34.0 | 2026-04-05 | **[Fixed release blockers before publish](#version-2340)** | Higher-level review skills now preserve explicit witness-mode choice, and generated screenshot-side runtime evidence outputs are ignored by default so the release diff stays cleaner. |
 | 2.33.0 | 2026-04-05 | **[Normalized wrapper-retirement governance contract](#version-2330)** | Synced README/design/TODO/phase/changelog around package CLI module execution, `capture.service` as the active authority surface, and retired wrapper placement under `prototype/root-wrappers/`. |
 | 2.32.0 | 2026-04-05 | **[Added finer semantic gate granularity](#version-2320)** | Semantic-aware gate policies can now target title/headings/structure/link/button/form/input drift more precisely than the earlier broad semantic change classes. |
@@ -47,6 +48,26 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2350"></a>
+## Version 2.35.0: Realigned runtime authority wording to darkwingtm
+
+**Date:** 2026-04-05
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Reworked `README.md` so the maintained local runtime authority is now described explicitly as `webview-screenshort@darkwingtm` instead of treating the repo-local marketplace label as the default installed identity for this environment.
+- Reworked `design/design.md`, `phase/phase-003-install-and-lifecycle-validation.md`, and `phase/SUMMARY.md` so standalone repo-local marketplace usage is described as validation/cutover support, while the maintained runtime install/update label remains `@darkwingtm`.
+- Updated `TODO.md` to record the runtime-authority wording correction and bumped package/governance metadata to `2.35.0`.
+
+### Validation
+- checked `README.md`, `design/design.md`, `phase/phase-003-install-and-lifecycle-validation.md`, `phase/SUMMARY.md`, and `TODO.md` now separate source/release authority from installed runtime authority.
+- checked maintained local runtime state currently uses `webview-screenshort@darkwingtm`.
+
+### Summary
+The docs now match the real operating model here: the standalone repo remains the code/release source, while the maintained installed runtime label for this environment stays `webview-screenshort@darkwingtm`.
 
 ---
 

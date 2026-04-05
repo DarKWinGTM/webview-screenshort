@@ -1,7 +1,7 @@
 # Webview Screenshort - Phase Summary
 
-> **Current Version:** 2.34.0
-> **Target Design:** [../design/design.md](../design/design.md) v2.34.0
+> **Current Version:** 2.35.0
+> **Target Design:** [../design/design.md](../design/design.md) v2.35.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 > **Status:** Implemented - Pending Review
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)
@@ -37,6 +37,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 017 | `phase-017-semantic-policy-granularity.md` | `design/design.md` finer semantic gate policy model | `../patch/phase-017-semantic-policy-granularity.patch.md` | Add finer semantic gate rule granularity for title/headings/structure/link/button/form/input drift | Semantic-aware gate presets can now express more precise frontend QA intent instead of only class-level semantic drift |
 | 018 | `phase-018-wrapper-retirement-governance-contract.md` | `design/design.md` active command/authority contract after wrapper retirement | `../patch/phase-018-wrapper-retirement-governance-contract.patch.md` | Normalize governance/docs after wrapper retirement so active package CLI execution and retired-wrapper placement are described consistently | The cleanup closes with one current-state command contract, one active capture authority surface, and one explicit retirement location for old wrappers |
 | 019 | `phase-019-release-blocker-fixes.md` | `design/design.md` higher-level review-skill witness-mode contract and generated-artifact hygiene | `../patch/phase-019-release-blocker-fixes.patch.md` | Fix release blockers before publish by preserving explicit witness-mode choice and ignoring generated runtime evidence outputs by default | The release surface no longer silently overrides operator witness-mode selection and no longer treats timestamped screenshot-side evidence outputs as normal tracked content |
+| 020 | `phase-020-darkwingtm-runtime-authority-wording.md` | `design/design.md` runtime-authority wording split between source/release authority and maintained local runtime authority | `../patch/phase-020-darkwingtm-runtime-authority-wording.patch.md` | Realign install/update wording so this environment keeps `webview-screenshort@darkwingtm` as the maintained runtime label while the standalone repo remains the code/release source | The docs stop blurring code/release authority with installed runtime authority and now match the real operating model for this environment |
 
 ---
 
@@ -63,6 +64,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 017 | Implemented - Pending Review | `phase-017-semantic-policy-granularity.md` | Add finer semantic gate rule granularity for title/headings/structure/link/button/form/input drift |
 | 018 | Implemented - Pending Review | `phase-018-wrapper-retirement-governance-contract.md` | Normalize governance/docs after wrapper retirement so active package CLI execution and retired-wrapper placement are described consistently |
 | 019 | Implemented - Pending Review | `phase-019-release-blocker-fixes.md` | Preserve explicit witness-mode choice in review skills and ignore generated screenshot-side runtime artifacts by default |
+| 020 | Implemented - Pending Review | `phase-020-darkwingtm-runtime-authority-wording.md` | Realign install/update wording so this environment keeps `webview-screenshort@darkwingtm` as the maintained runtime label |
 
 ---
 
@@ -80,10 +82,10 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - real CSR docs page capture verified in viewport and fullpage modes
 - stale project-local skill path identified and removed
 - frontend-vision workflow intent is now explicit in docs and skill surfaces
-- package validates and installs through its standalone repo-root marketplace manifest
+- package validates through its standalone repo-root marketplace manifest
 - installed agent visibility is confirmed
-- standalone repo now acts as the package authority at the public documentation/source-of-truth level
-- shared `darkwingtm` marketplace usage is now scoped as local compatibility context rather than public default install authority
+- standalone repo now acts as the package source/release authority
+- the maintained local runtime install/update authority label in this environment remains `webview-screenshort@darkwingtm`
 - installed runtime invocation now uses `${CLAUDE_PLUGIN_ROOT}`
 - engine now supports env-driven configuration and JSON result output
 - responsive mobile and tablet presets are validated on a second frontend target
@@ -110,7 +112,8 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - reusable policy presets now exist under `support/policies/`
 - policy presets now carry family-aware metadata with canonical selectors and legacy aliases
 - reference bundles now carry explicit `reference_side` and `reference_report_path` metadata for more reliable replay
-- repo-local marketplace path now installs `webview-screenshort@webview-screenshort` directly from the standalone repo root
+- repo-local marketplace validation path now remains available from the standalone repo root when source-side package checks are needed
+- the maintained local runtime install/update authority label in this environment remains `webview-screenshort@darkwingtm`
 - `webview-vision-assist` now routes more explicitly between focused review, responsive review, compare-review, bundle-lifecycle, live baseline replay, verdict, gate, one-step baseline gate, and preset-discovery entrypoints
 - the runtime now has an internal `webview_screenshort/` package so capture/auth/provider/workflow logic no longer has to remain only in top-level scripts
 - richer witness modes now exist for screenshot-only, screenshot + rendered HTML/text, CSR-debug, responsive, and session-replay capture flows
