@@ -1,6 +1,6 @@
 # Webview Screenshort
 
-> **Current Version:** 2.37.0
+> **Current Version:** 2.38.0
 
 A governed frontend-development screenshot plugin package for capturing real rendered webpages and giving Claude visual plus semantic page evidence during UI, UX, and layout work.
 
@@ -159,7 +159,29 @@ Verified now:
 | Verdict JSON | reusable QA pass/fail/invalid summary |
 | Gate JSON | policy-based QA outcome with violated rules / required-device status |
 
-### Important boundaries
+### How to read the witnesses
+
+| Witness | What it means in practice | Best for | Not the same as |
+|--------|----------------------------|----------|------------------|
+| Screenshot image | what the rendered page looked like visually at capture time | layout / spacing / hierarchy / visible regressions | raw HTML or browser internals |
+| Rendered HTML | HTML body returned after the page was rendered through the capture provider | CSR/SPA content checks, post-render structure checks, letting AI read the page beyond the screenshot | original source template files |
+| Rendered text | simplified text extracted from rendered HTML | quick content checks, headline/body verification, faster AI reading than raw HTML | precise DOM structure |
+| Semantic page witness JSON | compact summary of title, headings, links, buttons, forms, and page-shape flags | quick structure understanding and semantic drift checks | full HTML dump |
+| Prerendered HTML | additional HTML witness captured in `csr-debug` mode for harder hydration/debug scenarios | suspected late render / hydration incompleteness | full browser DevTools state |
+
+### CSR / rendered HTML note
+
+If a page is CSR/SPA-driven, this package can often give AI more than a screenshot alone:
+- the screenshot shows what the page looked like
+- `rendered.html` shows HTML after the page was rendered through the witness flow
+- `rendered.txt` gives a lighter text-only view of that rendered HTML
+- `semantic.json` gives a compact structure summary derived from the rendered HTML
+- in `csr-debug`, `prerendered.html` can add another witness for debugging render timing/content gaps
+
+What this means in plain language:
+- yes, the package can give AI the post-render page HTML in many normal frontend-review flows
+- no, it is not pretending to be a full browser DevTools dump with every runtime internal, console event, or network trace
+
 
 - screenshot-first, evidence-first frontend tool; not a full browser automation suite
 - supports CSR / SPA checks and richer rendered-page witnesses

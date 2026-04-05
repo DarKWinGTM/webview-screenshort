@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.37.0
+> **Current Version:** 2.38.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.38.0 | 2026-04-05 | **[Expanded README witness explanations](#version-2380)** | README now explains screenshot vs rendered HTML vs rendered text vs semantic/prerender witnesses in clearer practical terms. |
 | 2.37.0 | 2026-04-05 | **[Added README capability map](#version-2370)** | README now exposes the current capture/review/compare/baseline/QA surfaces and artifact outputs in one compact capability section. |
 | 2.36.0 | 2026-04-05 | **[Removed prototype wrapper layer](#version-2360)** | The retained `prototype/` wrapper area is gone, and active docs now describe the direct package CLI structure only. |
 | 2.35.0 | 2026-04-05 | **[Realigned runtime authority wording to darkwingtm](#version-2350)** | README/design/phase/TODO now distinguish standalone repo validation from the maintained local runtime authority, which stays `webview-screenshort@darkwingtm` in this environment. |
@@ -50,6 +51,26 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2380"></a>
+## Version 2.38.0: Expanded README witness explanations
+
+**Date:** 2026-04-05
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Expanded the README capability section with a witness comparison table covering screenshot image, rendered HTML, rendered text, semantic page witness JSON, and prerendered HTML.
+- Added a direct CSR/rendered-HTML note in README so users can understand more clearly what the package can and cannot give AI in practical frontend-review terms.
+- Synced package/governance metadata to `2.38.0` for this README-clarity wave.
+
+### Validation
+- checked the README now explains the witness layers in more practical terms instead of listing surfaces only.
+- `claude plugins validate /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort` succeeds.
+
+### Summary
+The README now explains the package more like an operator guide: not just which commands exist, but what each witness means and how far the rendered-HTML capability really goes.
 
 ---
 

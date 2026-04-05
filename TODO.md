@@ -19,6 +19,7 @@
 - [x] Realigned install/update authority wording so this environment keeps `webview-screenshort@darkwingtm` as the maintained runtime label.
 - [x] Removed the retained `prototype/` wrapper area so the package structure no longer carries a prototype execution layer at all.
 - [x] Added a complete current capability map to `README.md` so the package surfaces and artifact outputs are visible in one place.
+- [x] Expanded README witness explanations so screenshot/rendered HTML/rendered text/semantic/prerender witnesses are easier to understand in practical frontend-review terms.
 
 ---
 
@@ -93,6 +94,7 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-05 | Expanded README witness explanations so screenshot/rendered HTML/rendered text/semantic/prerender witnesses are easier to understand in practical frontend-review terms, and the package version moved to `2.38.0`. |
 | 2026-04-05 | Added a complete README capability map covering capture, witness modes, review surfaces, compare/baseline/QA flows, and output artifact types, and the package version moved to `2.37.0`. |
 | 2026-04-05 | Removed the retained `prototype/` wrapper layer so the package no longer carries prototype wrappers as stored compatibility artifacts, updated docs/governance to describe the direct package CLI structure only, and the package version moved to `2.36.0`. |
 | 2026-04-05 | Realigned install/update authority wording so this environment keeps `webview-screenshort@darkwingtm` as the maintained runtime label, while the standalone repo-local marketplace stays documented as a package-validation/cutover surface, and the package version moved to `2.35.0`. |
