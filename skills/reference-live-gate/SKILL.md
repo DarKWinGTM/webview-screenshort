@@ -19,19 +19,21 @@ Use this skill when a saved expected baseline should be replayed against the cur
    - `session-replay` when the operator provides headers/cookies/session material explicitly
 3. Run the higher-level helper:
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT}/reference_live_gate.py" $ARGUMENTS
+   PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.reference_live_gate $ARGUMENTS
    ```
 4. Read the returned JSON payload.
 5. Read the fresh current report from `live_replay.current_report_path`.
 6. If richer witnesses were emitted for the live capture, read them before explaining gate failure as purely visual.
-7. Read the emitted gate result from `gate_output_path`.
-8. Report the policy used, violated rules, and per-device gate outcome clearly.
+7. If semantic page witness JSON was emitted for the live capture, use it to check for missing headings/nav/forms/content-shape drift before reducing the result to screenshot delta only.
+8. Read the emitted gate result from `gate_output_path`.
+9. Report the policy used, violated rules, and per-device gate outcome clearly.
 
 ## Output expectations
 - exact bundle path used
 - exact current report path produced from the live URL
 - exact comparison/session/gate artifact paths
 - exact rendered HTML / rendered text witness paths when emitted for the live capture
+- exact semantic page witness path when emitted for the live capture
 - overall gate result
 - policy used
 - missing required devices

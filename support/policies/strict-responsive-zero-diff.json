@@ -7,5 +7,16 @@
   "fail_on_invalid": true,
   "require_devices": ["desktop", "tablet", "mobile"],
   "max_diff_pixels": 0,
-  "max_diff_ratio": 0.0
+  "max_diff_ratio": 0.0,
+  "fail_on_semantic_any_change": true,
+  "fail_on_semantic_missing": true,
+  "fail_on_semantic_structure_change": true,
+  "fail_on_semantic_content_change": true,
+  "fail_on_title_change": true,
+  "fail_on_missing_headings": true,
+  "fail_on_structure_flags_change": true,
+  "fail_on_missing_links": true,
+  "fail_on_missing_buttons": true,
+  "fail_on_form_count_change": true,
+  "fail_on_missing_inputs": true
 }

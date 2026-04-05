@@ -1,7 +1,7 @@
 # Webview Screenshort - Phase Summary
 
-> **Current Version:** 2.23.0
-> **Target Design:** [../design/design.md](../design/design.md) v2.23.0
+> **Current Version:** 2.34.0
+> **Target Design:** [../design/design.md](../design/design.md) v2.34.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 > **Status:** Implemented - Pending Review
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)
@@ -26,6 +26,17 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 006 | `phase-006-mismatch-classification.md` | `design/design.md` compare/verdict/gate mismatch classification model | `../patch/phase-006-mismatch-classification.patch.md` | Add machine-readable mismatch classifications across compare, verdict, and gate layers | QA artifacts explain why devices failed, not only which devices failed |
 | 007 | `phase-007-frontend-vision-evidence-bundle.md` | `design/design.md` frontend-vision upgrade model, session-replay capture boundary, and strategic runtime refactor direction | `../patch/phase-007-frontend-vision-evidence-bundle.patch.md` | Start the strategic runtime refactor, add richer witness modes, emit rendered HTML/rendered text evidence bundles, and prepare logged-in-state capture via bounded session context | The package becomes screenshot-first but HTML-aware, with a clearer internal architecture and richer frontend evidence output |
 | 008 | `phase-008-metadata-and-acquisition-witnesses.md` | `design/design.md` richer witness model and bounded provider-capability truth | `../patch/phase-008-metadata-and-acquisition-witnesses.patch.md` | Add acquisition-summary and provider-returned metadata witnesses so capture outputs explain how richer artifacts were obtained | The package exposes more machine-readable frontend truth without pretending it already has full browser console/network tracing |
+| 009 | `phase-009-semantic-page-witness.md` | `design/design.md` semantic page witness model and richer frontend structure understanding | `../patch/phase-009-semantic-page-witness.patch.md` | Add a rendered-HTML-derived semantic page witness and preserve it across bundle/replay flows | The package can summarize page structure in machine-readable form without forcing reviewers to reread full raw HTML every time |
+| 010 | `phase-010-package-reorganization.md` | `design/design.md` package-organization model and internal domain separation | `../patch/phase-010-package-reorganization.patch.md` | Reorganize compare / QA / reference flows into package-internal domains and keep root commands compatibility-thin | The package reads more like a professional Python project instead of a flat root-script pile |
+| 011 | `phase-011-capture-domain-authority.md` | `design/design.md` capture-domain authority split and compatibility-shim posture | `../patch/phase-011-capture-domain-authority.patch.md` | Move auth-context and headless-render-api ownership under `capture/` while preserving old import paths as shims | The capture side starts to match the newer package-domain structure without breaking current flows |
+| 012 | `phase-012-capture-service-split.md` | `design/design.md` deeper capture-service split and facade-boundary cleanup | `../patch/phase-012-capture-service-split.patch.md` | Start moving config/path/witness responsibilities out of `capture_service.py` into dedicated capture modules | The largest remaining capture monolith becomes thinner while preserving current capture behavior |
+| 013 | `phase-013-capture-authority-surface.md` | `design/design.md` capture authority-surface promotion and consumer migration | `../patch/phase-013-capture-authority-surface.patch.md` | Extract capture models/engines/reporting/runtime modules and start moving consumers onto `capture.service` | The capture package becomes more authoritative while `capture_service.py` remains a compatibility facade |
+| 014 | `phase-014-capture-facade-cleanup.md` | `design/design.md` capture authority consolidation and legacy-facade cleanup | `../patch/phase-014-capture-facade-cleanup.patch.md` | Reduce `capture_service.py` to a true compatibility facade now that `capture.service` is the active authority surface | The capture package finishes this refactor stretch with one clearer active authority and one explicit legacy shim |
+| 015 | `phase-015-semantic-aware-qa.md` | `design/design.md` semantic-aware QA companion model | `../patch/phase-015-semantic-aware-qa.patch.md` | Add semantic companion classification summaries to compare, verdict, and gate artifacts | The package can now preserve semantic structure drift as machine-readable QA context instead of relying only on visual mismatch summaries |
+| 016 | `phase-016-semantic-gate-rules.md` | `design/design.md` semantic-aware gate policy model | `../patch/phase-016-semantic-gate-rules.patch.md` | Add semantic-aware gate rule keys so policy evaluation can explicitly fail on semantic drift | Semantic companion output now affects policy evaluation rather than only being carried as summary context |
+| 017 | `phase-017-semantic-policy-granularity.md` | `design/design.md` finer semantic gate policy model | `../patch/phase-017-semantic-policy-granularity.patch.md` | Add finer semantic gate rule granularity for title/headings/structure/link/button/form/input drift | Semantic-aware gate presets can now express more precise frontend QA intent instead of only class-level semantic drift |
+| 018 | `phase-018-wrapper-retirement-governance-contract.md` | `design/design.md` active command/authority contract after wrapper retirement | `../patch/phase-018-wrapper-retirement-governance-contract.patch.md` | Normalize governance/docs after wrapper retirement so active package CLI execution and retired-wrapper placement are described consistently | The cleanup closes with one current-state command contract, one active capture authority surface, and one explicit retirement location for old wrappers |
+| 019 | `phase-019-release-blocker-fixes.md` | `design/design.md` higher-level review-skill witness-mode contract and generated-artifact hygiene | `../patch/phase-019-release-blocker-fixes.patch.md` | Fix release blockers before publish by preserving explicit witness-mode choice and ignoring generated runtime evidence outputs by default | The release surface no longer silently overrides operator witness-mode selection and no longer treats timestamped screenshot-side evidence outputs as normal tracked content |
 
 ---
 
@@ -41,14 +52,25 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 006 | Implemented - Pending Review | `phase-006-mismatch-classification.md` | Add machine-readable mismatch classifications across compare, verdict, and gate workflows |
 | 007 | Implemented - Pending Review | `phase-007-frontend-vision-evidence-bundle.md` | Start the strategic frontend-vision upgrade with internal runtime modules, richer witness modes, evidence bundles, and bounded session-replay capture |
 | 008 | Implemented - Pending Review | `phase-008-metadata-and-acquisition-witnesses.md` | Add metadata/acquisition witness artifacts so richer capture outputs explain provider-returned page truth more clearly |
+| 009 | Implemented - Pending Review | `phase-009-semantic-page-witness.md` | Add semantic page witness artifacts so richer capture outputs summarize page structure in machine-readable form |
+| 010 | Implemented - Pending Review | `phase-010-package-reorganization.md` | Reorganize package-internal domains so root commands become compatibility-thin wrappers instead of mixed implementation files |
+| 011 | Implemented - Pending Review | `phase-011-capture-domain-authority.md` | Move auth/headless capture authority under `capture/` while preserving legacy import paths as shims |
+| 012 | Implemented - Pending Review | `phase-012-capture-service-split.md` | Start splitting `capture_service.py` so config/path/witness responsibilities leave the monolith |
+| 013 | Implemented - Pending Review | `phase-013-capture-authority-surface.md` | Extract capture runtime modules further and migrate key consumers onto `capture.service` |
+| 014 | Implemented - Pending Review | `phase-014-capture-facade-cleanup.md` | Reduce `capture_service.py` to a true compatibility facade now that `capture.service` is the active authority surface |
+| 015 | Implemented - Pending Review | `phase-015-semantic-aware-qa.md` | Add semantic companion classification summaries to compare, verdict, and gate artifacts |
+| 016 | Implemented - Pending Review | `phase-016-semantic-gate-rules.md` | Add semantic-aware gate rule keys so policy evaluation can explicitly fail on semantic drift |
+| 017 | Implemented - Pending Review | `phase-017-semantic-policy-granularity.md` | Add finer semantic gate rule granularity for title/headings/structure/link/button/form/input drift |
+| 018 | Implemented - Pending Review | `phase-018-wrapper-retirement-governance-contract.md` | Normalize governance/docs after wrapper retirement so active package CLI execution and retired-wrapper placement are described consistently |
+| 019 | Implemented - Pending Review | `phase-019-release-blocker-fixes.md` | Preserve explicit witness-mode choice in review skills and ignore generated screenshot-side runtime artifacts by default |
 
 ---
 
 ## Global TODO / Changelog Coordination
 
 - `TODO.md` should track the active package work and shipped execution history clearly, not only the earlier cutover slice.
-- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, diff-assisted compare outcomes, named compare-session outcomes, compare-session history outcomes, expected-reference bundle outcomes, apply-reference workflow outcomes, reference-bundle browsing outcomes, bundle-lifecycle skill-surface outcomes, live baseline replay outcomes, qa-verdict outcomes, qa-gate outcomes, one-step baseline gate outcomes, semantic preset outcomes, policy-family outcomes, mismatch-classification outcomes, repo-local marketplace install outcomes, agent-orchestration hardening outcomes, strategic runtime-package extraction, richer witness-mode output, evidence-bundle output, and bounded session-replay capture outcomes only.
-- `design/design.md` remains the authority for frontend-vision intent, plugin boundaries, standalone-repo install posture, richer witness modes, and session-replay capture boundaries.
+- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, diff-assisted compare outcomes, named compare-session outcomes, compare-session history outcomes, expected-reference bundle outcomes, apply-reference workflow outcomes, reference-bundle browsing outcomes, bundle-lifecycle skill-surface outcomes, live baseline replay outcomes, qa-verdict outcomes, qa-gate outcomes, one-step baseline gate outcomes, semantic preset outcomes, policy-family outcomes, mismatch-classification outcomes, repo-local marketplace install outcomes, agent-orchestration hardening outcomes, strategic runtime-package extraction, richer witness-mode output, evidence-bundle output, bounded session-replay capture outcomes, metadata/acquisition witness outcomes, semantic page witness outcomes, package-reorganization outcomes, capture-domain authority outcomes, capture-service split outcomes, capture authority-surface outcomes, capture facade cleanup outcomes, semantic-aware QA outcomes, semantic-aware gate-rule outcomes, and semantic-policy-granularity outcomes only.
+- `design/design.md` remains the authority for frontend-vision intent, plugin boundaries, standalone-repo install posture, richer witness modes, semantic page witness boundaries, package-domain organization boundaries, capture-domain authority boundaries, and session-replay capture boundaries.
 
 ---
 
@@ -96,5 +118,25 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - compare flows can now accept `webview-screenshort.evidence-bundle/v1` artifacts instead of only screenshot-era capture reports
 - reference-bundle creation can now preserve `reference_artifact_schema` when the source compare session came from richer evidence bundles
 - logged-in-state capture now has bounded operator-facing inputs for headers/cookies/session material with redacted auth summaries in persisted outputs
+- semantic page witness JSON can now be emitted from rendered HTML and preserved in richer capture/evidence outputs
+- responsive capture-set output now preserves capture-set semantic/acquisition witness indexes for cross-device frontend review
+- reference-bundle creation now copies semantic/acquisition/metadata witness artifacts when the source report already carries them
+- compare / QA / reference logic now lives behind package-internal domains instead of staying only as root-script implementations
+- package CLI modules now own the active programmable command surface, while retired root wrappers now live under `prototype/root-wrappers/` for compatibility reference only
+- `webview_screenshort/workflows.py` no longer imports root scripts directly and now acts as a package-internal compatibility surface
+- direct script-to-script subprocess coupling has been reduced where compare, QA, and reference flows now reuse package modules in-process
+- auth-context and headless-render-api ownership now live under `webview_screenshort/capture/` while legacy import paths remain as compatibility shims
+- config/path/witness responsibilities have now started moving out of `capture_service.py` into `webview_screenshort/capture/config.py`, `capture/paths.py`, and `capture/witnesses.py`
+- additional capture runtime modules now exist for models, engines, reporting, and runtime orchestration under `webview_screenshort/capture/`
+- key consumers such as package exports, screenshot CLI, and live replay now import through `capture.service` as the newer capture authority surface
+- `capture_service.py` now acts as a true compatibility facade instead of continuing to duplicate the remaining capture implementation
+- the active command/gov-doc contract is now normalized around `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.<tool>` and retired wrapper placement under `prototype/root-wrappers/`
+- compare, verdict, and gate artifacts now preserve semantic companion classification summaries on top of visual mismatch summaries
+- gate policy can now explicitly fail on semantic drift through semantic-aware policy keys such as missing semantic witness or semantic structure/content change
+- semantic gate policy can now target finer-grained drift such as title change, missing headings, structure-flag change, missing links/buttons, form-count change, and missing inputs
+- active skill and agent command guidance now points at package CLI module execution instead of root wrapper filenames
+- retired root wrappers now live only under `prototype/root-wrappers/` for compatibility reference and are no longer part of the active root structure
+- higher-level review skills now preserve an explicit operator-provided `--witness-mode` instead of silently overriding it with a default
+- generated timestamped files under `screenshot/` now stay ignored by default so local runtime evidence does not pollute the package release surface
 
 ---

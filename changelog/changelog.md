@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.23.0
+> **Current Version:** 2.34.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,17 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.34.0 | 2026-04-05 | **[Fixed release blockers before publish](#version-2340)** | Higher-level review skills now preserve explicit witness-mode choice, and generated screenshot-side runtime evidence outputs are ignored by default so the release diff stays cleaner. |
+| 2.33.0 | 2026-04-05 | **[Normalized wrapper-retirement governance contract](#version-2330)** | Synced README/design/TODO/phase/changelog around package CLI module execution, `capture.service` as the active authority surface, and retired wrapper placement under `prototype/root-wrappers/`. |
+| 2.32.0 | 2026-04-05 | **[Added finer semantic gate granularity](#version-2320)** | Semantic-aware gate policies can now target title/headings/structure/link/button/form/input drift more precisely than the earlier broad semantic change classes. |
+| 2.31.0 | 2026-04-05 | **[Added semantic-aware gate rules](#version-2310)** | Gate policy evaluation and built-in presets can now explicitly fail on semantic drift instead of only carrying semantic summary context forward. |
+| 2.30.0 | 2026-04-05 | **[Added semantic-aware QA companion output](#version-2300)** | Compare, verdict, and gate artifacts now preserve semantic companion classification summaries in addition to visual mismatch classifications. |
+| 2.29.0 | 2026-04-05 | **[Finalized capture facade cleanup](#version-2290)** | Reduced `capture_service.py` to a compatibility facade so `capture.service` is now the clearer active capture authority surface. |
+| 2.28.0 | 2026-04-05 | **[Promoted capture authority surface](#version-2280)** | Added capture runtime modules for models, engines, reporting, and orchestration, then moved key consumers onto `capture.service` as the newer authority surface. |
+| 2.27.0 | 2026-04-05 | **[Started deeper capture-service split](#version-2270)** | Moved config, path, and witness responsibilities out of `capture_service.py` into dedicated capture modules while preserving the existing facade behavior. |
+| 2.26.0 | 2026-04-05 | **[Deepened capture-domain authority](#version-2260)** | Moved auth-context and headless-render-api ownership under `capture/` while preserving legacy import paths as compatibility shims. |
+| 2.25.0 | 2026-04-05 | **[Reorganized package internals](#version-2250)** | Reorganized compare, QA, reference, and CLI logic into package-internal domains so root commands are thinner and the internal package boundary is cleaner. |
+| 2.24.0 | 2026-04-05 | **[Added semantic page witnesses](#version-2240)** | Added rendered-HTML-derived semantic page witness output so richer capture flows can summarize page structure without relying only on screenshots or raw HTML. |
 | 2.23.0 | 2026-04-05 | **[Added metadata and acquisition witnesses](#version-2230)** | Added acquisition-summary and provider-metadata witness output so richer capture bundles explain how page evidence was obtained. |
 | 2.22.0 | 2026-04-05 | **[Started frontend-vision evidence bundle upgrade](#version-2220)** | Started the strategic refactor toward an internal runtime package, richer witness modes, rendered HTML/rendered text evidence bundles, and bounded session-replay capture. |
 | 2.21.0 | 2026-04-04 | **[Added mismatch classifications](#version-2210)** | Added machine-readable mismatch classifications across compare, verdict, and gate artifacts, and fixed RGB-only diff detection so visible changes are no longer missed. |
@@ -36,6 +47,269 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2340"></a>
+## Version 2.34.0: Fixed release blockers before publish
+
+**Date:** 2026-04-05
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Updated `skills/frontend-review/SKILL.md` so its default `frontend-default` witness mode is injected only when the operator did not already provide `--witness-mode`.
+- Updated `skills/responsive-review/SKILL.md` so its default `responsive` witness mode is injected only when the operator did not already provide `--witness-mode`.
+- Extended `.gitignore` so generated screenshot-side `*.json`, `*.html`, and `*.txt` runtime outputs are ignored by default alongside PNG files.
+- Synced package/governance metadata for the blocker-fix wave and bumped plugin and marketplace package versions to `2.34.0`.
+
+### Validation
+- checked `skills/frontend-review/SKILL.md` and `skills/responsive-review/SKILL.md` now preserve explicit operator witness-mode choice.
+- checked `.gitignore` now ignores generated screenshot-side JSON/HTML/TXT outputs.
+- `python3 -m py_compile /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/cli/screenshot.py` succeeds.
+- `claude plugins validate /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort` succeeds.
+
+### Summary
+The release surface is now safer: higher-level review flows no longer silently change the operator's witness-mode choice, and generated local evidence files no longer flood the package diff by default.
+
+---
+
+<a id="version-2330"></a>
+## Version 2.33.0: Normalized wrapper-retirement governance contract
+
+**Date:** 2026-04-05
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Synced README, design, TODO, and phase/changelog governance wording so the active programmable surface is consistently described as `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.<tool>`.
+- Normalized package-structure wording so retired root wrappers are now consistently described as compatibility-reference artifacts under `prototype/root-wrappers/`, not as part of the active root structure.
+- Normalized capture-authority wording so `capture.service` is described as the active authority surface and `capture_service.py` as a legacy compatibility facade only.
+- Bumped plugin and marketplace package versions to `2.33.0`.
+
+### Validation
+- checked README, design, TODO, phase summary, and changelog wording no longer present wrapper-retirement drift in the normalized scope.
+- checked active package docs now align on package CLI module execution and retired-wrapper placement.
+
+### Summary
+The wrapper cleanup is now documented as finished, not mid-transition: the package docs describe one active command surface, one active capture authority surface, and one explicit retirement location for old wrappers.
+
+---
+
+<a id="version-2320"></a>
+## Version 2.32.0: Added finer semantic gate granularity
+
+**Date:** 2026-04-05
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Extended the gate default policy model with finer semantic rule keys such as `fail_on_title_change`, `fail_on_missing_headings`, `fail_on_structure_flags_change`, `fail_on_missing_links`, `fail_on_missing_buttons`, `fail_on_form_count_change`, and `fail_on_missing_inputs`.
+- Mapped the finer semantic rule keys onto the existing `semantic_details` payload from compare output.
+- Updated relevant built-in presets so they can express stricter or more tolerant semantic expectations with finer granularity.
+- Bumped plugin and marketplace package versions to `2.32.0`.
+
+### Validation
+- `python3 -m py_compile webview_screenshort/qa/gate.py` succeeds.
+- `python3 list_policy_presets.py --output-format json` exposes the finer semantic rule keys in relevant built-in presets.
+- `python3 qa_gate.py /tmp/webview_semantic_qa_session.json --policy-preset strict/responsive-zero-diff --output-format json` returns gate policy payload including the finer semantic rule keys.
+- the checked example still fails for its real required-device reason instead of due to an implementation error.
+
+### Summary
+Semantic-aware gate policy is now more expressive: instead of only reacting to broad semantic change classes, it can target the specific kinds of semantic drift that matter most for frontend QA.
+
+### Follow-on cleanup
+- the active command contract now runs through `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.<tool>`, which allows the old root wrappers to be retired from the active root structure.
+
+---
+
+<a id="version-2310"></a>
+## Version 2.31.0: Added semantic-aware gate rules
+
+**Date:** 2026-04-05
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Extended the gate default policy model with semantic-aware rule keys such as `fail_on_semantic_missing`, `fail_on_semantic_structure_change`, `fail_on_semantic_content_change`, and `fail_on_semantic_any_change`.
+- Extended device-level gate evaluation so semantic drift can now trigger explicit policy violations when configured.
+- Updated relevant built-in policy presets so semantic drift can participate in strict, layout-focused, mobile-critical, and content-tolerant review modes.
+- Bumped plugin and marketplace package versions to `2.31.0`.
+
+### Validation
+- `python3 -m py_compile webview_screenshort/qa/gate.py webview_screenshort/qa/policies.py` succeeds.
+- `python3 list_policy_presets.py --output-format json` exposes semantic-aware policy keys in relevant built-in presets.
+- `python3 qa_gate.py /tmp/webview_semantic_qa_session.json --policy-preset strict/responsive-zero-diff --output-format json` returns gate output with semantic-aware policy keys present.
+- the checked example still fails for its real required-device reason instead of due to an implementation error.
+
+### Summary
+Semantic drift is now policy-visible: the package no longer only carries semantic companion context forward, but can also let gate rules fail explicitly on semantic problems when the selected policy asks for it.
+
+---
+
+<a id="version-2300"></a>
+## Version 2.30.0: Added semantic-aware QA companion output
+
+**Date:** 2026-04-05
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added `webview_screenshort/compare/semantic.py` so semantic page witness summaries can now be compared directly.
+- Extended compare output so each pair now carries semantic companion classification fields and the top-level result carries `semantic_classification_summary`.
+- Extended verdict output so it now carries `semantic_mismatch_classification_summary` alongside the visual mismatch summary.
+- Extended gate output so semantic companion classification summaries propagate through policy evaluation artifacts.
+- Bumped plugin and marketplace package versions to `2.30.0`.
+
+### Validation
+- `python3 -m py_compile webview_screenshort/compare/semantic.py webview_screenshort/compare/reports.py webview_screenshort/qa/verdicts.py webview_screenshort/qa/gate.py` succeeds.
+- `python3 compare_reports.py /tmp/webview_semantic_focus_report.json /tmp/webview_semantic_focus_report.json --output-format json` emits `semantic_classification_summary`.
+- `python3 qa_verdict.py /tmp/webview_semantic_qa_session.json --output-format json` emits `semantic_mismatch_classification_summary`.
+- `python3 qa_gate.py /tmp/webview_semantic_qa_session.json --policy-preset strict/responsive-zero-diff --output-format json` preserves semantic companion summary in gate output.
+
+### Summary
+The package now carries semantic page witness drift forward into downstream QA artifacts, so semantic structure changes can remain machine-readable context instead of being trapped in sidecar witness JSON only.
+
+---
+
+<a id="version-2290"></a>
+## Version 2.29.0: Finalized capture facade cleanup
+
+**Date:** 2026-04-05
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Reduced `webview_screenshort/capture_service.py` to an explicit compatibility facade that re-exports from the newer capture authority surface.
+- Preserved the legacy import path while removing the remaining duplicate capture implementation from that file.
+- Kept `capture.service` as the practical active authority surface for package exports, screenshot CLI, and live replay consumers.
+- Bumped plugin and marketplace package versions to `2.29.0`.
+
+### Validation
+- `python3 -m py_compile webview_screenshort/capture_service.py webview_screenshort/capture/service.py webview_screenshort/__init__.py webview_screenshort/cli/screenshot.py webview_screenshort/references/live.py screenshot.py reference_live_bundle.py reference_live_gate.py` succeeds.
+- `python3 screenshot.py https://example.com --mode viewport --witness-mode frontend-default --output-format json` succeeds.
+- `python3 reference_live_bundle.py --bundle /tmp/webview_wrapper_bundle.json --url https://example.com ... --output-format json` succeeds.
+- `claude plugins validate /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort` succeeds.
+
+### Summary
+The current capture refactor stretch now has one clearer active authority surface: `capture.service` owns the capture package surface, while `capture_service.py` remains only as a safe compatibility layer.
+
+---
+
+<a id="version-2280"></a>
+## Version 2.28.0: Promoted capture authority surface
+
+**Date:** 2026-04-05
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added `webview_screenshort/capture/models.py`, `capture/engines.py`, `capture/reporting.py`, and `capture/runtime.py` so the remaining capture-service responsibilities now have explicit package modules.
+- Promoted `webview_screenshort/capture/service.py` into a richer authority surface instead of leaving it as a trivial wildcard shim.
+- Updated key consumers such as package exports, screenshot CLI, and live replay to import through `capture.service` rather than pointing only at `capture_service.py`.
+- Kept `capture_service.py` available as a compatibility facade while the newer capture package becomes more authoritative.
+- Bumped plugin and marketplace package versions to `2.28.0`.
+
+### Validation
+- `python3 -m py_compile webview_screenshort/capture/models.py webview_screenshort/capture/engines.py webview_screenshort/capture/reporting.py webview_screenshort/capture/runtime.py webview_screenshort/capture/service.py webview_screenshort/__init__.py webview_screenshort/cli/screenshot.py webview_screenshort/references/live.py screenshot.py reference_live_bundle.py reference_live_gate.py` succeeds.
+- `python3 screenshot.py https://example.com --mode viewport --witness-mode frontend-default --output-format json` succeeds.
+- `python3 reference_live_bundle.py --bundle /tmp/webview_wrapper_bundle.json --url https://example.com ... --output-format json` succeeds.
+
+### Summary
+The capture package now has a real authority surface of its own: key consumers can depend on `capture.service`, while `capture_service.py` remains in place for compatibility during the final cleanup stretch.
+
+---
+
+<a id="version-2270"></a>
+## Version 2.27.0: Started deeper capture-service split
+
+**Date:** 2026-04-05
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added `webview_screenshort/capture/config.py` so screenshot config/env-loading logic no longer has to live only inside `capture_service.py`.
+- Added `webview_screenshort/capture/paths.py` so output/report/bundle/path helpers and PNG validation helpers no longer have to live only inside `capture_service.py`.
+- Added `webview_screenshort/capture/witnesses.py` so witness-mode normalization, HTML/text conversion, semantic summary logic, and richer witness collection no longer have to live only inside `capture_service.py`.
+- Updated `capture_service.py` to reuse the new capture modules as a facade instead of owning all three responsibility groups directly.
+- Bumped plugin and marketplace package versions to `2.27.0`.
+
+### Validation
+- `python3 -m py_compile webview_screenshort/capture/config.py webview_screenshort/capture/paths.py webview_screenshort/capture/witnesses.py webview_screenshort/capture_service.py screenshot.py` succeeds.
+- `python3 screenshot.py https://example.com --mode viewport --witness-mode frontend-default --output-format json` succeeds.
+- `python3 screenshot.py https://example.com --capture-set responsive --mode viewport --witness-mode responsive --output-format json` succeeds.
+- the checked capture flows still emit richer witness artifacts after the extraction.
+
+### Summary
+The capture side is getting proportionate: `capture_service.py` still acts as the public facade, but config/path/witness responsibilities have started moving into dedicated capture modules instead of staying trapped in one large file.
+
+---
+
+<a id="version-2260"></a>
+## Version 2.26.0: Deepened capture-domain authority
+
+**Date:** 2026-04-05
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Moved auth-context implementation authority into `webview_screenshort/capture/auth.py`.
+- Moved headless-render-api implementation authority into `webview_screenshort/capture/headless_api.py`.
+- Turned `webview_screenshort/auth_context.py` and `webview_screenshort/headless_render_api.py` into compatibility shims.
+- Updated `webview_screenshort/capture_service.py` and package exports to import from capture-domain authority paths first.
+- Bumped plugin and marketplace package versions to `2.26.0`.
+
+### Validation
+- `python3 -m py_compile webview_screenshort/capture/auth.py webview_screenshort/capture/headless_api.py webview_screenshort/auth_context.py webview_screenshort/headless_render_api.py webview_screenshort/capture_service.py webview_screenshort/__init__.py screenshot.py` succeeds.
+- `python3 screenshot.py https://example.com --mode viewport --witness-mode frontend-default --output-format json` succeeds.
+- the checked screenshot flow still emits rendered HTML/text, acquisition witness, and semantic witness output after the capture authority shift.
+
+### Summary
+The capture side is now starting to match the newer package-domain model: auth/session parsing and provider integration live under `capture/`, while the old paths still exist as safe compatibility surfaces.
+
+---
+
+<a id="version-2250"></a>
+## Version 2.25.0: Reorganized package internals
+
+**Date:** 2026-04-05
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added package-internal domains under `webview_screenshort/` for compare, QA, references, CLI adapters, and shared schema constants.
+- Converted root Python commands into compatibility-thin wrappers so parser/main behavior now lives under `webview_screenshort/cli/` instead of staying mixed into top-level scripts.
+- Moved comparison, verdict, gate, bundle, and listing logic behind package modules and reduced direct script-to-script subprocess coupling where in-process reuse now exists.
+- Reworked `webview_screenshort/workflows.py` into a package-internal compatibility surface so it no longer imports root scripts directly.
+- Kept `screenshot.py` as the main capture entrypoint while leaving unrelated utilities as separate commands.
+- Bumped plugin and marketplace package versions to `2.25.0`.
+
+### Validation
+- `python3 -m py_compile` succeeds across the root wrappers and newly added package modules.
+- `python3 compare_reports.py /tmp/webview_semantic_focus_report.json /tmp/webview_semantic_focus_report.json --output-format json` succeeds.
+- `python3 compare_session.py --name wrapper-check ...` succeeds.
+- `python3 create_reference_bundle.py --name wrapper-check ...` succeeds.
+- `python3 apply_reference_bundle.py --bundle /tmp/webview_wrapper_bundle.json ...` succeeds.
+- `python3 qa_verdict.py /tmp/webview_wrapper_apply_session.json --output-format json` succeeds.
+- listing wrappers succeed after invalid/non-dict JSON artifacts are skipped robustly.
+- `claude plugins validate /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort` succeeds.
+
+### Summary
+The package now reads more like a professional Python project: root commands stay stable for users, but the real implementation is increasingly grouped by domain inside the internal package.
+
+---
+
+<a id="version-2240"></a>
+## Version 2.24.0: Added semantic page witnesses
+
+**Date:** 2026-04-05
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added semantic page witness generation in `webview_screenshort/capture_service.py` so rendered HTML can now produce machine-readable structure summaries with title, headings, links, buttons, forms, and page-shape markers.
+- Extended focused capture output, responsive capture-set output, and evidence bundle artifacts so they preserve semantic witness paths and summaries instead of leaving structure understanding only to raw HTML.
+- Extended `create_reference_bundle.py` so bundled reference assets now copy semantic/acquisition/metadata witness files when the source report contains them.
+- Updated screenshot skill, frontend-review, responsive-review, README, design, phase, patch, and TODO guidance so semantic page witness is part of the visible richer-evidence contract.
+- Bumped plugin and marketplace package versions to `2.24.0`.
+
+### Validation
+- `python3 -m py_compile webview_screenshort/capture_service.py create_reference_bundle.py screenshot.py` succeeds.
+- `python3 screenshot.py https://example.com --mode viewport --witness-mode frontend-default --output-format json` succeeds.
+- the returned capture includes `semantic_page_path` and a non-empty `semantic_page_summary`.
+- the emitted evidence bundle preserves semantic witness references.
+
+### Summary
+The package now adds a lighter structure-aware witness layer on top of rendered HTML, making richer frontend review faster and more machine-readable without claiming deeper DOM or browser-devtools semantics than were actually implemented.
 
 ---
 

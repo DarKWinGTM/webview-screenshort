@@ -14,7 +14,7 @@ Use this skill when screenshot QA should end in a threshold-aware gate result in
 1. Parse `$ARGUMENTS`.
 2. Run the helper:
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT}/qa_gate.py" $ARGUMENTS
+   PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.qa_gate $ARGUMENTS
    ```
 3. Read the returned gate payload.
 4. Report the violated rules and failing devices clearly.

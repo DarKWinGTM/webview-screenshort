@@ -14,17 +14,18 @@ Use this skill when a saved expected baseline should be replayed against the cur
 1. Parse `$ARGUMENTS`.
 2. Run the higher-level helper:
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT}/reference_live_bundle.py" $ARGUMENTS
+   PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.reference_live_bundle $ARGUMENTS
    ```
 3. Read the returned JSON payload.
 4. Read the fresh current report from `current_report_path`.
 5. Read the emitted compare session from `session_output_path`.
 6. Read the referenced screenshot evidence from the capture payload and the compare-session comparison pairs.
 7. If rendered HTML / rendered text witnesses were emitted for the fresh live capture, read them too before concluding on CSR/content drift.
-8. Continue with expected/actual frontend review using the fresh live capture as evidence.
+8. If semantic page witness JSON was emitted for the fresh live capture, read it too before concluding that the drift is only visual.
+9. Continue with expected/actual frontend review using the fresh live capture as evidence.
 9. If the workflow should end in a reusable machine-readable verdict, run:
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT}/qa_verdict.py" <live-replay.json> --output-format json
+   PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.qa_verdict <live-replay.json> --output-format json
    ```
 10. If the workflow should end in a threshold-aware gate result directly, prefer `/reference-live-gate` instead of chaining verdict + gate manually.
 
@@ -34,5 +35,6 @@ Use this skill when a saved expected baseline should be replayed against the cur
 - exact comparison/session artifact paths
 - exact screenshot paths used for the fresh live run
 - exact rendered HTML / rendered text paths when emitted for the live capture
+- exact semantic page witness path when emitted for the live capture
 - concise expected/actual findings from the new baseline replay
 - next useful UI/UX follow-up step

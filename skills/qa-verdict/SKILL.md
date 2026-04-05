@@ -14,7 +14,7 @@ Use this skill when frontend screenshot QA should end with a concise verdict lay
 1. Parse `$ARGUMENTS`.
 2. Run the helper:
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT}/qa_verdict.py" $ARGUMENTS
+   PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.qa_verdict $ARGUMENTS
    ```
 3. Read the returned verdict payload.
 4. If needed, read the referenced compare-session/live-replay artifact for deeper evidence.

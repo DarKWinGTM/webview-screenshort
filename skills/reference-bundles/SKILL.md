@@ -13,22 +13,22 @@ Use this skill when webview compare artifacts should be turned into reusable bas
 
 ### 1) List bundles
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/list_reference_bundles.py" <bundle-dir> --output-format json
+PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.list_reference_bundles <bundle-dir> --output-format json
 ```
 
 ### 2) Create bundle
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/create_reference_bundle.py" --name <bundle-name> --session <compare-session.json> --output <bundle.json> --reference-label expected
+PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.create_reference_bundle --name <bundle-name> --session <compare-session.json> --output <bundle.json> --reference-label expected
 ```
 
 ### 3) Apply bundle
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/apply_reference_bundle.py" --bundle <bundle.json> --current-report <current-report.json> --comparison-json <comparison.json> --session-output <session.json> --session-name <session-name> --current-label actual --diff-dir <diff-dir>
+PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.apply_reference_bundle --bundle <bundle.json> --current-report <current-report.json> --comparison-json <comparison.json> --session-output <session.json> --session-name <session-name> --current-label actual --diff-dir <diff-dir>
 ```
 
 ### 4) Apply bundle to live URL
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/reference_live_bundle.py" --bundle <bundle.json> --url <live-url> --current-report <current-report.json> --comparison-json <comparison.json> --session-output <session.json> --session-name <session-name> --current-label actual --mode viewport --wait
+PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.reference_live_bundle --bundle <bundle.json> --url <live-url> --current-report <current-report.json> --comparison-json <comparison.json> --session-output <session.json> --session-name <session-name> --current-label actual --mode viewport --wait
 ```
 
 ## Output expectations

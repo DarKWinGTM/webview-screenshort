@@ -17,12 +17,12 @@ Use this skill when frontend review should compare two already-generated screens
 
 2. Run the installed comparison helper to validate the two reports and emit structured comparison metadata plus pair-level mismatch classifications:
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT}/compare_reports.py" $ARGUMENTS --output-format json
+   PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.compare_reports $ARGUMENTS --output-format json
    ```
 
 3. If the review should be preserved as a reusable QA artifact, persist a named compare session after the comparison step:
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT}/compare_session.py" --name "session-name" --left-report <report-a.json> --right-report <report-b.json> --comparison-json <comparison.json> --output <session.json>
+   PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.compare_session --name "session-name" --left-report <report-a.json> --right-report <report-b.json> --comparison-json <comparison.json> --output <session.json>
    ```
 
 4. Read both JSON report files.
@@ -42,7 +42,7 @@ Use this skill when frontend review should compare two already-generated screens
 
 9. If the review should end in a reusable machine-readable verdict rather than raw comparison metadata only, run:
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT}/qa_verdict.py" <comparison-or-session.json> --output-format json
+   PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.qa_verdict <comparison-or-session.json> --output-format json
    ```
 
 10. Keep the output evidence-first and mention which report/image paths were compared.

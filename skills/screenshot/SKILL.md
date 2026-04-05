@@ -27,14 +27,14 @@ Use it when frontend work needs real page evidence, for example:
 
 2. Choose the witness mode intentionally:
    - `visual` = screenshot-first only
-   - `frontend-default` = screenshot + rendered HTML + rendered text
-   - `csr-debug` = screenshot + rendered HTML + prerender HTML when CSR timing/debug needs deeper witnesses
-   - `responsive` = richer witness bundle across desktop/tablet/mobile
-   - `session-replay` = richer witness bundle plus user-provided auth context
+   - `frontend-default` = screenshot + rendered HTML + rendered text + semantic page witness
+   - `csr-debug` = screenshot + rendered HTML + prerender HTML + semantic page witness when CSR timing/debug needs deeper witnesses
+   - `responsive` = richer witness bundle across desktop/tablet/mobile, including semantic page witnesses per device
+   - `session-replay` = richer witness bundle plus user-provided auth context and semantic page witness
 
 3. Run the capture engine from this installed plugin package:
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT}/screenshot.py" $ARGUMENTS
+   PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.screenshot $ARGUMENTS
    ```
 
 4. Prefer adding `--output-format json` when the result will feed a follow-on review workflow.
@@ -52,6 +52,7 @@ Use it when frontend work needs real page evidence, for example:
    - if `--report-file` was used, report the exact JSON report path
    - if an evidence bundle was emitted, report the exact bundle path
    - if rendered HTML / rendered text witnesses were emitted, report their exact paths
+   - if semantic page witnesses were emitted, report their exact JSON path or per-device semantic witness paths
    - if `--capture-set responsive` was used, report the per-device screenshot paths and viewport metadata
    - if the user wants visual review, read the image file next and continue from the screenshot evidence
 

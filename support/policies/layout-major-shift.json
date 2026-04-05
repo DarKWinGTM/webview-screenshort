@@ -7,5 +7,10 @@
   "fail_on_invalid": true,
   "require_devices": ["desktop", "tablet", "mobile"],
   "max_diff_pixels": 25000,
-  "max_diff_ratio": 0.02
+  "max_diff_ratio": 0.02,
+  "fail_on_semantic_structure_change": true,
+  "fail_on_semantic_missing": true,
+  "fail_on_missing_headings": true,
+  "fail_on_structure_flags_change": true,
+  "fail_on_form_count_change": true
 }

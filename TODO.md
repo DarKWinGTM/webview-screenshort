@@ -1,6 +1,6 @@
 # Webview Screenshort - TODO
 
-> **Last Updated:** 2026-04-04
+> **Last Updated:** 2026-04-05
 
 ---
 
@@ -13,6 +13,9 @@
 - [x] Verified real CSR capture against `https://claw-frontend-dev.nodenetwork.ovh/docs` in viewport and fullpage modes using `--wait`.
 - [x] Added a frontend-review workflow surface through `skills/screenshot/` plus `agents/webview-vision-assist.md`.
 - [x] Completed standalone-repo cutover and retired shared-workspace authority from the public package posture.
+- [x] Normalized the active command contract and governance docs around package CLI module execution after root-wrapper retirement.
+- [x] Fixed higher-level review skills so an explicit `--witness-mode` is preserved instead of being silently overridden by hard-appended defaults.
+- [x] Ignored generated screenshot-side JSON/HTML/TXT evidence outputs so local runtime artifacts do not pollute release diffs by default.
 
 ---
 
@@ -63,6 +66,23 @@
 - [x] Add rendered HTML / rendered text evidence bundle output on top of the screenshot-era report model.
 - [x] Add bounded session-replay inputs (`--header`, `--origin-header`, `--cookie`, `--cookie-file`) for logged-in-state capture planning/execution.
 - [x] Upgrade skill and agent wording so routing is witness-mode-aware rather than screenshot-only by default.
+- [x] Add semantic page witness output so rendered HTML can produce a reusable structure summary artifact.
+- [x] Preserve semantic/acquisition witness indexes in responsive capture-set outputs and evidence bundles.
+- [x] Reorganize compare / QA / reference logic into package-internal domains instead of leaving them only as root scripts.
+- [x] Convert root Python commands into compatibility-thin wrappers over package-internal CLI adapters.
+- [x] Remove root-script imports from `webview_screenshort/workflows.py` so internal package modules depend on package modules only.
+- [x] Remove direct script-to-script subprocess coupling where in-process module reuse now exists.
+- [x] Move auth-context authority into `webview_screenshort/capture/auth.py` while preserving `auth_context.py` as a compatibility shim.
+- [x] Move headless-render-api authority into `webview_screenshort/capture/headless_api.py` while preserving `headless_render_api.py` as a compatibility shim.
+- [x] Start splitting `capture_service.py` by moving config/path/witness responsibilities into `webview_screenshort/capture/` modules.
+- [x] Extract capture models, engines, reporting, and runtime modules under `webview_screenshort/capture/`.
+- [x] Move key consumers to import through `webview_screenshort/capture/service.py` as the newer capture authority surface.
+- [x] Reduce `capture_service.py` to an explicit compatibility facade instead of leaving duplicate capture implementation there.
+- [x] Add semantic companion classification summaries to compare / verdict / gate artifacts.
+- [x] Add semantic-aware gate policy keys so gate presets can fail on semantic drift explicitly.
+- [x] Add finer semantic gate rule granularity for title/headings/structure/link/button/form/input drift.
+- [x] Migrate the active command contract to `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.<tool>`.
+- [x] Retire root wrapper scripts from the active root structure into `prototype/root-wrappers/`.
 
 ---
 
@@ -70,6 +90,18 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-05 | Fixed release blockers before publish: higher-level review skills now preserve an explicit operator-provided `--witness-mode`, generated `screenshot/*.json|*.html|*.txt` runtime outputs are now ignored by default, and the package version moved to `2.34.0`. |
+| 2026-04-05 | Normalized the active command/gov-doc contract after wrapper retirement: package CLI modules are now the active programmable surface, `capture.service` is described as the active capture authority, retired wrappers stay under `prototype/root-wrappers/` for compatibility reference only, and the package version moved to `2.33.0`. |
+| 2026-04-05 | Retired root wrapper scripts from the active root structure: the active command contract now runs through `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.<tool>`, retired wrappers moved under `prototype/root-wrappers/`, and the package cleanup can now close without a root-script pile remaining in the active surface. |
+| 2026-04-05 | Added finer semantic gate rule granularity: built-in semantic gate policies can now target title/headings/structure/link/button/form/input drift more explicitly, and the package version moved to `2.32.0`. |
+| 2026-04-05 | Added semantic-aware gate rules: built-in gate presets and gate policy evaluation can now fail on semantic drift such as missing semantic witness or semantic structure/content changes, and the package version moved to `2.31.0`. |
+| 2026-04-05 | Added semantic-aware QA companion output: compare/verdict/gate artifacts now preserve semantic companion classifications on top of visual diff classifications, and the package version moved to `2.30.0`. |
+| 2026-04-05 | Finalized the capture authority surface: capture models/engines/reporting/runtime modules now exist under `webview_screenshort/capture/`, key consumers use `capture.service`, `capture_service.py` is now a compatibility facade, and the package version moved to `2.29.0`. |
+| 2026-04-05 | Extracted capture runtime modules further: models/engines/reporting/runtime now live under `webview_screenshort/capture/`, key consumers import through `capture.service`, and the package version moved to `2.28.0`. |
+| 2026-04-05 | Started the deeper capture-service split: config/path/witness responsibilities now have dedicated `capture/` modules, `capture_service.py` now reuses them as a facade, and the package version moved to `2.27.0`. |
+| 2026-04-05 | Deepened the capture-domain split: auth-context and headless-render-api authority now live under `webview_screenshort/capture/`, legacy import paths remain as compatibility shims, and the package version moved to `2.26.0`. |
+| 2026-04-05 | Reorganized the Python package structure: compare / QA / reference logic now lives behind package-internal domains, root commands are compatibility-thin wrappers over internal CLI adapters, `workflows.py` no longer imports root scripts directly, direct script-to-script subprocess coupling was reduced through module reuse, and the package version moved to `2.25.0`. |
+| 2026-04-05 | Added semantic page witness output on top of the richer frontend-vision stack: rendered HTML can now emit machine-readable page-structure JSON, responsive capture-set outputs now preserve semantic/acquisition witness indexes, reference-bundle creation now copies semantic witness artifacts when present, and the package version moved to `2.24.0`. |
 | 2026-04-05 | Added metadata and acquisition witness output on top of the frontend-vision upgrade: richer capture runs now preserve scrape/prerender acquisition summaries in machine-readable form, and the package version moved to `2.23.0`. |
 | 2026-04-05 | Started the strategic frontend-vision upgrade: added an internal `webview_screenshort/` runtime package, moved capture/replay/gate logic toward reusable modules, added richer witness modes plus evidence-bundle output with rendered HTML / rendered text artifacts, added bounded session-replay inputs for logged-in-state capture, and upgraded skill/agent routing/docs toward screenshot-first but HTML-aware frontend vision. |
 | 2026-04-04 | Added machine-readable mismatch classifications (`exact_match`, `visual_change_region`, `dimension_shift`, `size_mismatch`, `diff_error`) across compare/verdict/gate artifacts, fixed RGBA diff detection so RGB-only changes are no longer missed, validated both responsive and forced-mismatch workflows, and bumped the plugin/marketplace package versions to `2.21.0`. |

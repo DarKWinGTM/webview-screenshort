@@ -14,7 +14,7 @@ Use this skill when you want to discover the built-in QA policy preset names ins
 1. Parse `$ARGUMENTS`.
 2. Run the helper:
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT}/list_policy_presets.py" $ARGUMENTS
+   PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.list_policy_presets $ARGUMENTS
    ```
 3. Read the returned preset list.
 4. Recommend the best-fit preset name for the intended QA flow.

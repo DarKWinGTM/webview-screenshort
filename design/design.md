@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.23.0
+> **Current Version:** 2.34.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
@@ -19,6 +19,7 @@ The target is a frontend-development vision workflow where Claude can:
 - inspect real layout and UI output
 - read rendered HTML and rendered text when screenshot-only evidence is not enough
 - inspect acquisition and provider-returned metadata witnesses when richer page truth needs more context
+- inspect semantic page witnesses so rendered page structure is easier to understand without rereading full raw HTML every time
 - use richer witness bundles before recommending frontend changes
 
 ---
@@ -40,21 +41,28 @@ The intended package model is:
 - `skills/reference-live-gate/SKILL.md` = one-step gate surface for saved baseline + live URL + policy evaluation
 - `skills/policy-presets/SKILL.md` = preset discovery surface for built-in QA gate policy names
 - `agents/webview-vision-assist.md` = optional visual-review companion agent
-- `screenshot.py` = capture CLI wrapper over the internal runtime package
-- `webview_screenshort/` = internal runtime package for capture, auth context, headless-render-api integration, evidence bundles, and orchestration reuse
-- `compare_reports.py` = report comparison helper for expected/actual and before/after review workflows, including pair-level mismatch classification
-- `qa_verdict.py` = verdict helper for per-device pass/fail/invalid output plus mismatch classification summaries on top of compare/live-replay artifacts
-- `qa_gate.py` = gate helper for policy/threshold checks on top of verdict output while preserving mismatch classifications
-- `reference_live_gate.py` = one-step helper that captures a live current report, replays a saved baseline, and evaluates the result against gate policy
-- `list_policy_presets.py` = policy preset discovery helper for reusable named gate policies
-- `diff_images.py` = image-diff helper for richer compare-review evidence
-- `compare_session.py` = named compare-session helper for reusable expected/actual QA artifacts
-- `list_compare_sessions.py` = compare-session index/history helper for reusable QA browsing
-- `create_reference_bundle.py` = expected-reference bundle helper for reusable baseline artifacts
-- `apply_reference_bundle.py` = apply-reference helper for re-running expected/actual QA against fresh reports
-- `reference_live_bundle.py` = higher-level helper that captures a fresh current report from a live URL and applies a saved bundle automatically
-- `list_reference_bundles.py` = reference-bundle browser helper for reusable baseline discovery
-- `screenshot/` = generated screenshots and checked local artifacts
+- `webview_screenshort/` = internal runtime package for capture, compare, QA, reference workflows, CLI adapters, semantic page witnesses, evidence bundles, and orchestration reuse
+- `webview_screenshort/cli/` = package-internal CLI adapters that now own parser/main behavior and the active programmable command surface
+- `webview_screenshort/compare/` = internal compare/diff/session domain
+- `webview_screenshort/qa/` = internal verdict/gate/policy domain
+- `webview_screenshort/references/` = internal reference-bundle and live-replay domain
+- `webview_screenshort/capture/` = internal capture-domain surface that now owns auth, headless-render-api, config/path/witness/models/engines/reporting/runtime responsibilities, with `capture.service` as the active authority surface and `capture_service.py` preserved only as a compatibility facade
+- `webview_screenshort/schemas.py` = shared schema/workflow identifier authority
+- `webview_screenshort/cli/screenshot.py` = active screenshot command module
+- `webview_screenshort/cli/compare_reports.py` = active compare command module
+- `webview_screenshort/cli/qa_verdict.py` = active verdict command module
+- `webview_screenshort/cli/qa_gate.py` = active gate command module
+- `webview_screenshort/cli/reference_live_gate.py` = active one-step live gate command module
+- `webview_screenshort/cli/list_policy_presets.py` = active preset discovery command module
+- `webview_screenshort/cli/diff_images.py` = active image-diff command module
+- `webview_screenshort/cli/compare_session.py` = active compare-session command module
+- `webview_screenshort/cli/list_compare_sessions.py` = active compare-session listing command module
+- `webview_screenshort/cli/create_reference_bundle.py` = active expected-reference bundle command module
+- `webview_screenshort/cli/apply_reference_bundle.py` = active apply-reference command module
+- `webview_screenshort/cli/reference_live_bundle.py` = active live replay command module
+- `webview_screenshort/cli/list_reference_bundles.py` = active reference-bundle listing command module
+- retired root wrapper scripts now live under `prototype/root-wrappers/` and are no longer part of the active package structure
+- `screenshot/` = generated local screenshots and richer evidence artifacts for checked runs; timestamped runtime outputs here are local evidence, not portable package authority
 - `design/changelog/TODO/phase/patch` = governance authority at the standalone repo root
 
 ---
@@ -69,6 +77,8 @@ Why:
 - the user often wants a direct command
 - capture should happen before analysis
 - installed plugin execution should resolve through `${CLAUDE_PLUGIN_ROOT}` rather than a source-workspace-only path
+- the active command contract now runs through package CLI module execution via `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.<tool>`, while the retired root wrappers remain under `prototype/root-wrappers/` for compatibility reference only
+- higher-level review surfaces may choose default witness modes for convenience, but they must not override an explicit operator-provided `--witness-mode`
 
 ### 3.2 Companion agent path
 An optional agent can help when the task is not just “take a screenshot” but “use screenshots to review the frontend visually.”
@@ -102,8 +112,10 @@ Need frontend vision review
   → persist an evidence bundle when richer witnesses are required
   → save screenshot locally
   → save rendered HTML and rendered text when the witness mode requires them
+  → derive semantic page witness JSON when rendered HTML is available
   → read the screenshot first
   → read richer witnesses when CSR/content/logged-in-state context needs more than an image
+  → use semantic page witness when page structure or content-shape understanding matters more than raw HTML volume
   → when comparing states, re-read two report files and compare the referenced screenshots through structured pair metadata plus mismatch classifications
   → persist a named compare session when the expected/actual review should remain reusable later
   → list or reopen saved compare sessions when QA history should be reused
@@ -148,6 +160,12 @@ Checked responsive review validation now also shows:
 - the same page also captures successfully through one responsive capture-set run that returns combined JSON metadata plus per-device image outputs
 - the package can therefore support same-page cross-breakpoint review rather than only one-off single captures
 
+Checked semantic witness validation now also shows:
+- `frontend-default` capture can now emit a machine-readable semantic page witness JSON artifact derived from rendered HTML
+- the semantic witness currently summarizes title, headings, links, buttons, form/input hints, and high-level page structure markers such as header/nav/main/footer presence
+- richer evidence bundles and responsive capture-set outputs now preserve semantic page witness references instead of leaving structure understanding only to raw HTML rereads
+- reference-bundle creation now preserves copied semantic/acquisition/metadata witness artifacts when the source report includes them
+
 ---
 
 ## 6) Design boundaries
@@ -157,7 +175,7 @@ Checked responsive review validation now also shows:
 - richer evidence generation for Claude review
 - CSR-aware webpage capture with optional wait behavior
 - a standalone plugin skill that now supports repo-root local marketplace install workflows
-- a path toward multi-witness frontend vision using screenshot + rendered HTML + rendered text bundles
+- a path toward multi-witness frontend vision using screenshot + rendered HTML + rendered text + semantic page witness bundles
 
 ### What this package is not
 - a full browser automation suite
@@ -170,8 +188,10 @@ Checked responsive review validation now also shows:
 
 ## 7) Current limitations
 
+- semantic page witness is currently a lightweight HTML-derived structure summary and not yet a full semantic DOM understanding layer
+- auth-context and headless-render-api authority now live under `webview_screenshort/capture/`, config/path/witness/models/engines/reporting/runtime responsibilities now have dedicated capture modules, `capture.service` is in use by key consumers as the newer authority surface, and `capture_service.py` has now been reduced to a compatibility facade
 - current workflow still relies heavily on screenshot evidence, even though richer witness modes are now the strategic direction
-- compare/verdict/gate flows still begin from screenshot-era compatibility artifacts and need broader bundle-aware continuity review
+- compare/verdict/gate now preserve semantic companion summaries, built-in gate presets can now carry semantic-aware failure rules, and semantic rule granularity can now target title/headings/structure/form/input/link/button drift, but the semantic layer is still a bounded rule set rather than a deeper semantic QA engine
 - logged-in-state capture depends on operator-provided headers/cookies/session material and does not automate interactive login
 - headless-render-api documentation only clearly documents origin forwarding through `Prerendercloud-*` header names plus `Origin-Header-Whitelist`, so logged-in-state capture must stay within that bounded forwarding model unless stronger provider evidence appears
 - plugin install lifecycle for this package is now validated from the standalone repo root through its package-local marketplace manifest, while the shared `darkwingtm` route remains only temporary checked local compatibility context
@@ -188,11 +208,14 @@ This package is considered successful for the current wave when:
 - real CSR pages can be captured successfully
 - the package clearly supports frontend visual review workflows
 - the runtime is no longer organized only as top-level scripts and now has a reusable internal package for capture/auth/provider/orchestration logic
+- the active command surface can now run through package CLI modules instead of depending on root wrapper filenames as the long-term contract
 - `screenshot.py` supports late-bound config for endpoints/timeouts
 - `screenshot.py` supports machine-readable JSON output, persisted report-file output, richer witness modes, and optional evidence-bundle output for workflow chaining
 - rendered HTML and rendered text become first-class witnesses for non-visual frontend review paths
+- semantic page witness output becomes a first-class structure summary artifact for frontend review and responsive capture-set flows
 - request-scoped logged-in-state capture is possible with explicit user-provided headers/cookies/session material while keeping raw secrets out of persisted artifacts
 - `compare_reports.py` supports structured report-to-report pairing for expected/actual and regression-style review
+- compare/verdict/gate artifacts can now carry semantic companion classification summaries in addition to visual mismatch classifications
 - `screenshot.py` supports one-run responsive capture-set output for desktop/tablet/mobile review
 - `screenshot.py` supports mobile and tablet viewport presets for responsive review
 - saved reference bundles carry explicit reference-side/report metadata for more reliable replay
@@ -200,9 +223,18 @@ This package is considered successful for the current wave when:
 - the package can replay a saved baseline directly against a live URL without requiring the caller to capture the current report separately first
 - compare/live-replay artifacts can now be converted into reusable machine-readable verdicts with per-device pass/fail/invalid output plus grouped mismatch classifications
 - threshold-aware gate policy can now be applied on top of verdict artifacts with required-device and diff-threshold rules while preserving mismatch classifications into gate output
+- built-in and custom gate policies can now optionally fail on semantic companion drift such as missing semantic witness, semantic structure change, semantic content change, any semantic change, title change, missing headings, structure-flag change, missing links/buttons, form-count change, or missing inputs
 - one-step baseline gate flow can now capture current state, replay a saved baseline, and apply policy evaluation in one run
 - multiple semantic QA policy presets now exist for strict, smoke, layout-focused, mobile-critical, and content-tolerant review shapes
 - built-in policy presets can now be selected by canonical family/name selectors or legacy alias names instead of requiring raw policy-file paths in normal usage
 - non-diffable paired comparisons are now treated as failed instead of being reported as successful replay sessions
 - skills and `webview-vision-assist` route by witness need more explicitly instead of relying only on screenshot-era assumptions
+- comparison / QA / reference workflows now live behind package-internal domains instead of root-script-only implementation piles
+- package CLI modules now own the active programmable command surface, and the retired root wrappers now live only under `prototype/root-wrappers/` as compatibility reference artifacts
+- higher-level review skills preserve explicit operator witness-mode choice instead of silently overriding it with a hard-appended default
+- generated local screenshot/evidence outputs do not need to be treated as tracked package content by default
+- capture auth/session parsing and headless-render-api integration now also have package-domain authority under `webview_screenshort/capture/`, with legacy file paths preserved as shims
+- config/path/witness responsibilities have started moving out of `capture_service.py` into `capture/config.py`, `capture/paths.py`, and `capture/witnesses.py`
+- key consumers such as package exports, screenshot CLI, and live replay now import through `capture.service` instead of pointing only at `capture_service.py`
+- `capture_service.py` now acts as an explicit compatibility facade instead of duplicating the remaining capture implementation
 - governance docs describe the real current state rather than the older project-local skill state
