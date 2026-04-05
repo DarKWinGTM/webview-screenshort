@@ -11,6 +11,9 @@ from typing import Any, Dict, Optional
 from .auth_context import AuthContext
 
 
+JSON_DICT = Dict[str, Any]
+
+
 @dataclass
 class ResponsePayload:
     ok: bool
@@ -195,7 +198,7 @@ class HeadlessRenderApiClient:
         return self._request(endpoint, headers, timeout_sec)
 
 
-def decode_body_from_json_payload(payload: Optional[Dict[str, Any]]) -> str:
+def decode_body_from_json_payload(payload: Optional[JSON_DICT]) -> str:
     if not isinstance(payload, dict):
         return ""
     raw_body = payload.get("body")
@@ -205,3 +208,16 @@ def decode_body_from_json_payload(payload: Optional[Dict[str, Any]]) -> str:
         except Exception:
             return raw_body
     return ""
+
+
+def extract_metadata_from_json_payload(payload: Optional[JSON_DICT]) -> JSON_DICT:
+    if not isinstance(payload, dict):
+        return {}
+    result: JSON_DICT = {}
+    meta = payload.get("meta")
+    links = payload.get("links")
+    if isinstance(meta, dict):
+        result["meta"] = meta
+    if isinstance(links, list):
+        result["links"] = links
+    return result

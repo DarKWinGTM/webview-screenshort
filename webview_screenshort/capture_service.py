@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from .auth_context import AuthContext, build_auth_context, redact_auth_context
-from .headless_render_api import HeadlessRenderApiClient, decode_body_from_json_payload
+from .headless_render_api import HeadlessRenderApiClient, ResponsePayload, decode_body_from_json_payload, extract_metadata_from_json_payload
 
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp"}
@@ -86,7 +86,11 @@ class CaptureResult:
     rendered_html_path: Optional[str] = None
     rendered_text_path: Optional[str] = None
     prerendered_html_path: Optional[str] = None
+    metadata_path: Optional[str] = None
+    acquisition_path: Optional[str] = None
     title: Optional[str] = None
+    page_metadata: Optional[Dict[str, Any]] = None
+    acquisition_summary: Optional[Dict[str, Any]] = None
     auth_summary: Optional[Dict[str, Any]] = None
     warnings: List[str] = field(default_factory=list)
     error: Optional[str] = None
@@ -106,6 +110,7 @@ class CaptureSetResult:
     failed_captures: int
     report_path: Optional[str] = None
     bundle_path: Optional[str] = None
+    acquisition_path: Optional[str] = None
     warnings: List[str] = field(default_factory=list)
     error: Optional[str] = None
 
@@ -280,6 +285,23 @@ def extract_title_from_html(html: str) -> Optional[str]:
     return WHITESPACE_RE.sub(" ", unescape(match.group(1))).strip() or None
 
 
+def response_summary(response: ResponsePayload, source: str) -> Dict[str, Any]:
+    return {
+        "source": source,
+        "ok": response.ok,
+        "status_code": response.status_code,
+        "content_type": response.content_type,
+        "has_json_payload": isinstance(response.json_payload, dict),
+        "error": response.error,
+    }
+
+
+def write_json_file(path: Path, payload: Dict[str, Any]) -> str:
+    ensure_parent_dir(path)
+    path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    return str(path)
+
+
 def write_text_file(path: Path, content: str) -> str:
     ensure_parent_dir(path)
     path.write_text(content, encoding="utf-8")
@@ -418,19 +440,27 @@ def _collect_html_witnesses(
     output_path: Path,
     auth_context: Optional[AuthContext],
     warnings: List[str],
-) -> Dict[str, Optional[str]]:
+) -> Dict[str, Any]:
     client = HeadlessRenderApiClient(config.prerender_token)
     rendered_html_path: Optional[str] = None
     rendered_text_path: Optional[str] = None
     prerendered_html_path: Optional[str] = None
+    metadata_path: Optional[str] = None
+    acquisition_path: Optional[str] = None
     title: Optional[str] = None
+    page_metadata: Dict[str, Any] = {}
+    acquisition_summary: Dict[str, Any] = {}
 
     if witness_mode == "visual":
         return {
             "rendered_html_path": None,
             "rendered_text_path": None,
             "prerendered_html_path": None,
+            "metadata_path": None,
+            "acquisition_path": None,
             "title": None,
+            "page_metadata": {},
+            "acquisition_summary": {},
         }
 
     scrape_response = client.scrape(
@@ -443,6 +473,8 @@ def _collect_html_witnesses(
         with_screenshot=False,
         auth=auth_context,
     )
+    acquisition_summary["scrape"] = response_summary(scrape_response, "scrape")
+    page_metadata.update(extract_metadata_from_json_payload(scrape_response.json_payload))
     if scrape_response.ok:
         rendered_html = decode_body_from_json_payload(scrape_response.json_payload) or scrape_response.body_text
         if rendered_html:
@@ -466,6 +498,10 @@ def _collect_html_witnesses(
             with_screenshot=False,
             auth=auth_context,
         )
+        acquisition_summary["prerender"] = response_summary(prerender_response, "prerender")
+        prerender_meta = extract_metadata_from_json_payload(prerender_response.json_payload)
+        if prerender_meta:
+            page_metadata["prerender"] = prerender_meta
         if prerender_response.ok:
             prerender_html = decode_body_from_json_payload(prerender_response.json_payload) or prerender_response.body_text
             if prerender_html:
@@ -476,11 +512,20 @@ def _collect_html_witnesses(
         else:
             warnings.append(f"Prerender HTML witness failed: {prerender_response.error or 'unknown error'}")
 
+    if page_metadata:
+        metadata_path = write_json_file(derive_neighbor_path(output_path, "metadata", "json"), page_metadata)
+    if acquisition_summary:
+        acquisition_path = write_json_file(derive_neighbor_path(output_path, "acquisition", "json"), acquisition_summary)
+
     return {
         "rendered_html_path": rendered_html_path,
         "rendered_text_path": rendered_text_path,
         "prerendered_html_path": prerendered_html_path,
+        "metadata_path": metadata_path,
+        "acquisition_path": acquisition_path,
         "title": title,
+        "page_metadata": page_metadata,
+        "acquisition_summary": acquisition_summary,
     }
 
 
@@ -544,7 +589,11 @@ def execute_capture(url: str, output_path: Path, config: ScreenshotConfig, engin
         "rendered_html_path": None,
         "rendered_text_path": None,
         "prerendered_html_path": None,
+        "metadata_path": None,
+        "acquisition_path": None,
         "title": None,
+        "page_metadata": {},
+        "acquisition_summary": {},
     }
     if success:
         html_witnesses = _collect_html_witnesses(
@@ -580,7 +629,11 @@ def execute_capture(url: str, output_path: Path, config: ScreenshotConfig, engin
         rendered_html_path=html_witnesses["rendered_html_path"],
         rendered_text_path=html_witnesses["rendered_text_path"],
         prerendered_html_path=html_witnesses["prerendered_html_path"],
+        metadata_path=html_witnesses["metadata_path"],
+        acquisition_path=html_witnesses["acquisition_path"],
         title=html_witnesses["title"],
+        page_metadata=html_witnesses["page_metadata"],
+        acquisition_summary=html_witnesses["acquisition_summary"],
         auth_summary=redact_auth_context(auth_context) if auth_context else None,
         warnings=warnings,
         error=error,
@@ -705,6 +758,8 @@ def build_evidence_bundle_payload(result: Union[CaptureResult, CaptureSetResult]
                 "rendered_html_path": capture.rendered_html_path,
                 "rendered_text_path": capture.rendered_text_path,
                 "prerendered_html_path": capture.prerendered_html_path,
+                "metadata_path": capture.metadata_path,
+                "acquisition_path": capture.acquisition_path,
             }
         )
     return {
@@ -722,6 +777,7 @@ def build_evidence_bundle_payload(result: Union[CaptureResult, CaptureSetResult]
         },
         "page": {
             "title": page_titles[0] if page_titles else None,
+            "metadata": captures[0].page_metadata if captures and captures[0].page_metadata else {},
         },
         "auth": auth_summaries[0] if auth_summaries else {"has_auth_material": False},
         "artifacts": artifacts,
@@ -777,6 +833,10 @@ def emit_single_capture_text(result: CaptureResult, reporter: Reporter) -> None:
             reporter.log(f"Rendered text: {result.rendered_text_path}")
         if result.prerendered_html_path:
             reporter.log(f"Prerendered HTML: {result.prerendered_html_path}")
+        if result.metadata_path:
+            reporter.log(f"Metadata witness: {result.metadata_path}")
+        if result.acquisition_path:
+            reporter.log(f"Acquisition witness: {result.acquisition_path}")
         if result.report_path:
             reporter.log(f"Report: {result.report_path}")
         if result.bundle_path:
@@ -809,6 +869,10 @@ def emit_capture_set_text(result: CaptureSetResult, reporter: Reporter) -> None:
             reporter.log(f"   Rendered text: {capture.rendered_text_path}")
         if capture.prerendered_html_path:
             reporter.log(f"   Prerendered HTML: {capture.prerendered_html_path}")
+        if capture.metadata_path:
+            reporter.log(f"   Metadata witness: {capture.metadata_path}")
+        if capture.acquisition_path:
+            reporter.log(f"   Acquisition witness: {capture.acquisition_path}")
         if capture.warnings:
             for warning in capture.warnings:
                 reporter.log(f"   ⚠️ {warning}")

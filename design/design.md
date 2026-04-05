@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.22.0
+> **Current Version:** 2.23.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
@@ -18,6 +18,7 @@ The target is a frontend-development vision workflow where Claude can:
 - verify CSR/SPA rendering state
 - inspect real layout and UI output
 - read rendered HTML and rendered text when screenshot-only evidence is not enough
+- inspect acquisition and provider-returned metadata witnesses when richer page truth needs more context
 - use richer witness bundles before recommending frontend changes
 
 ---

@@ -87,7 +87,8 @@ Verified now:
 - the package installs through its own repo-root marketplace manifest and exposes `webview-screenshort:webview-vision-assist`
 - skill/agent execution now targets `${CLAUDE_PLUGIN_ROOT}` instead of a source-workspace-only path
 - the runtime now has an internal `webview_screenshort/` package so root scripts no longer need to remain the only place where orchestration logic lives
-- `screenshot.py` now supports env-driven capture configuration, JSON result output, schema-stamped persisted report-file output, one-run responsive capture-set output, richer witness modes, and optional evidence-bundle output for chaining into frontend review workflows
+- richer capture output now includes acquisition witness JSON so the package can report how scrape/prerender witnesses were obtained in machine-readable form
+- `screenshot.py` now supports env-driven capture configuration, JSON result output, schema-stamped persisted report-file output, one-run responsive capture-set output, richer witness modes, optional evidence-bundle output, and acquisition witness JSON output for chaining into frontend review workflows
 - `compare_reports.py` now validates persisted screenshot reports and evidence bundles, emits structured pair metadata, and classifies each compared device as `exact_match`, `visual_change_region`, `dimension_shift`, `size_mismatch`, or `diff_error`
 - `diff_images.py` now adds optional image-diff metrics and diff-image outputs for richer compare-review workflows
 - `compare_session.py` now persists named compare-session artifacts with expected/actual-style labels for later QA review
@@ -225,6 +226,7 @@ Use this package when the goal is to inspect:
 - restart/reload lifecycle is now validated for the current installed package path
 - compare/verdict/gate workflows are still screenshot-era first-class flows and need broader bundle-aware continuity review
 - logged-in-state capture is operator-provided only; the package replays existing session context and does not automate interactive login
+- metadata/acquisition witnesses are provider-bounded truth only; they are not full browser console or network tracing
 - headless-render-api documentation supports origin forwarding only through `Prerendercloud-*` header names plus `Origin-Header-Whitelist`, so authenticated capture needs a bounded forwarding contract rather than assuming arbitrary header pass-through to origin
 - broader CSR validation still needs more than the two currently checked public docs targets
 - public-repo wording polish is still in progress outside the now-validated repo-root install path

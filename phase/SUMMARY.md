@@ -1,7 +1,7 @@
 # Webview Screenshort - Phase Summary
 
-> **Current Version:** 2.22.0
-> **Target Design:** [../design/design.md](../design/design.md) v2.22.0
+> **Current Version:** 2.23.0
+> **Target Design:** [../design/design.md](../design/design.md) v2.23.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 > **Status:** Implemented - Pending Review
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)
@@ -24,7 +24,8 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 004 | `phase-004-separate-repo-cutover.md` | `design/design.md` plus package-local marketplace cutover posture | `../patch/phase-004-separate-repo-cutover.patch.md` | Prepare authority migration from the shared workspace into a standalone `webview-screenshort` repo | Package can cut over to its own repo without duplicate authority |
 | 005 | `phase-005-live-baseline-replay.md` | `design/design.md` live baseline replay and reusable baseline model | `../patch/phase-005-live-baseline-replay.patch.md` | Add saved-bundle + live-URL replay as a first-class frontend QA workflow | Reusable baselines can be replayed directly against current live pages in one flow |
 | 006 | `phase-006-mismatch-classification.md` | `design/design.md` compare/verdict/gate mismatch classification model | `../patch/phase-006-mismatch-classification.patch.md` | Add machine-readable mismatch classifications across compare, verdict, and gate layers | QA artifacts explain why devices failed, not only which devices failed |
-| 007 | `phase-007-frontend-vision-evidence-bundle.md` | `design/design.md` frontend-vision upgrade model, session-replay capture boundary, and strategic runtime refactor direction | `../patch/phase-007-frontend-vision-evidence-bundle.patch.md` | Start the strategic runtime refactor, add richer witness modes, emit rendered HTML/rendered text evidence bundles, and prepare authenticated page capture via bounded auth context | The package becomes screenshot-first but HTML-aware, with a clearer internal architecture and richer frontend evidence output |
+| 007 | `phase-007-frontend-vision-evidence-bundle.md` | `design/design.md` frontend-vision upgrade model, session-replay capture boundary, and strategic runtime refactor direction | `../patch/phase-007-frontend-vision-evidence-bundle.patch.md` | Start the strategic runtime refactor, add richer witness modes, emit rendered HTML/rendered text evidence bundles, and prepare logged-in-state capture via bounded session context | The package becomes screenshot-first but HTML-aware, with a clearer internal architecture and richer frontend evidence output |
+| 008 | `phase-008-metadata-and-acquisition-witnesses.md` | `design/design.md` richer witness model and bounded provider-capability truth | `../patch/phase-008-metadata-and-acquisition-witnesses.patch.md` | Add acquisition-summary and provider-returned metadata witnesses so capture outputs explain how richer artifacts were obtained | The package exposes more machine-readable frontend truth without pretending it already has full browser console/network tracing |
 
 ---
 
@@ -39,6 +40,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 005 | Implemented - Pending Review | `phase-005-live-baseline-replay.md` | Add saved-bundle + live-URL replay as a first-class reusable frontend QA workflow |
 | 006 | Implemented - Pending Review | `phase-006-mismatch-classification.md` | Add machine-readable mismatch classifications across compare, verdict, and gate workflows |
 | 007 | Implemented - Pending Review | `phase-007-frontend-vision-evidence-bundle.md` | Start the strategic frontend-vision upgrade with internal runtime modules, richer witness modes, evidence bundles, and bounded session-replay capture |
+| 008 | Implemented - Pending Review | `phase-008-metadata-and-acquisition-witnesses.md` | Add metadata/acquisition witness artifacts so richer capture outputs explain provider-returned page truth more clearly |
 
 ---
 

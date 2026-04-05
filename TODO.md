@@ -70,6 +70,7 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-05 | Added metadata and acquisition witness output on top of the frontend-vision upgrade: richer capture runs now preserve scrape/prerender acquisition summaries in machine-readable form, and the package version moved to `2.23.0`. |
 | 2026-04-05 | Started the strategic frontend-vision upgrade: added an internal `webview_screenshort/` runtime package, moved capture/replay/gate logic toward reusable modules, added richer witness modes plus evidence-bundle output with rendered HTML / rendered text artifacts, added bounded session-replay inputs for logged-in-state capture, and upgraded skill/agent routing/docs toward screenshot-first but HTML-aware frontend vision. |
 | 2026-04-04 | Added machine-readable mismatch classifications (`exact_match`, `visual_change_region`, `dimension_shift`, `size_mismatch`, `diff_error`) across compare/verdict/gate artifacts, fixed RGBA diff detection so RGB-only changes are no longer missed, validated both responsive and forced-mismatch workflows, and bumped the plugin/marketplace package versions to `2.21.0`. |
 | 2026-04-04 | Added named policy family metadata (`family`, `name`, `selector`, `aliases`) across the semantic presets, validated canonical family/name selectors plus legacy aliases against the checked NodeClaw docs workflow, and bumped the plugin/marketplace package versions to `2.20.0`. |

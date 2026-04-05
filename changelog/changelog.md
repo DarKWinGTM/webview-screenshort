@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.22.0
+> **Current Version:** 2.23.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.23.0 | 2026-04-05 | **[Added metadata and acquisition witnesses](#version-2230)** | Added acquisition-summary and provider-metadata witness output so richer capture bundles explain how page evidence was obtained. |
 | 2.22.0 | 2026-04-05 | **[Started frontend-vision evidence bundle upgrade](#version-2220)** | Started the strategic refactor toward an internal runtime package, richer witness modes, rendered HTML/rendered text evidence bundles, and bounded session-replay capture. |
 | 2.21.0 | 2026-04-04 | **[Added mismatch classifications](#version-2210)** | Added machine-readable mismatch classifications across compare, verdict, and gate artifacts, and fixed RGB-only diff detection so visible changes are no longer missed. |
 | 2.20.0 | 2026-04-04 | **[Added named policy families](#version-2200)** | Added family/name metadata and canonical selectors so policy presets can be grouped and selected as structured names like `layout/major-shift`. |
@@ -35,6 +36,30 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2230"></a>
+## Version 2.23.0: Added metadata and acquisition witnesses
+
+**Date:** 2026-04-05
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added acquisition-summary capture for scrape/prerender witness calls so outputs now preserve provider response truth such as status code, content type, JSON payload presence, and error state.
+- Added acquisition witness JSON artifact output beside capture artifacts.
+- Extended the richer witness model so evidence bundles can surface acquisition truth and provider-returned metadata when available.
+- Kept the implementation bounded to checked provider capabilities instead of claiming full browser console/network tracing.
+- Bumped plugin and marketplace package versions to `2.23.0`.
+
+### Validation
+- `python3 -m py_compile webview_screenshort/headless_render_api.py webview_screenshort/capture_service.py screenshot.py` succeeds.
+- `python3 screenshot.py https://headless-render-api.com/docs --engine headless --mode viewport --witness-mode frontend-default --output-format json --report-file /tmp/webview_v223_report.json` succeeds.
+- the returned capture includes `acquisition_path` and `acquisition_summary.scrape`.
+- `claude plugins validate .` succeeds after the metadata/acquisition witness additions.
+
+### Summary
+The package now explains more of its own evidence chain in machine-readable form, so frontend review sees not only the final page witnesses but also how those witnesses were acquired.
 
 ---
 
