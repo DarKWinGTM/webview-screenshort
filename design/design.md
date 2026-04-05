@@ -3,21 +3,22 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.21.0
+> **Current Version:** 2.22.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
 
 ## 1) Goal
 
-Provide a governed standalone-repo plugin package that captures real rendered webpages so Claude can use screenshots as visual evidence during frontend development.
+Provide a governed standalone-repo plugin package that captures real rendered webpages so Claude can use screenshots and richer page witnesses as evidence during frontend development.
 
 The target is not only a raw screenshot CLI.
 The target is a frontend-development vision workflow where Claude can:
 - capture a live page
 - verify CSR/SPA rendering state
 - inspect real layout and UI output
-- use screenshot evidence before recommending frontend changes
+- read rendered HTML and rendered text when screenshot-only evidence is not enough
+- use richer witness bundles before recommending frontend changes
 
 ---
 
@@ -38,7 +39,8 @@ The intended package model is:
 - `skills/reference-live-gate/SKILL.md` = one-step gate surface for saved baseline + live URL + policy evaluation
 - `skills/policy-presets/SKILL.md` = preset discovery surface for built-in QA gate policy names
 - `agents/webview-vision-assist.md` = optional visual-review companion agent
-- `screenshot.py` = execution engine with focused capture plus one-run responsive capture-set support
+- `screenshot.py` = capture CLI wrapper over the internal runtime package
+- `webview_screenshort/` = internal runtime package for capture, auth context, headless-render-api integration, evidence bundles, and orchestration reuse
 - `compare_reports.py` = report comparison helper for expected/actual and before/after review workflows, including pair-level mismatch classification
 - `qa_verdict.py` = verdict helper for per-device pass/fail/invalid output plus mismatch classification summaries on top of compare/live-replay artifacts
 - `qa_gate.py` = gate helper for policy/threshold checks on top of verdict output while preserving mismatch classifications
@@ -82,16 +84,25 @@ That agent should:
 The intended frontend-development workflow is:
 
 ```text
-Need visual frontend review
+Need frontend vision review
+  → classify witness need first
+      → visual only
+      → frontend-default
+      → csr-debug
+      → responsive
+      → session-replay
   → capture the page
   → use --wait when CSR/SPA rendering is likely
   → choose viewport or fullpage
   → choose desktop / tablet / mobile preset when focused responsive review matters
   → prefer `--capture-set responsive` when the same page should be checked across all three breakpoints in one run
   → prefer JSON result output for workflow chaining
-  → persist a report file when a later step should re-read structured capture metadata directly
+  → persist a report file when current screenshot-era compatibility matters
+  → persist an evidence bundle when richer witnesses are required
   → save screenshot locally
-  → read the image
+  → save rendered HTML and rendered text when the witness mode requires them
+  → read the screenshot first
+  → read richer witnesses when CSR/content/logged-in-state context needs more than an image
   → when comparing states, re-read two report files and compare the referenced screenshots through structured pair metadata plus mismatch classifications
   → persist a named compare session when the expected/actual review should remain reusable later
   → list or reopen saved compare sessions when QA history should be reused
@@ -141,22 +152,27 @@ Checked responsive review validation now also shows:
 ## 6) Design boundaries
 
 ### What this package is
-- screenshot capture for frontend development
-- visual evidence generation for Claude review
+- screenshot-first capture for frontend development
+- richer evidence generation for Claude review
 - CSR-aware webpage capture with optional wait behavior
 - a standalone plugin skill that now supports repo-root local marketplace install workflows
+- a path toward multi-witness frontend vision using screenshot + rendered HTML + rendered text bundles
 
 ### What this package is not
 - a full browser automation suite
 - a DOM testing framework
 - a generic backend tool
-- a replacement for deeper UI analysis tools; it is the visual input step
+- an interactive login automation tool
+- a replacement for deeper UI analysis tools; it is the frontend evidence input layer
 
 ---
 
 ## 7) Current limitations
 
-- current workflow still relies on Claude reading the generated image after capture instead of a fully bundled tool-native visual-analysis pipeline, even though report files, review skills, compare-review entrypoints, helper-generated pair metadata, diff images, named compare sessions, compare-session history browsing, reference bundles, apply-reference workflows, live bundle replay, verdict generation, gate evaluation, one-step baseline gating, and reference-bundle browsing now reduce the manual handoff surface
+- current workflow still relies heavily on screenshot evidence, even though richer witness modes are now the strategic direction
+- compare/verdict/gate flows still begin from screenshot-era compatibility artifacts and need broader bundle-aware continuity review
+- logged-in-state capture depends on operator-provided headers/cookies/session material and does not automate interactive login
+- headless-render-api documentation only clearly documents origin forwarding through `Prerendercloud-*` header names plus `Origin-Header-Whitelist`, so logged-in-state capture must stay within that bounded forwarding model unless stronger provider evidence appears
 - plugin install lifecycle for this package is now validated from the standalone repo root through its package-local marketplace manifest, while the shared `darkwingtm` route remains only temporary checked local compatibility context
 - broader CSR validation still needs more than the two currently checked public docs targets
 
@@ -170,8 +186,11 @@ This package is considered successful for the current wave when:
 - the stale path from the old project-local skill model is removed
 - real CSR pages can be captured successfully
 - the package clearly supports frontend visual review workflows
+- the runtime is no longer organized only as top-level scripts and now has a reusable internal package for capture/auth/provider/orchestration logic
 - `screenshot.py` supports late-bound config for endpoints/timeouts
-- `screenshot.py` supports machine-readable JSON output and persisted report-file output for workflow chaining
+- `screenshot.py` supports machine-readable JSON output, persisted report-file output, richer witness modes, and optional evidence-bundle output for workflow chaining
+- rendered HTML and rendered text become first-class witnesses for non-visual frontend review paths
+- request-scoped logged-in-state capture is possible with explicit user-provided headers/cookies/session material while keeping raw secrets out of persisted artifacts
 - `compare_reports.py` supports structured report-to-report pairing for expected/actual and regression-style review
 - `screenshot.py` supports one-run responsive capture-set output for desktop/tablet/mobile review
 - `screenshot.py` supports mobile and tablet viewport presets for responsive review
@@ -184,4 +203,5 @@ This package is considered successful for the current wave when:
 - multiple semantic QA policy presets now exist for strict, smoke, layout-focused, mobile-critical, and content-tolerant review shapes
 - built-in policy presets can now be selected by canonical family/name selectors or legacy alias names instead of requiring raw policy-file paths in normal usage
 - non-diffable paired comparisons are now treated as failed instead of being reported as successful replay sessions
+- skills and `webview-vision-assist` route by witness need more explicitly instead of relying only on screenshot-era assumptions
 - governance docs describe the real current state rather than the older project-local skill state

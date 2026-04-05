@@ -5,7 +5,7 @@ Utilities for built-in QA policy preset discovery and selector resolution.
 
 import json
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 
 def policy_preset_dir() -> Path:
@@ -17,7 +17,7 @@ def _load_json(path: Path) -> Dict[str, Any]:
         return json.load(file_obj)
 
 
-def _fallback_family_and_name(stem: str) -> tuple[str, str]:
+def _fallback_family_and_name(stem: str) -> Tuple[str, str]:
     if "-" in stem:
         family, name = stem.split("-", 1)
         return family, name

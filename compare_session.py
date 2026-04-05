@@ -11,6 +11,33 @@ from pathlib import Path
 SESSION_SCHEMA = "webview-screenshort.compare-session/v1"
 
 
+def build_compare_session_payload(
+    *,
+    name: str,
+    left_report: Path,
+    right_report: Path,
+    left_label: str,
+    right_label: str,
+    comparison_json_path: Path,
+    comparison: dict,
+) -> dict:
+    return {
+        "session_schema": SESSION_SCHEMA,
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
+        "name": name,
+        "left": {
+            "label": left_label,
+            "report_path": str(left_report.expanduser()),
+        },
+        "right": {
+            "label": right_label,
+            "report_path": str(right_report.expanduser()),
+        },
+        "comparison_json": str(comparison_json_path),
+        "comparison": comparison,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Create a named compare session artifact")
     parser.add_argument("--name", required=True, help="Human-friendly session name")
@@ -29,21 +56,15 @@ def main() -> None:
     with open(comparison_path, "r", encoding="utf-8") as file_obj:
         comparison = json.load(file_obj)
 
-    payload = {
-        "session_schema": SESSION_SCHEMA,
-        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
-        "name": args.name,
-        "left": {
-            "label": args.left_label,
-            "report_path": str(Path(args.left_report).expanduser()),
-        },
-        "right": {
-            "label": args.right_label,
-            "report_path": str(Path(args.right_report).expanduser()),
-        },
-        "comparison_json": str(comparison_path),
-        "comparison": comparison,
-    }
+    payload = build_compare_session_payload(
+        name=args.name,
+        left_report=Path(args.left_report),
+        right_report=Path(args.right_report),
+        left_label=args.left_label,
+        right_label=args.right_label,
+        comparison_json_path=comparison_path,
+        comparison=comparison,
+    )
 
     with open(output_path, "w", encoding="utf-8") as file_obj:
         json.dump(payload, file_obj, ensure_ascii=False)

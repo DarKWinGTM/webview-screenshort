@@ -10,9 +10,10 @@ import subprocess
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 REPORT_SCHEMA = "webview-screenshort.capture-report/v1"
+BUNDLE_SCHEMA = "webview-screenshort.evidence-bundle/v1"
 
 
 @dataclass
@@ -36,7 +37,7 @@ class ImageDiff:
     right_height: int
     diff_pixels: int
     diff_ratio: float
-    bounding_box: Optional[tuple[int, int, int, int]]
+    bounding_box: Optional[Tuple[int, int, int, int]]
     diff_image_path: Optional[str]
     error: Optional[str] = None
 
@@ -75,13 +76,22 @@ def load_json(path: Path) -> Dict[str, Any]:
         return json.load(file_obj)
 
 
-def require_valid_report(payload: Dict[str, Any], report_path: Path) -> Dict[str, Any]:
-    if payload.get("report_schema") != REPORT_SCHEMA:
-        raise SystemExit(f"Unsupported report schema in {report_path}: {payload.get('report_schema')}")
-    result = payload.get("result")
-    if not isinstance(result, dict):
-        raise SystemExit(f"Missing `result` object in {report_path}")
-    return result
+def require_valid_capture_source(payload: Dict[str, Any], source_path: Path) -> Tuple[str, Dict[str, Any]]:
+    if payload.get("report_schema") == REPORT_SCHEMA:
+        result = payload.get("result")
+        if not isinstance(result, dict):
+            raise SystemExit(f"Missing `result` object in {source_path}")
+        return REPORT_SCHEMA, result
+
+    if payload.get("bundle_schema") == BUNDLE_SCHEMA:
+        result = payload.get("result")
+        if not isinstance(result, dict):
+            raise SystemExit(f"Missing `result` object in {source_path}")
+        return BUNDLE_SCHEMA, result
+
+    raise SystemExit(
+        f"Unsupported capture source in {source_path}: report_schema={payload.get('report_schema')} bundle_schema={payload.get('bundle_schema')}"
+    )
 
 
 def resolve_image_path(image_path: Any, report_path: Path) -> str:
@@ -196,7 +206,7 @@ def run_diff_helper(diff_helper: Path, left_image: str, right_image: str, diff_o
     return ImageDiff(**payload)
 
 
-def classify_pair(pair: ComparisonPair) -> tuple[str, str]:
+def classify_pair(pair: ComparisonPair) -> Tuple[str, str]:
     diff = pair.diff
     if not diff:
         return "invalid_diff_payload", "missing_diff_payload"
@@ -230,21 +240,11 @@ def enrich_pairs_with_diff(pairs: List[ComparisonPair], diff_dir: Optional[Path]
         pair.classification, pair.classification_reason = classify_pair(pair)
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description="Compare two persisted webview capture reports")
-    parser.add_argument("left_report", help="Path to the first capture report")
-    parser.add_argument("right_report", help="Path to the second capture report")
-    parser.add_argument("--output-format", choices=["text", "json"], default="json")
-    parser.add_argument("--diff-dir", help="Optional directory for generated diff images")
-    args = parser.parse_args()
-
-    left_path = Path(args.left_report).expanduser()
-    right_path = Path(args.right_report).expanduser()
-
+def build_comparison_result_from_paths(left_path: Path, right_path: Path, diff_dir: Optional[Path] = None) -> dict:
     left_payload = load_json(left_path)
     right_payload = load_json(right_path)
-    left_result = require_valid_report(left_payload, left_path)
-    right_result = require_valid_report(right_payload, right_path)
+    left_source_schema, left_result = require_valid_capture_source(left_payload, left_path)
+    right_source_schema, right_result = require_valid_capture_source(right_payload, right_path)
 
     left_images = collect_images(left_result, "left", left_path)
     right_images = collect_images(right_result, "right", right_path)
@@ -258,7 +258,6 @@ def main() -> None:
     if mode == "mixed":
         warnings.append("Reports represent different capture shapes; only shared device labels were paired.")
 
-    diff_dir = Path(args.diff_dir).expanduser() if args.diff_dir else None
     if pairs:
         enrich_pairs_with_diff(pairs, diff_dir)
 
@@ -280,8 +279,8 @@ def main() -> None:
         left_report=str(left_path),
         right_report=str(right_path),
         report_schema=REPORT_SCHEMA,
-        left_result_type=str(left_payload.get("result_type") or "unknown"),
-        right_result_type=str(right_payload.get("result_type") or "unknown"),
+        left_result_type=str(left_payload.get("result_type") or ("evidence_bundle" if left_source_schema == BUNDLE_SCHEMA else "unknown")),
+        right_result_type=str(right_payload.get("result_type") or ("evidence_bundle" if right_source_schema == BUNDLE_SCHEMA else "unknown")),
         compatible=success,
         comparison_mode=mode,
         pairs=pairs,
@@ -289,27 +288,44 @@ def main() -> None:
         warnings=warnings,
         error=error,
     )
+    return asdict(result)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Compare two persisted webview capture reports")
+    parser.add_argument("left_report", help="Path to the first capture report")
+    parser.add_argument("right_report", help="Path to the second capture report")
+    parser.add_argument("--output-format", choices=["text", "json"], default="json")
+    parser.add_argument("--diff-dir", help="Optional directory for generated diff images")
+    args = parser.parse_args()
+
+    left_path = Path(args.left_report).expanduser()
+    right_path = Path(args.right_report).expanduser()
+
+    diff_dir = Path(args.diff_dir).expanduser() if args.diff_dir else None
+    result_payload = build_comparison_result_from_paths(left_path, right_path, diff_dir)
 
     if args.output_format == "json":
-        print(json.dumps(asdict(result), ensure_ascii=False))
-        sys.exit(0 if result.success else 1)
+        print(json.dumps(result_payload, ensure_ascii=False))
+        sys.exit(0 if result_payload.get("success") else 1)
 
-    print(f"Comparison mode: {result.comparison_mode}")
-    print(f"Pairs: {len(result.pairs)}")
-    for pair in result.pairs:
-        print(f"- {pair.device}: {pair.left.image_path} ↔ {pair.right.image_path}")
-        print(f"  classification={pair.classification} reason={pair.classification_reason}")
-        if pair.diff:
-            print(f"  diff_pixels={pair.diff.diff_pixels} diff_ratio={pair.diff.diff_ratio:.6f}")
-            if pair.diff.bounding_box:
-                print(f"  bbox={pair.diff.bounding_box}")
-            if pair.diff.diff_image_path:
-                print(f"  diff_image={pair.diff.diff_image_path}")
-    for warning in result.warnings:
+    print(f"Comparison mode: {result_payload['comparison_mode']}")
+    print(f"Pairs: {len(result_payload['pairs'])}")
+    for pair in result_payload["pairs"]:
+        print(f"- {pair['device']}: {pair['left']['image_path']} ↔ {pair['right']['image_path']}")
+        print(f"  classification={pair['classification']} reason={pair['classification_reason']}")
+        diff = pair.get("diff")
+        if diff:
+            print(f"  diff_pixels={diff['diff_pixels']} diff_ratio={diff['diff_ratio']:.6f}")
+            if diff.get("bounding_box"):
+                print(f"  bbox={diff['bounding_box']}")
+            if diff.get("diff_image_path"):
+                print(f"  diff_image={diff['diff_image_path']}")
+    for warning in result_payload["warnings"]:
         print(f"⚠️ {warning}")
-    if result.error:
-        print(f"❌ {result.error}")
-    sys.exit(0 if result.success else 1)
+    if result_payload.get("error"):
+        print(f"❌ {result_payload['error']}")
+    sys.exit(0 if result_payload.get("success") else 1)
 
 
 if __name__ == "__main__":

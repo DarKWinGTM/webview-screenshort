@@ -8,7 +8,7 @@ import json
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from policy_presets import resolve_policy_preset_record
 
@@ -68,7 +68,7 @@ def load_verdict(source_path: Path) -> Dict[str, Any]:
     return json.loads(result.stdout)
 
 
-def load_policy(policy_path: Optional[str], policy_preset: Optional[str]) -> tuple[Dict[str, Any], Optional[str]]:
+def load_policy(policy_path: Optional[str], policy_preset: Optional[str]) -> Tuple[Dict[str, Any], Optional[str]]:
     if policy_preset:
         record = resolve_policy_preset_record(policy_preset)
         payload = record["policy"]

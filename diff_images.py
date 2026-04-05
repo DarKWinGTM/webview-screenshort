@@ -8,7 +8,7 @@ import json
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
 
 from PIL import Image, ImageChops
 
@@ -39,7 +39,7 @@ class ImageDiffResult:
     right_height: int
     diff_pixels: int
     diff_ratio: float
-    bounding_box: Optional[tuple[int, int, int, int]]
+    bounding_box: Optional[Tuple[int, int, int, int]]
     diff_image_path: Optional[str]
     error: Optional[str] = None
 

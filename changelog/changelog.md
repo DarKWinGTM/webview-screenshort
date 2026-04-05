@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.21.0
+> **Current Version:** 2.22.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.22.0 | 2026-04-05 | **[Started frontend-vision evidence bundle upgrade](#version-2220)** | Started the strategic refactor toward an internal runtime package, richer witness modes, rendered HTML/rendered text evidence bundles, and bounded session-replay capture. |
 | 2.21.0 | 2026-04-04 | **[Added mismatch classifications](#version-2210)** | Added machine-readable mismatch classifications across compare, verdict, and gate artifacts, and fixed RGB-only diff detection so visible changes are no longer missed. |
 | 2.20.0 | 2026-04-04 | **[Added named policy families](#version-2200)** | Added family/name metadata and canonical selectors so policy presets can be grouped and selected as structured names like `layout/major-shift`. |
 | 2.19.0 | 2026-04-04 | **[Added semantic QA policy presets](#version-2190)** | Added multiple intent-shaped built-in policy presets so gate flows can choose smoke, layout, mobile-critical, content-tolerant, or strict behavior by name. |
@@ -34,6 +35,39 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2220"></a>
+## Version 2.22.0: Started frontend-vision evidence bundle upgrade
+
+**Date:** 2026-04-05
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added an internal `webview_screenshort/` runtime package so capture/auth/provider/workflow logic can move out of pure top-level script sprawl.
+- Refactored `screenshot.py` into a thinner wrapper that now supports richer witness modes (`visual`, `frontend-default`, `csr-debug`, `responsive`, `session-replay`).
+- Added rendered HTML / rendered text witness generation plus `webview-screenshort.evidence-bundle/v1` output alongside the existing screenshot-era report model.
+- Added bounded session-replay capture inputs (`--header`, `--origin-header`, `--cookie`, `--cookie-file`) with redacted auth summaries in persisted capture outputs.
+- Refactored `reference_live_bundle.py` and `reference_live_gate.py` to route through reusable internal workflow helpers.
+- Extended `compare_reports.py` so bundle-aware compare flows can accept `webview-screenshort.evidence-bundle/v1` artifacts in addition to screenshot-era reports.
+- Extended `create_reference_bundle.py` so bundle-based compare sessions can become reusable reference bundles while preserving the reference artifact schema.
+- Updated screenshot, frontend-review, reference-live-review, README, design, TODO, phase, and patch docs so the product now reads as screenshot-first but HTML-aware frontend vision instead of screenshot-only review.
+- Bumped plugin and marketplace package versions to `2.22.0`.
+
+### Validation
+- `python3 -m py_compile screenshot.py compare_reports.py compare_session.py create_reference_bundle.py apply_reference_bundle.py reference_live_bundle.py reference_live_gate.py qa_verdict.py qa_gate.py policy_presets.py webview_screenshort/__init__.py webview_screenshort/auth_context.py webview_screenshort/headless_render_api.py webview_screenshort/capture_service.py webview_screenshort/workflows.py` succeeds.
+- `python3 screenshot.py https://example.com --engine headless --mode viewport --witness-mode frontend-default --output-format json --report-file /tmp/webview_v222_report.json` succeeds and emits rendered HTML / rendered text witness paths.
+- `python3 screenshot.py https://example.com --engine headless --mode viewport --witness-mode session-replay --header "Authorization: Bearer secret-token-value" --origin-header "Prerendercloud-Debug-User: alice" --cookie "sessionid=supersecret" --output-format json --report-file /tmp/webview_v222_auth_report.json` succeeds and persists only redacted session-replay summaries.
+- `python3 screenshot.py https://example.com --engine headless --mode viewport --witness-mode csr-debug --output-format json --report-file /tmp/webview_v222_csr_report.json` succeeds and emits prerender HTML witness output.
+- `claude plugins validate .` succeeds from the repo root after the metadata/runtime updates.
+- `python3 reference_live_bundle.py ...` succeeds with richer witness output in the live capture payload.
+- `python3 reference_live_gate.py ...` succeeds with default policy and emits a passing gate result while preserving richer live capture witnesses.
+- `python3 compare_reports.py <evidence-bundle> <evidence-bundle> --output-format json` succeeds and reports `left_result_type = right_result_type = evidence_bundle`.
+- `python3 create_reference_bundle.py --session <bundle-based-compare-session> ...` succeeds and preserves `reference_artifact_schema = webview-screenshort.evidence-bundle/v1`.
+
+### Summary
+The package has now started the strategic shift from a screenshot utility into a richer frontend-vision runtime that can emit screenshot plus rendered-page witnesses and prepare for authenticated page inspection without crossing into interactive login automation.
 
 ---
 

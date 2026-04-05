@@ -86,12 +86,13 @@ Verified now:
 - the package now has plugin scaffolding with `.claude-plugin/`, `skills/`, and `agents/`
 - the package installs through its own repo-root marketplace manifest and exposes `webview-screenshort:webview-vision-assist`
 - skill/agent execution now targets `${CLAUDE_PLUGIN_ROOT}` instead of a source-workspace-only path
-- `screenshot.py` now supports env-driven capture configuration, JSON result output, schema-stamped persisted report-file output, and one-run responsive capture-set output for chaining into frontend review workflows
-- `compare_reports.py` now validates persisted reports, emits structured pair metadata, and classifies each compared device as `exact_match`, `visual_change_region`, `dimension_shift`, `size_mismatch`, or `diff_error`
+- the runtime now has an internal `webview_screenshort/` package so root scripts no longer need to remain the only place where orchestration logic lives
+- `screenshot.py` now supports env-driven capture configuration, JSON result output, schema-stamped persisted report-file output, one-run responsive capture-set output, richer witness modes, and optional evidence-bundle output for chaining into frontend review workflows
+- `compare_reports.py` now validates persisted screenshot reports and evidence bundles, emits structured pair metadata, and classifies each compared device as `exact_match`, `visual_change_region`, `dimension_shift`, `size_mismatch`, or `diff_error`
 - `diff_images.py` now adds optional image-diff metrics and diff-image outputs for richer compare-review workflows
 - `compare_session.py` now persists named compare-session artifacts with expected/actual-style labels for later QA review
 - `list_compare_sessions.py` now lists and summarizes persisted compare-session artifacts for practical QA history browsing
-- `create_reference_bundle.py` now builds reusable expected-reference bundle artifacts on top of saved compare sessions
+- `create_reference_bundle.py` now builds reusable expected-reference bundle artifacts on top of saved compare sessions, including bundle-based compare sessions sourced from richer evidence bundles
 - `apply_reference_bundle.py` now applies a saved reference bundle to a current report and emits a fresh expected/actual compare session automatically
 - `reference_live_bundle.py` now captures a fresh current report from a live URL and replays a saved baseline in one flow
 - `qa_verdict.py` now turns compare-session, comparison, or live-replay artifacts into machine-readable pass/fail/invalid QA verdicts with mismatch classification summaries
@@ -164,6 +165,12 @@ webview-screenshort/
   qa_verdict.py
   qa_gate.py
   reference_live_gate.py
+  webview_screenshort/
+    __init__.py
+    auth_context.py
+    headless_render_api.py
+    capture_service.py
+    workflows.py
   list_policy_presets.py
   diff_images.py
   compare_session.py
@@ -186,13 +193,14 @@ webview-screenshort/
 ## What this package should do
 
 ### Skill role
-The main runtime path should be the screenshot skill.
+The main runtime path should still be the screenshot skill, but it should now behave like a frontend-evidence front door rather than a screenshot-only command.
 
 It should let Claude:
 1. capture a page
-2. return the local image path
-3. read the screenshot image
-4. continue visual analysis from real evidence
+2. return the local screenshot path
+3. optionally emit rendered HTML and rendered text witnesses when the selected witness mode requires them
+4. optionally emit an evidence bundle artifact for richer workflows
+5. continue analysis from real rendered evidence instead of source-only guessing
 
 ### Agent role
 The companion agent should help when the user wants a visual frontend-review workflow rather than only a one-shot slash command.
@@ -215,7 +223,9 @@ Use this package when the goal is to inspect:
 ## Current limitations
 
 - restart/reload lifecycle is now validated for the current installed package path
-- visual analysis orchestration still depends on Claude reading the generated image after capture, even though responsive desktop/tablet/mobile capture can now be produced in one machine-readable run
+- compare/verdict/gate workflows are still screenshot-era first-class flows and need broader bundle-aware continuity review
+- logged-in-state capture is operator-provided only; the package replays existing session context and does not automate interactive login
+- headless-render-api documentation supports origin forwarding only through `Prerendercloud-*` header names plus `Origin-Header-Whitelist`, so authenticated capture needs a bounded forwarding contract rather than assuming arbitrary header pass-through to origin
 - broader CSR validation still needs more than the two currently checked public docs targets
 - public-repo wording polish is still in progress outside the now-validated repo-root install path
 
@@ -226,15 +236,17 @@ Use this package when the goal is to inspect:
 ### For focused capture
 - `/screenshot <url> --wait --mode viewport`
 - `/screenshot <url> --wait --mode fullpage`
-- `/screenshot <url> --capture-set responsive --wait --mode viewport --output-format json`
-- `/screenshot <url> --wait --mode viewport --output-format json --report-file /tmp/capture.json`
+- `/screenshot <url> --wait --mode viewport --witness-mode frontend-default --output-format json --report-file /tmp/capture.json`
+- `/screenshot <url> --wait --mode viewport --witness-mode csr-debug --bundle-file /tmp/evidence.json --output-format json`
+- `/screenshot <url> --capture-set responsive --wait --mode viewport --witness-mode responsive --output-format json`
 
 ### For frontend review
 - `/frontend-review <url> --wait --mode viewport`
 1. capture first
-2. read the image
-3. analyze the visible layout/UI from the screenshot
-4. only then suggest code or design changes
+2. read the screenshot
+3. if richer witnesses were emitted, read rendered HTML / rendered text too
+4. analyze the visible layout/UI and rendered content together
+5. only then suggest code or design changes
 
 ### For responsive frontend review
 - `/responsive-review <url> --wait --mode viewport`
@@ -254,9 +266,10 @@ Use this package when the goal is to inspect:
 - browse saved reference bundles when baseline assets should be reused without remembering exact paths
 
 ### For saved baseline replay against a live URL
-- `/reference-live-review --bundle /path/to/bundle.json --url https://example.com/page --current-report /tmp/current.json --comparison-json /tmp/compare.json --session-output /tmp/session.json --session-name current-vs-expected --capture-set responsive --mode viewport --wait --diff-dir /tmp/diffs`
+- `/reference-live-review --bundle /path/to/bundle.json --url https://example.com/page --current-report /tmp/current.json --comparison-json /tmp/compare.json --session-output /tmp/session.json --session-name current-vs-expected --capture-set responsive --mode viewport --wait --witness-mode responsive --diff-dir /tmp/diffs`
 - use this surface when the baseline already exists but the current live page still needs to be captured first
 - the flow now captures a fresh current report, applies the bundle automatically, and emits a new expected/actual compare session in one run
+- when richer witnesses were emitted for the fresh live capture, they should be inspected before deciding whether the baseline drift is visual-only or also semantic/CSR-related
 
 ### For reusable QA verdict output
 - `/qa-verdict /path/to/compare-session-or-live-replay.json --output-format json`
@@ -281,9 +294,10 @@ Use this package when the goal is to inspect:
 - legacy alias names such as `strict-responsive-zero-diff` and `layout-major-shift` still work for compatibility
 
 ### For one-step saved baseline gate against a live URL
-- `/reference-live-gate --bundle /path/to/bundle.json --url https://example.com/page --current-report /tmp/current.json --comparison-json /tmp/compare.json --session-output /tmp/session.json --session-name current-vs-expected --gate-output /tmp/gate.json --policy-preset strict/responsive-zero-diff --capture-set responsive --mode viewport --wait --diff-dir /tmp/diffs`
+- `/reference-live-gate --bundle /path/to/bundle.json --url https://example.com/page --current-report /tmp/current.json --comparison-json /tmp/compare.json --session-output /tmp/session.json --session-name current-vs-expected --gate-output /tmp/gate.json --policy-preset strict/responsive-zero-diff --capture-set responsive --mode viewport --wait --witness-mode responsive --diff-dir /tmp/diffs`
 - use this surface when the whole flow should finish in one run: capture current state, replay saved baseline, and apply policy gate
 - the package now includes a reusable strict responsive zero-diff preset under `support/policies/strict-responsive-zero-diff.json`
+- authenticated pages can also be captured in this flow when the operator provides headers/cookies/session material explicitly
 
 Or manually:
 1. capture one responsive set with `--capture-set responsive --output-format json`

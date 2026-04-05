@@ -1,7 +1,7 @@
 # Webview Screenshort - Phase Summary
 
-> **Current Version:** 2.21.0
-> **Target Design:** [../design/design.md](../design/design.md) v2.21.0
+> **Current Version:** 2.22.0
+> **Target Design:** [../design/design.md](../design/design.md) v2.22.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 > **Status:** Implemented - Pending Review
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)
@@ -24,6 +24,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 004 | `phase-004-separate-repo-cutover.md` | `design/design.md` plus package-local marketplace cutover posture | `../patch/phase-004-separate-repo-cutover.patch.md` | Prepare authority migration from the shared workspace into a standalone `webview-screenshort` repo | Package can cut over to its own repo without duplicate authority |
 | 005 | `phase-005-live-baseline-replay.md` | `design/design.md` live baseline replay and reusable baseline model | `../patch/phase-005-live-baseline-replay.patch.md` | Add saved-bundle + live-URL replay as a first-class frontend QA workflow | Reusable baselines can be replayed directly against current live pages in one flow |
 | 006 | `phase-006-mismatch-classification.md` | `design/design.md` compare/verdict/gate mismatch classification model | `../patch/phase-006-mismatch-classification.patch.md` | Add machine-readable mismatch classifications across compare, verdict, and gate layers | QA artifacts explain why devices failed, not only which devices failed |
+| 007 | `phase-007-frontend-vision-evidence-bundle.md` | `design/design.md` frontend-vision upgrade model, session-replay capture boundary, and strategic runtime refactor direction | `../patch/phase-007-frontend-vision-evidence-bundle.patch.md` | Start the strategic runtime refactor, add richer witness modes, emit rendered HTML/rendered text evidence bundles, and prepare authenticated page capture via bounded auth context | The package becomes screenshot-first but HTML-aware, with a clearer internal architecture and richer frontend evidence output |
 
 ---
 
@@ -37,14 +38,15 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 004 | Implemented - Pending Review | `phase-004-separate-repo-cutover.md` | Finalize standalone repo authority and retire shared-workspace authority posture |
 | 005 | Implemented - Pending Review | `phase-005-live-baseline-replay.md` | Add saved-bundle + live-URL replay as a first-class reusable frontend QA workflow |
 | 006 | Implemented - Pending Review | `phase-006-mismatch-classification.md` | Add machine-readable mismatch classifications across compare, verdict, and gate workflows |
+| 007 | Implemented - Pending Review | `phase-007-frontend-vision-evidence-bundle.md` | Start the strategic frontend-vision upgrade with internal runtime modules, richer witness modes, evidence bundles, and bounded session-replay capture |
 
 ---
 
 ## Global TODO / Changelog Coordination
 
 - `TODO.md` should track the active package work and shipped execution history clearly, not only the earlier cutover slice.
-- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, diff-assisted compare outcomes, named compare-session outcomes, compare-session history outcomes, expected-reference bundle outcomes, apply-reference workflow outcomes, reference-bundle browsing outcomes, bundle-lifecycle skill-surface outcomes, live baseline replay outcomes, qa-verdict outcomes, qa-gate outcomes, one-step baseline gate outcomes, semantic preset outcomes, policy-family outcomes, mismatch-classification outcomes, repo-local marketplace install outcomes, and agent-orchestration hardening outcomes only.
-- `design/design.md` remains the authority for frontend-vision intent, plugin boundaries, and standalone-repo install posture.
+- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, diff-assisted compare outcomes, named compare-session outcomes, compare-session history outcomes, expected-reference bundle outcomes, apply-reference workflow outcomes, reference-bundle browsing outcomes, bundle-lifecycle skill-surface outcomes, live baseline replay outcomes, qa-verdict outcomes, qa-gate outcomes, one-step baseline gate outcomes, semantic preset outcomes, policy-family outcomes, mismatch-classification outcomes, repo-local marketplace install outcomes, agent-orchestration hardening outcomes, strategic runtime-package extraction, richer witness-mode output, evidence-bundle output, and bounded session-replay capture outcomes only.
+- `design/design.md` remains the authority for frontend-vision intent, plugin boundaries, standalone-repo install posture, richer witness modes, and session-replay capture boundaries.
 
 ---
 
@@ -86,5 +88,11 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - reference bundles now carry explicit `reference_side` and `reference_report_path` metadata for more reliable replay
 - repo-local marketplace path now installs `webview-screenshort@webview-screenshort` directly from the standalone repo root
 - `webview-vision-assist` now routes more explicitly between focused review, responsive review, compare-review, bundle-lifecycle, live baseline replay, verdict, gate, one-step baseline gate, and preset-discovery entrypoints
+- the runtime now has an internal `webview_screenshort/` package so capture/auth/provider/workflow logic no longer has to remain only in top-level scripts
+- richer witness modes now exist for screenshot-only, screenshot + rendered HTML/text, CSR-debug, responsive, and session-replay capture flows
+- the runtime can now emit `webview-screenshort.evidence-bundle/v1` artifacts with screenshot plus rendered-page witness paths
+- compare flows can now accept `webview-screenshort.evidence-bundle/v1` artifacts instead of only screenshot-era capture reports
+- reference-bundle creation can now preserve `reference_artifact_schema` when the source compare session came from richer evidence bundles
+- logged-in-state capture now has bounded operator-facing inputs for headers/cookies/session material with redacted auth summaries in persisted outputs
 
 ---

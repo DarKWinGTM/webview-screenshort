@@ -8,9 +8,12 @@ import json
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Tuple
 
 BUNDLE_SCHEMA = "webview-screenshort.reference-bundle/v1"
 SESSION_SCHEMA = "webview-screenshort.compare-session/v1"
+REPORT_SCHEMA = "webview-screenshort.capture-report/v1"
+EVIDENCE_BUNDLE_SCHEMA = "webview-screenshort.evidence-bundle/v1"
 
 
 def load_json(path: Path):
@@ -33,36 +36,49 @@ def relativize_if_possible(path: Path, base_dir: Path) -> str:
         return str(path)
 
 
+def _copy_if_present(raw_path: str, source_report_path: Path, asset_dir: Path) -> str:
+    source_path = Path(raw_path).expanduser()
+    if not source_path.is_absolute():
+        source_path = (source_report_path.parent / source_path).resolve()
+    if not source_path.exists():
+        return raw_path
+    target_path = asset_dir / source_path.name
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source_path, target_path)
+    return relativize_if_possible(target_path, asset_dir)
+
+
 def rewrite_report_image_paths(report_payload: dict, source_report_path: Path, asset_dir: Path) -> dict:
     result = report_payload.get("result") or {}
+    witness_fields = [
+        "output_path",
+        "rendered_html_path",
+        "rendered_text_path",
+        "prerendered_html_path",
+        "bundle_path",
+    ]
     if report_payload.get("result_type") == "capture_set":
         for capture in result.get("captures", []):
-            output_path = capture.get("output_path")
-            if not output_path:
-                continue
-            source_image = Path(output_path).expanduser()
-            if not source_image.is_absolute():
-                source_image = (source_report_path.parent / source_image).resolve()
-            target_image = asset_dir / source_image.name
-            target_image.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(source_image, target_image)
-            capture["output_path"] = relativize_if_possible(target_image, asset_dir)
+            for field in witness_fields:
+                raw_path = capture.get(field)
+                if not raw_path:
+                    continue
+                capture[field] = _copy_if_present(raw_path, source_report_path, asset_dir)
         return report_payload
 
-    output_path = result.get("output_path")
-    if output_path:
-        source_image = Path(output_path).expanduser()
-        if not source_image.is_absolute():
-            source_image = (source_report_path.parent / source_image).resolve()
-        target_image = asset_dir / source_image.name
-        target_image.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(source_image, target_image)
-        result["output_path"] = relativize_if_possible(target_image, asset_dir)
+    for field in witness_fields:
+        raw_path = result.get(field)
+        if not raw_path:
+            continue
+        result[field] = _copy_if_present(raw_path, source_report_path, asset_dir)
     return report_payload
 
 
-def load_and_bundle_reference_report(reference_report_path: Path, output_path: Path, bundle_name: str) -> tuple[dict, str]:
+def load_and_bundle_reference_report(reference_report_path: Path, output_path: Path, bundle_name: str) -> Tuple[dict, str]:
     report_payload = load_json(reference_report_path)
+    source_schema = report_payload.get("report_schema") or report_payload.get("bundle_schema")
+    if source_schema not in {REPORT_SCHEMA, EVIDENCE_BUNDLE_SCHEMA}:
+        raise SystemExit(f"Unsupported reference artifact schema: {source_schema}")
     assets_dir = bundle_asset_dir(output_path, bundle_name)
     bundled_report_path = assets_dir / reference_report_path.name
     bundled_report_path.parent.mkdir(parents=True, exist_ok=True)
@@ -107,6 +123,7 @@ def main() -> None:
         "reference_side": "left",
         "reference_session_label": session.get("left", {}).get("label") or args.reference_label,
         "reference_report_path": str(reference_report_path),
+        "reference_artifact_schema": bundled_reference_report.get("report_schema") or bundled_reference_report.get("bundle_schema"),
         "bundled_reference_report_path": bundled_reference_report_path,
         "bundled_reference_report": bundled_reference_report,
         "comparison_mode": session.get("comparison", {}).get("comparison_mode"),

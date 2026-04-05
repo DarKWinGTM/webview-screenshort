@@ -9,7 +9,7 @@ import json
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 SESSION_SCHEMA = "webview-screenshort.compare-session/v1"
 LIVE_REPLAY_WORKFLOW = "reference_live_bundle"
@@ -30,7 +30,7 @@ class DeviceVerdict:
     left_image: str
     right_image: str
     diff_image_path: Optional[str]
-    bounding_box: Optional[tuple[int, int, int, int]]
+    bounding_box: Optional[Tuple[int, int, int, int]]
     warnings: List[str]
 
 
@@ -62,7 +62,7 @@ def load_json(path: Path) -> Dict[str, Any]:
         return json.load(file_obj)
 
 
-def extract_source(payload: Dict[str, Any]) -> tuple[str, Optional[dict], Optional[dict], Optional[str], Optional[str], Optional[str]]:
+def extract_source(payload: Dict[str, Any]) -> Tuple[str, Optional[dict], Optional[dict], Optional[str], Optional[str], Optional[str]]:
     if payload.get("workflow") == LIVE_REPLAY_WORKFLOW:
         session = payload.get("session")
         if isinstance(session, dict):
@@ -91,7 +91,7 @@ def extract_source(payload: Dict[str, Any]) -> tuple[str, Optional[dict], Option
     raise SystemExit("Unsupported verdict source. Expected live replay, compare session, or comparison JSON.")
 
 
-def infer_pair_classification(pair: Dict[str, Any]) -> tuple[str, str]:
+def infer_pair_classification(pair: Dict[str, Any]) -> Tuple[str, str]:
     diff = pair.get("diff")
     if not isinstance(diff, dict) or not diff:
         return "invalid_diff_payload", "missing_diff_payload"

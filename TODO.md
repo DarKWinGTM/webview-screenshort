@@ -58,6 +58,11 @@
 - [x] Add machine-readable mismatch classifications so compare/verdict/gate artifacts explain why a device failed, not only that it failed.
 - [x] Harden `webview-vision-assist` so it routes more clearly between focused, responsive, compare-review, live baseline replay, verdict-generation, gate-evaluation, one-step baseline-gate, and preset-discovery paths.
 - [x] Validate `/reload-plugins` and restart-time visibility for the installed package.
+- [x] Start strategic runtime refactor with an internal `webview_screenshort/` package instead of keeping orchestration only in top-level scripts.
+- [x] Add richer witness modes so capture can emit screenshot-only, screenshot + rendered HTML/text, CSR-debug, responsive, and session-replay flows.
+- [x] Add rendered HTML / rendered text evidence bundle output on top of the screenshot-era report model.
+- [x] Add bounded session-replay inputs (`--header`, `--origin-header`, `--cookie`, `--cookie-file`) for logged-in-state capture planning/execution.
+- [x] Upgrade skill and agent wording so routing is witness-mode-aware rather than screenshot-only by default.
 
 ---
 
@@ -65,6 +70,7 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-05 | Started the strategic frontend-vision upgrade: added an internal `webview_screenshort/` runtime package, moved capture/replay/gate logic toward reusable modules, added richer witness modes plus evidence-bundle output with rendered HTML / rendered text artifacts, added bounded session-replay inputs for logged-in-state capture, and upgraded skill/agent routing/docs toward screenshot-first but HTML-aware frontend vision. |
 | 2026-04-04 | Added machine-readable mismatch classifications (`exact_match`, `visual_change_region`, `dimension_shift`, `size_mismatch`, `diff_error`) across compare/verdict/gate artifacts, fixed RGBA diff detection so RGB-only changes are no longer missed, validated both responsive and forced-mismatch workflows, and bumped the plugin/marketplace package versions to `2.21.0`. |
 | 2026-04-04 | Added named policy family metadata (`family`, `name`, `selector`, `aliases`) across the semantic presets, validated canonical family/name selectors plus legacy aliases against the checked NodeClaw docs workflow, and bumped the plugin/marketplace package versions to `2.20.0`. |
 | 2026-04-04 | Added semantic policy presets (`smoke-responsive`, `layout-major-shift`, `mobile-critical`, `content-tolerant`) on top of the strict preset, validated semantic preset selection against the checked NodeClaw docs workflow, and bumped the plugin/marketplace package versions to `2.19.0`. |

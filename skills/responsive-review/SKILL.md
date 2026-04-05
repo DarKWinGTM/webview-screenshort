@@ -1,7 +1,7 @@
 ---
 name: responsive-review
-description: Capture one page across desktop, tablet, and mobile, then continue with cross-breakpoint screenshot-based frontend review. Use this when responsive behavior is the main review target.
-argument-hint: <url> [--mode viewport|fullpage] [--wait] [--engine auto|headless|aws]
+description: Capture one page across desktop, tablet, and mobile, then continue with cross-breakpoint frontend review. Prefer richer witness bundles so responsive review can use screenshot plus rendered HTML/rendered text where useful.
+argument-hint: <url> [--mode viewport|fullpage] [--wait] [--engine auto|headless|aws] [--witness-mode responsive|frontend-default|csr-debug|session-replay] [--header NAME:VALUE] [--origin-header Prerendercloud-Name:VALUE] [--cookie NAME=VALUE] [--cookie-file FILE]
 allowed-tools: Bash, Read
 ---
 
@@ -15,16 +15,20 @@ Use this skill when Claude should capture the same page across the core breakpoi
    - first positional arg = URL
    - optional flags: `--mode`, `--wait`, `--engine`
 
-2. Run the installed screenshot engine with one responsive capture set and persist a machine-readable report file:
+2. Prefer `--witness-mode responsive` so the capture run can emit richer responsive witnesses rather than screenshots only.
+
+3. Run the installed screenshot engine with one responsive capture set and persist a machine-readable report file:
    ```bash
-   report_file="$(mktemp /tmp/webview_responsive_review_XXXXXX.json)" && python3 "${CLAUDE_PLUGIN_ROOT}/screenshot.py" $ARGUMENTS --capture-set responsive --output-format json --report-file "$report_file"
+   report_file="$(mktemp /tmp/webview_responsive_review_XXXXXX.json)" && python3 "${CLAUDE_PLUGIN_ROOT}/screenshot.py" $ARGUMENTS --capture-set responsive --witness-mode responsive --output-format json --report-file "$report_file"
    ```
 
-3. Read the JSON report file from the returned `report_path`.
+4. Read the JSON report file from the returned `report_path`.
 
-4. If capture succeeded, read each image file from `captures[].output_path`.
+5. If capture succeeded, read each image file from `captures[].output_path`.
 
-5. Continue with responsive review using the images as evidence. Compare:
+6. If rendered HTML / rendered text witnesses were emitted for each responsive capture, read them too before concluding on content or CSR differences.
+
+7. Continue with responsive review using the images as evidence. Compare:
    - content hierarchy
    - overflow / cropping risk
    - card stacking
@@ -32,11 +36,13 @@ Use this skill when Claude should capture the same page across the core breakpoi
    - readability and spacing density
    - issues that are desktop-only, tablet-only, mobile-only, or cross-device
 
-6. Only then recommend frontend changes.
+8. Only then recommend frontend changes.
 
 ## Output expectations
 - exact capture-set report path
+- exact evidence bundle path when emitted
 - per-device screenshot paths
+- per-device rendered HTML / rendered text paths when emitted
 - per-device viewport metadata
 - cross-breakpoint findings
-- concise recommended fixes based on the screenshot evidence
+- concise recommended fixes based on the screenshot evidence plus any richer responsive witnesses that were available
