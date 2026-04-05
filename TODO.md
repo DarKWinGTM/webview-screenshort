@@ -20,6 +20,7 @@
 - [x] Removed the retained `prototype/` wrapper area so the package structure no longer carries a prototype execution layer at all.
 - [x] Added a complete current capability map to `README.md` so the package surfaces and artifact outputs are visible in one place.
 - [x] Expanded README witness explanations so screenshot/rendered HTML/rendered text/semantic/prerender witnesses are easier to understand in practical frontend-review terms.
+- [x] Documented the planned output-path precedence so the next implementation wave has explicit authority for workspace-local artifact placement.
 
 ---
 
@@ -35,6 +36,7 @@
 - [x] Move hardcoded API endpoints in `screenshot.py` to env/config resolution.
 - [x] Add configurable timeout handling instead of fixed values only.
 - [x] Add a clearer machine-readable success output mode for follow-on skill workflows.
+- [x] Change the default no-override output policy from package-side `screenshot/` to `explicit path > env override > workspace-local temp/artifact dir > OS tmp fallback`.
 
 ### Frontend Vision Workflow
 - [x] Add a higher-level review skill flow that captures first and then guides screenshot-based UI analysis.
@@ -94,6 +96,7 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-06 | Implemented the output-path precedence (`explicit > env > workspace-local temp/artifact dir > OS tmp fallback`) so default artifact placement no longer falls back to package/plugin-cache paths first, and the package version moved to `2.39.0`. |
 | 2026-04-05 | Expanded README witness explanations so screenshot/rendered HTML/rendered text/semantic/prerender witnesses are easier to understand in practical frontend-review terms, and the package version moved to `2.38.0`. |
 | 2026-04-05 | Added a complete README capability map covering capture, witness modes, review surfaces, compare/baseline/QA flows, and output artifact types, and the package version moved to `2.37.0`. |
 | 2026-04-05 | Removed the retained `prototype/` wrapper layer so the package no longer carries prototype wrappers as stored compatibility artifacts, updated docs/governance to describe the direct package CLI structure only, and the package version moved to `2.36.0`. |

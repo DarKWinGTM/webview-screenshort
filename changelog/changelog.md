@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.38.0
+> **Current Version:** 2.39.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.39.0 | 2026-04-06 | **[Implemented workspace-friendly output path policy](#version-2390)** | Default output now prefers a workspace-local temp/artifact directory and uses OS tmp only as fallback, avoiding plugin-cache-first placement. |
 | 2.38.0 | 2026-04-05 | **[Expanded README witness explanations](#version-2380)** | README now explains screenshot vs rendered HTML vs rendered text vs semantic/prerender witnesses in clearer practical terms. |
 | 2.37.0 | 2026-04-05 | **[Added README capability map](#version-2370)** | README now exposes the current capture/review/compare/baseline/QA surfaces and artifact outputs in one compact capability section. |
 | 2.36.0 | 2026-04-05 | **[Removed prototype wrapper layer](#version-2360)** | The retained `prototype/` wrapper area is gone, and active docs now describe the direct package CLI structure only. |
@@ -51,6 +52,29 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2390"></a>
+## Version 2.39.0: Implemented workspace-friendly output path policy
+
+**Date:** 2026-04-06
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Updated `webview_screenshort/capture/paths.py` so default output precedence now follows `explicit path > env override > workspace-local temp/artifact dir > OS tmp fallback`.
+- Added workspace detection that prefers the current workspace and, when running from plugin-cache-like directories, can recover a non-cache workspace base from the prior working directory before falling back to OS tmp.
+- Updated README, design, TODO, and phase/changelog governance wording so the output-path policy is described as implemented rather than planned.
+- Added dedicated phase/patch artifacts for the output-path policy implementation wave and synced package/governance metadata to `2.39.0`.
+
+### Validation
+- `python3 -m py_compile /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/capture/paths.py` succeeds.
+- source-tree probing now resolves `/home/node/workplace/AWCLOUD/CLAUDE/.tmp/webview-screenshort` from normal workspace execution and from plugin-cache-style execution when a usable prior workspace path is available.
+- source-tree capture smoke test now emits default artifacts under `/home/node/workplace/AWCLOUD/CLAUDE/.tmp/webview-screenshort` instead of package/plugin-cache paths.
+- `claude plugins validate /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort` succeeds.
+
+### Summary
+Default output placement is now safer and more interoperable: callers still control paths explicitly when needed, but the no-override default no longer points at package/plugin-cache storage first.
 
 ---
 

@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.38.0
+> **Current Version:** 2.39.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
@@ -86,6 +86,19 @@ That agent should:
 - trigger screenshot capture first
 - prefer visual evidence before advice
 - support layout / UX / UI review workflows
+
+### 3.3 Output-artifact path policy
+The output-path precedence is now:
+1. explicit caller path wins (`--output`, `--output-dir`, `--report-file`, `--bundle-file`)
+2. env override wins next (`WEBVIEW_SCREENSHORT_OUTPUT_DIR`)
+3. if nothing is specified, default to a workspace-local temp/artifact directory
+4. use OS tmp only as a fallback when a workspace-local path is unavailable or unwritable
+
+What this should solve:
+- avoid defaulting into plugin cache paths during installed-plugin execution
+- improve compatibility with workspace-limited MCP/image-analysis tools
+- preserve operator override control
+- keep sibling artifacts together under one predictable base path
 
 ---
 
@@ -194,6 +207,7 @@ Checked semantic witness validation now also shows:
 - logged-in-state capture depends on operator-provided headers/cookies/session material and does not automate interactive login
 - headless-render-api documentation only clearly documents origin forwarding through `Prerendercloud-*` header names plus `Origin-Header-Whitelist`, so logged-in-state capture must stay within that bounded forwarding model unless stronger provider evidence appears
 - the maintained local runtime install/update authority label in this environment remains `webview-screenshort@darkwingtm`, while the standalone repo-local marketplace manifest remains available for source-side validation/cutover work
+- default no-override output now prefers a workspace-local temp/artifact path and uses OS tmp only as fallback when a usable workspace path cannot be determined
 - broader CSR validation still needs more than the two currently checked public docs targets
 
 ---

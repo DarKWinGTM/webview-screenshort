@@ -1,7 +1,7 @@
 # Webview Screenshort - Phase Summary
 
-> **Current Version:** 2.38.0
-> **Target Design:** [../design/design.md](../design/design.md) v2.38.0
+> **Current Version:** 2.39.0
+> **Target Design:** [../design/design.md](../design/design.md) v2.39.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 > **Status:** Implemented - Pending Review
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)
@@ -41,6 +41,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 021 | `phase-021-prototype-retirement.md` | `design/design.md` final strategic package-structure cleanup with no retained prototype wrapper layer | `../patch/phase-021-prototype-retirement.patch.md` | Remove the retained `prototype/` wrapper area and normalize active docs/governance around the direct package CLI structure only | The package becomes more fully strategic: one active structure, no retained prototype execution layer, and no active-state docs that still lean on prototype retirement storage |
 | 022 | `phase-022-readme-capability-map.md` | `design/design.md` operator-facing capability visibility for the current package surface | `../patch/phase-022-readme-capability-map.patch.md` | Add a complete current capability map to README so users can see capture/review/compare/baseline/QA surfaces and artifact outputs in one place | The package becomes easier to understand operationally because the active capability set is visible from one README section instead of being scattered across many skill and doc files |
 | 023 | `phase-023-readme-witness-explanations.md` | `design/design.md` operator-facing witness clarity for screenshot/rendered HTML/rendered text/semantic/prerender outputs | `../patch/phase-023-readme-witness-explanations.patch.md` | Expand README so the witness layers are explained in practical frontend-review terms instead of only being listed as artifact names | Users can understand what each witness means, when to use it, and what the rendered-HTML capability can and cannot provide |
+| 024 | `phase-024-output-path-policy.md` | `design/design.md` output-path precedence for workspace-friendly artifact placement | `../patch/phase-024-output-path-policy.patch.md` | Move the default no-override output policy away from package/plugin-cache paths toward workspace-local temp/artifact placement, with OS tmp only as fallback | The package becomes safer for installed-plugin usage and more compatible with workspace-limited MCP/image-analysis flows when no explicit output path is provided |
 
 ---
 
@@ -71,6 +72,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 021 | Implemented - Pending Review | `phase-021-prototype-retirement.md` | Remove the retained `prototype/` wrapper area and normalize the package around the direct strategic structure only |
 | 022 | Implemented - Pending Review | `phase-022-readme-capability-map.md` | Add a complete current capability map to README so the package surfaces and artifacts are visible in one place |
 | 023 | Implemented - Pending Review | `phase-023-readme-witness-explanations.md` | Expand README so the witness layers are explained in practical frontend-review terms |
+| 024 | Implemented - Pending Review | `phase-024-output-path-policy.md` | Move the default no-override output policy toward workspace-local temp/artifact placement instead of package/plugin-cache defaults |
 
 ---
 
@@ -147,5 +149,6 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - the retained prototype wrapper area has been removed, so the package now exposes only the direct strategic structure in both code and governance docs
 - higher-level review skills now preserve an explicit operator-provided `--witness-mode` instead of silently overriding it with a default
 - generated timestamped files under `screenshot/` now stay ignored by default so local runtime evidence does not pollute the package release surface
+- default no-override output now prefers a workspace-local temp/artifact path and uses OS tmp only as fallback when no usable workspace path can be determined
 
 ---

@@ -1,6 +1,6 @@
 # Webview Screenshort
 
-> **Current Version:** 2.38.0
+> **Current Version:** 2.39.0
 
 A governed frontend-development screenshot plugin package for capturing real rendered webpages and giving Claude visual plus semantic page evidence during UI, UX, and layout work.
 
@@ -125,6 +125,7 @@ Verified now:
 - key consumers such as package exports, screenshot CLI, and live replay now import through `webview_screenshort/capture/service.py`, which acts as the newer capture authority surface
 - `capture_service.py` now remains only as a compatibility facade instead of duplicating the active capture implementation
 - public-repo install posture is now validated from the standalone repo root
+- default no-override output now prefers a workspace-local temp/artifact directory and uses OS tmp only as fallback when no usable workspace path can be determined
 
 ## Capability map
 
@@ -182,12 +183,32 @@ What this means in plain language:
 - yes, the package can give AI the post-render page HTML in many normal frontend-review flows
 - no, it is not pretending to be a full browser DevTools dump with every runtime internal, console event, or network trace
 
+### Important boundaries
 
 - screenshot-first, evidence-first frontend tool; not a full browser automation suite
 - supports CSR / SPA checks and richer rendered-page witnesses
 - supports logged-in-state capture only through explicit session replay material from the operator
 - does not automate interactive login
 - active execution path now runs directly through `webview_screenshort.cli.*`
+
+### Default output-path policy
+
+Current behavior:
+1. explicit output path wins (`--output`, `--output-dir`, `--report-file`, `--bundle-file`)
+2. env override wins next (`WEBVIEW_SCREENSHORT_OUTPUT_DIR`)
+3. if nothing is specified, the package defaults to a workspace-local temp/artifact directory
+4. if no usable workspace path is available, it falls back to OS tmp
+
+What this means in practice:
+- normal workspace execution now defaults under `<workspace>/.tmp/webview-screenshort/`
+- installed-plugin/cache-style execution now tries to recover a workspace path first (for example via the prior working directory) instead of defaulting straight into plugin cache
+- if a real workspace path still cannot be found, OS tmp is used as the last fallback
+- sibling artifacts still stay together (`rendered.html`, `semantic.json`, report, bundle) under the same derived base path
+
+Why this is better:
+- avoids saving by default into plugin cache
+- fits better with workspace-only MCP/image-analysis tools
+- still preserves explicit operator control when a caller wants a specific location
 
 Checked live examples:
 - `https://claw-frontend-dev.nodenetwork.ovh/docs`
