@@ -17,11 +17,47 @@ WITNESS_MODE_ALIASES = {
 SCRIPT_STYLE_RE = re.compile(r"<(script|style|noscript)\b[^>]*>[\s\S]*?</\1>", re.IGNORECASE)
 TAG_RE = re.compile(r"<[^>]+>")
 WHITESPACE_RE = re.compile(r"\s+")
+PRELOADED_STATE_SCRIPT_RE = re.compile(
+    r"<script\b[^>]*>\s*window\.__PRELOADED_STATE__\s*=\s*[\s\S]*?</script>",
+    re.IGNORECASE,
+)
+SENSITIVE_METADATA_KEYS = {
+    "authorization",
+    "cookie",
+    "set-cookie",
+    "prerendercloud-preloaded-state-version",
+    "prerendercloud-preloaded-state-encoding",
+    "prerendercloud-preloaded-state-sha256",
+    "prerendercloud-preloaded-state-chunks",
+}
 
 
 def normalize_witness_mode(value: str) -> str:
     normalized = str(value or "visual").strip() or "visual"
     return WITNESS_MODE_ALIASES.get(normalized, normalized)
+
+
+def sanitize_preloaded_state_html(html: str) -> str:
+    return PRELOADED_STATE_SCRIPT_RE.sub(
+        '<script>window.__PRELOADED_STATE__ = "[REDACTED_PRELOADED_STATE]";</script>',
+        html,
+    )
+
+
+def scrub_sensitive_metadata(payload: Any) -> Any:
+    if isinstance(payload, dict):
+        scrubbed: Dict[str, Any] = {}
+        for key, value in payload.items():
+            key_str = str(key)
+            normalized = key_str.lower()
+            if normalized in SENSITIVE_METADATA_KEYS or normalized.startswith("prerendercloud-preloaded-state-"):
+                scrubbed[key_str] = "[REDACTED]"
+            else:
+                scrubbed[key_str] = scrub_sensitive_metadata(value)
+        return scrubbed
+    if isinstance(payload, list):
+        return [scrub_sensitive_metadata(item) for item in payload]
+    return payload
 
 
 def html_to_text(html: str) -> str:
@@ -190,10 +226,12 @@ def collect_html_witnesses(
         auth=auth_context,
     )
     acquisition_summary["scrape"] = response_summary(scrape_response, "scrape")
-    page_metadata.update(extract_metadata_from_json_payload(scrape_response.json_payload))
+    page_metadata.update(scrub_sensitive_metadata(extract_metadata_from_json_payload(scrape_response.json_payload)))
     if scrape_response.ok:
         rendered_html = decode_body_from_json_payload(scrape_response.json_payload) or scrape_response.body_text
         if rendered_html:
+            if auth_context and auth_context.preloaded_state:
+                rendered_html = sanitize_preloaded_state_html(rendered_html)
             rendered_html_path = write_text_file(derive_neighbor_path(output_path, "rendered", "html"), rendered_html)
             rendered_text = html_to_text(rendered_html)
             rendered_text_path = write_text_file(derive_neighbor_path(output_path, "rendered", "txt"), rendered_text)
@@ -215,12 +253,14 @@ def collect_html_witnesses(
             auth=auth_context,
         )
         acquisition_summary["prerender"] = response_summary(prerender_response, "prerender")
-        prerender_meta = extract_metadata_from_json_payload(prerender_response.json_payload)
+        prerender_meta = scrub_sensitive_metadata(extract_metadata_from_json_payload(prerender_response.json_payload))
         if prerender_meta:
             page_metadata["prerender"] = prerender_meta
         if prerender_response.ok:
             prerender_html = decode_body_from_json_payload(prerender_response.json_payload) or prerender_response.body_text
             if prerender_html:
+                if auth_context and auth_context.preloaded_state:
+                    prerender_html = sanitize_preloaded_state_html(prerender_html)
                 prerendered_html_path = write_text_file(derive_neighbor_path(output_path, "prerendered", "html"), prerender_html)
                 title = title or extract_title_from_html(prerender_html)
             else:

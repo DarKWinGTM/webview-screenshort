@@ -37,6 +37,7 @@
 - [x] Add configurable timeout handling instead of fixed values only.
 - [x] Add a clearer machine-readable success output mode for follow-on skill workflows.
 - [x] Change the default no-override output policy from package-side `screenshot/` to `explicit path > env override > workspace-local temp/artifact dir > OS tmp fallback`.
+- [x] Add bounded operator-provided preloaded-state replay alongside cookies, with origin-side reconstruction into `window.__PRELOADED_STATE__` and redacted persisted summaries.
 
 ### Frontend Vision Workflow
 - [x] Add a higher-level review skill flow that captures first and then guides screenshot-based UI analysis.
@@ -96,6 +97,7 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-06 | Added bounded preload-state replay alongside cookies: the package now accepts preload JSON/file inputs, transports them through generated `Prerendercloud-*` headers, persists only redacted summaries, sanitizes HTML witnesses, and the package version moved to `2.40.0`. |
 | 2026-04-06 | Implemented the output-path precedence (`explicit > env > workspace-local temp/artifact dir > OS tmp fallback`) so default artifact placement no longer falls back to package/plugin-cache paths first, and the package version moved to `2.39.0`. |
 | 2026-04-05 | Expanded README witness explanations so screenshot/rendered HTML/rendered text/semantic/prerender witnesses are easier to understand in practical frontend-review terms, and the package version moved to `2.38.0`. |
 | 2026-04-05 | Added a complete README capability map covering capture, witness modes, review surfaces, compare/baseline/QA flows, and output artifact types, and the package version moved to `2.37.0`. |

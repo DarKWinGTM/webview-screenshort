@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.39.0
+> **Current Version:** 2.40.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
@@ -99,6 +99,27 @@ What this should solve:
 - improve compatibility with workspace-limited MCP/image-analysis tools
 - preserve operator override control
 - keep sibling artifacts together under one predictable base path
+
+### 3.4 Bounded preload-state replay contract
+The authenticated-rendering model now extends the current cookie/header replay path with bounded operator-provided preloaded state.
+
+That support now:
+- accepts structured JSON preload input from the operator
+- forwards it to the origin only through documented `Prerendercloud-*` origin-header replay
+- requires the origin/app to reconstruct and emit `window.__PRELOADED_STATE__`
+- keeps cookie replay as a first-class companion path
+- persists only redacted preload/cookie summaries in reports and bundles
+- sanitizes rendered/prerendered HTML witnesses so raw preload state is not written into persisted artifacts
+
+That support still does not:
+- assume direct browser `localStorage` / `sessionStorage` injection by the provider
+- automate interactive login
+- behave like a generic browser profile restore system
+
+Replay precedence:
+1. cookies / forwarded headers for request-scoped session context
+2. bounded preloaded-state replay for origin-side bootstrap state
+3. app-side reconstruction into `window.__PRELOADED_STATE__`
 
 ---
 
@@ -208,6 +229,7 @@ Checked semantic witness validation now also shows:
 - headless-render-api documentation only clearly documents origin forwarding through `Prerendercloud-*` header names plus `Origin-Header-Whitelist`, so logged-in-state capture must stay within that bounded forwarding model unless stronger provider evidence appears
 - the maintained local runtime install/update authority label in this environment remains `webview-screenshort@darkwingtm`, while the standalone repo-local marketplace manifest remains available for source-side validation/cutover work
 - default no-override output now prefers a workspace-local temp/artifact path and uses OS tmp only as fallback when a usable workspace path cannot be determined
+- current authenticated capture now supports cookies plus bounded origin-bootstrap preload replay through generated `Prerendercloud-*` headers, while direct browser storage injection is still not a documented provider capability
 - broader CSR validation still needs more than the two currently checked public docs targets
 
 ---
@@ -227,6 +249,7 @@ This package is considered successful for the current wave when:
 - rendered HTML and rendered text become first-class witnesses for non-visual frontend review paths
 - semantic page witness output becomes a first-class structure summary artifact for frontend review and responsive capture-set flows
 - request-scoped logged-in-state capture is possible with explicit user-provided headers/cookies/session material while keeping raw secrets out of persisted artifacts
+- request-scoped logged-in-state capture now supports bounded operator-provided preloaded state alongside cookies, with origin-side reconstruction into `window.__PRELOADED_STATE__` and redacted persisted summaries only
 - `compare_reports.py` supports structured report-to-report pairing for expected/actual and regression-style review
 - compare/verdict/gate artifacts can now carry semantic companion classification summaries in addition to visual mismatch classifications
 - `screenshot.py` supports one-run responsive capture-set output for desktop/tablet/mobile review

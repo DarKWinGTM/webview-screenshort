@@ -42,6 +42,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 022 | `phase-022-readme-capability-map.md` | `design/design.md` operator-facing capability visibility for the current package surface | `../patch/phase-022-readme-capability-map.patch.md` | Add a complete current capability map to README so users can see capture/review/compare/baseline/QA surfaces and artifact outputs in one place | The package becomes easier to understand operationally because the active capability set is visible from one README section instead of being scattered across many skill and doc files |
 | 023 | `phase-023-readme-witness-explanations.md` | `design/design.md` operator-facing witness clarity for screenshot/rendered HTML/rendered text/semantic/prerender outputs | `../patch/phase-023-readme-witness-explanations.patch.md` | Expand README so the witness layers are explained in practical frontend-review terms instead of only being listed as artifact names | Users can understand what each witness means, when to use it, and what the rendered-HTML capability can and cannot provide |
 | 024 | `phase-024-output-path-policy.md` | `design/design.md` output-path precedence for workspace-friendly artifact placement | `../patch/phase-024-output-path-policy.patch.md` | Move the default no-override output policy away from package/plugin-cache paths toward workspace-local temp/artifact placement, with OS tmp only as fallback | The package becomes safer for installed-plugin usage and more compatible with workspace-limited MCP/image-analysis flows when no explicit output path is provided |
+| 025 | `phase-025-bounded-preload-state-plan.md` | `design/design.md` bounded preload-state + cookie replay model for authenticated rendering | `../patch/phase-025-bounded-preload-state-plan.patch.md` | Add bounded authenticated-rendering replay around cookies plus origin-side `window.__PRELOADED_STATE__` reconstruction | The package now has an implemented bounded replay model with explicit limits, redaction, and origin-bootstrap semantics instead of only a planned contract |
 
 ---
 
@@ -73,6 +74,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 022 | Implemented - Pending Review | `phase-022-readme-capability-map.md` | Add a complete current capability map to README so the package surfaces and artifacts are visible in one place |
 | 023 | Implemented - Pending Review | `phase-023-readme-witness-explanations.md` | Expand README so the witness layers are explained in practical frontend-review terms |
 | 024 | Implemented - Pending Review | `phase-024-output-path-policy.md` | Move the default no-override output policy toward workspace-local temp/artifact placement instead of package/plugin-cache defaults |
+| 025 | Implemented - Pending Review | `phase-025-bounded-preload-state-plan.md` | Add bounded cookie + preloaded-state replay support without assuming direct browser-storage injection |
 
 ---
 
@@ -150,5 +152,6 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - higher-level review skills now preserve an explicit operator-provided `--witness-mode` instead of silently overriding it with a default
 - generated timestamped files under `screenshot/` now stay ignored by default so local runtime evidence does not pollute the package release surface
 - default no-override output now prefers a workspace-local temp/artifact path and uses OS tmp only as fallback when no usable workspace path can be determined
+- bounded preload-state replay now exists alongside cookies through generated `Prerendercloud-*` headers, with redacted summaries and no direct browser-storage injection claim
 
 ---

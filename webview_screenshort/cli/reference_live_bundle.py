@@ -32,6 +32,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--origin-header", action="append", default=[], help="Forward a Prerendercloud-* header to the origin as NAME:VALUE")
     parser.add_argument("--cookie", action="append", default=[], help="Forward a cookie as NAME=VALUE")
     parser.add_argument("--cookie-file", help="Load cookies from a JSON or newline-separated file")
+    parser.add_argument("--preloaded-state-json", help="Forward bounded preloaded state as an inline JSON object for origin-side bootstrap reconstruction")
+    parser.add_argument("--preloaded-state-file", help="Load bounded preloaded state from a JSON file for origin-side bootstrap reconstruction")
     parser.add_argument("--bundle-file", help="Optional evidence bundle output path for the live capture")
     parser.add_argument("--output-format", choices=["json"], default="json")
     return parser

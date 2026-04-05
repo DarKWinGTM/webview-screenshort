@@ -1,6 +1,6 @@
 """Internal runtime package for webview-screenshort."""
 
-from .capture.auth import AuthContext, build_auth_context, redact_auth_context
+from .capture.auth import AuthContext, PreloadedStateContext, build_auth_context, redact_auth_context
 from .capture.service import (
     CaptureResult,
     CaptureSetResult,
@@ -27,6 +27,7 @@ __all__ = [
     "AuthContext",
     "CaptureResult",
     "CaptureSetResult",
+    "PreloadedStateContext",
     "Reporter",
     "apply_gate",
     "apply_reference_bundle",

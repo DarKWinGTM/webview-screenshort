@@ -86,7 +86,8 @@ Verified now:
 - skill/agent execution now targets `${CLAUDE_PLUGIN_ROOT}` instead of a source-workspace-only path
 - the runtime now has an internal `webview_screenshort/` package so root scripts no longer need to remain the only place where orchestration logic lives
 - richer capture output now includes acquisition witness JSON so the package can report how scrape/prerender witnesses were obtained in machine-readable form
-- the package CLI screenshot module now supports env-driven capture configuration, JSON result output, schema-stamped persisted report-file output, one-run responsive capture-set output, richer witness modes, optional evidence-bundle output, acquisition witness JSON output, semantic page witness JSON output, and capture-set semantic/acquisition witness indexes for chaining into frontend review workflows
+- the package CLI screenshot module now supports env-driven capture configuration, JSON result output, schema-stamped persisted report-file output, one-run responsive capture-set output, richer witness modes, optional evidence-bundle output, acquisition witness JSON output, semantic page witness JSON output, bounded preload-state replay alongside cookies, and capture-set semantic/acquisition witness indexes for chaining into frontend review workflows
+- the authenticated-rendering flow can now transport bounded preloaded state through generated `Prerendercloud-*` headers and persist only redacted preload/cookie summaries
 - the package CLI compare module now validates persisted screenshot reports and evidence bundles, emits structured pair metadata, and classifies each compared device as `exact_match`, `visual_change_region`, `dimension_shift`, `size_mismatch`, or `diff_error`
 - the package CLI diff module now adds optional image-diff metrics and diff-image outputs for richer compare-review workflows
 - the package CLI compare-session module now persists named compare-session artifacts with expected/actual-style labels for later QA review
@@ -144,7 +145,7 @@ Verified now:
 | QA verdicts | Turn compare/live-replay artifacts into reusable machine-readable pass/fail summaries | `/qa-verdict`, `webview_screenshort.cli.qa_verdict` |
 | QA gate | Apply threshold/policy rules on top of verdict/comparison artifacts | `/qa-gate`, `/reference-live-gate`, `webview_screenshort.cli.qa_gate`, `webview_screenshort.cli.reference_live_gate` |
 | Policy presets | Discover built-in gate presets by selector/alias | `/policy-presets`, `webview_screenshort.cli.list_policy_presets` |
-| Session replay auth context | Reuse operator-provided headers/cookies/session material for logged-in-state capture; does not automate interactive login | `--header`, `--origin-header`, `--cookie`, `--cookie-file` |
+| Session replay auth context | Reuse operator-provided headers/cookies/session material for logged-in-state capture and bounded origin-bootstrap replay | `--header`, `--origin-header`, `--cookie`, `--cookie-file`, `--preloaded-state-json`, `--preloaded-state-file` |
 
 ### Outputs and artifacts
 
@@ -181,14 +182,16 @@ If a page is CSR/SPA-driven, this package can often give AI more than a screensh
 
 What this means in plain language:
 - yes, the package can give AI the post-render page HTML in many normal frontend-review flows
+- bounded preload-state replay is now available for origins that reconstruct forwarded preload headers into `window.__PRELOADED_STATE__`
 - no, it is not pretending to be a full browser DevTools dump with every runtime internal, console event, or network trace
 
 ### Important boundaries
 
 - screenshot-first, evidence-first frontend tool; not a full browser automation suite
 - supports CSR / SPA checks and richer rendered-page witnesses
-- supports logged-in-state capture only through explicit session replay material from the operator
+- supports logged-in-state capture through explicit session replay material from the operator, including bounded cookie replay plus origin-side preload reconstruction inputs
 - does not automate interactive login
+- does not claim direct browser `localStorage` / `sessionStorage` injection by the provider
 - active execution path now runs directly through `webview_screenshort.cli.*`
 
 ### Default output-path policy
@@ -378,6 +381,7 @@ Use this package when the goal is to inspect:
 - `/screenshot <url> --wait --mode viewport --witness-mode frontend-default --output-format json --report-file /tmp/capture.json`
 - `/screenshot <url> --wait --mode viewport --witness-mode csr-debug --bundle-file /tmp/evidence.json --output-format json`
 - `/screenshot <url> --capture-set responsive --wait --mode viewport --witness-mode responsive --output-format json`
+- `/screenshot <url> --wait --mode viewport --witness-mode session-replay --cookie "nodeclaw_session=..." --preloaded-state-json '{"locale":"th","cookieNoticeAcknowledged":true}' --output-format json`
 
 ### For frontend review
 - `/frontend-review <url> --wait --mode viewport`

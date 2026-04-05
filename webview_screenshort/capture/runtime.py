@@ -111,6 +111,8 @@ def run_capture(url: str, args: Any, reporter: Reporter) -> CaptureResult:
         origin_headers=getattr(args, "origin_header", None),
         cookies=getattr(args, "cookie", None),
         cookie_file=getattr(args, "cookie_file", None),
+        preloaded_state_json=getattr(args, "preloaded_state_json", None),
+        preloaded_state_file=getattr(args, "preloaded_state_file", None),
     )
     return execute_capture(
         url=url,
@@ -142,6 +144,8 @@ def run_responsive_capture_set(url: str, args: Any, reporter: Reporter) -> Captu
             origin_headers=getattr(args, "origin_header", None),
             cookies=getattr(args, "cookie", None),
             cookie_file=getattr(args, "cookie_file", None),
+            preloaded_state_json=getattr(args, "preloaded_state_json", None),
+            preloaded_state_file=getattr(args, "preloaded_state_file", None),
         )
         capture_result = execute_capture(
             url=url,

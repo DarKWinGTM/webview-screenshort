@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.39.0
+> **Current Version:** 2.40.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.40.0 | 2026-04-06 | **[Added bounded preload-state replay](#version-2400)** | The package now supports cookies plus bounded origin-bootstrap replay through generated `Prerendercloud-*` headers, with redacted summaries and HTML witness sanitization. |
 | 2.39.0 | 2026-04-06 | **[Implemented workspace-friendly output path policy](#version-2390)** | Default output now prefers a workspace-local temp/artifact directory and uses OS tmp only as fallback, avoiding plugin-cache-first placement. |
 | 2.38.0 | 2026-04-05 | **[Expanded README witness explanations](#version-2380)** | README now explains screenshot vs rendered HTML vs rendered text vs semantic/prerender witnesses in clearer practical terms. |
 | 2.37.0 | 2026-04-05 | **[Added README capability map](#version-2370)** | README now exposes the current capture/review/compare/baseline/QA surfaces and artifact outputs in one compact capability section. |
@@ -52,6 +53,31 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2400"></a>
+## Version 2.40.0: Added bounded preload-state replay
+
+**Date:** 2026-04-06
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Added first-class preload inputs to the capture CLI surfaces: `--preloaded-state-json` and `--preloaded-state-file`.
+- Extended `capture/auth.py` so cookies plus bounded preloaded state now travel through one replay context, with generated `Prerendercloud-Preloaded-State-*` origin-forwarded headers, size limits, and redacted summary metadata.
+- Updated runtime threading so focused capture, responsive capture, live replay, and live gate all carry the same bounded replay context.
+- Sanitized rendered/prerendered HTML witnesses when preload state is supplied and kept only redacted preload/cookie summaries in reports and evidence bundles.
+- Synced design/README/TODO/phase/patch/changelog authority for the implemented wave and kept the boundary explicit: origin-side `window.__PRELOADED_STATE__` reconstruction is supported, but direct browser storage injection is still not claimed.
+
+### Validation
+- `python3 -m py_compile /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/capture/auth.py /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/capture/runtime.py /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/capture/witnesses.py /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/cli/screenshot.py /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/cli/reference_live_bundle.py /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/cli/reference_live_gate.py` succeeds.
+- bounded context probing shows generated `Prerendercloud-Preloaded-State-*` headers plus redacted auth/preload summaries.
+- oversized preload payloads are rejected early.
+- focused capture smoke test with preload JSON succeeds and emits redacted summary fields.
+- `claude plugins validate /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort` succeeds.
+
+### Summary
+The package now supports bounded cookie + preload replay for authenticated rendering while staying honest about provider limits: the origin can reconstruct `window.__PRELOADED_STATE__`, but the package still does not pretend the provider can inject browser storage directly.
 
 ---
 
