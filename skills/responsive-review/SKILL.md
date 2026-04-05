@@ -1,7 +1,7 @@
 ---
 name: responsive-review
 description: Capture one page across desktop, tablet, and mobile, then continue with cross-breakpoint frontend review. Prefer richer witness bundles so responsive review can use screenshot plus rendered HTML/rendered text and semantic page witness output where useful.
-argument-hint: <url> [--mode viewport|fullpage] [--wait] [--engine auto|headless|aws] [--witness-mode responsive|frontend-default|csr-debug|session-replay] [--header NAME:VALUE] [--origin-header Prerendercloud-Name:VALUE] [--cookie NAME=VALUE] [--cookie-file FILE]
+argument-hint: <url> [--mode viewport|fullpage] [--wait] [--engine auto|headless|aws] [--witness-mode responsive|frontend-default|csr-debug|session-replay] [--header NAME:VALUE] [--origin-header Prerendercloud-Name:VALUE] [--cookie NAME=VALUE] [--cookie-file FILE] [--preloaded-state-json JSON] [--preloaded-state-file FILE]
 allowed-tools: Bash, Read
 ---
 

@@ -1,7 +1,7 @@
 # Webview Screenshort - Phase Summary
 
-> **Current Version:** 2.39.0
-> **Target Design:** [../design/design.md](../design/design.md) v2.39.0
+> **Current Version:** 2.40.1
+> **Target Design:** [../design/design.md](../design/design.md) v2.40.1
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 > **Status:** Implemented - Pending Review
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)

@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.40.0
+> **Current Version:** 2.40.1
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.40.1 | 2026-04-06 | **[Synced preload-state skill surfaces](#version-2401)** | Active skill and agent docs now expose the preload-state flags and the bounded origin-bootstrap model consistently. |
 | 2.40.0 | 2026-04-06 | **[Added bounded preload-state replay](#version-2400)** | The package now supports cookies plus bounded origin-bootstrap replay through generated `Prerendercloud-*` headers, with redacted summaries and HTML witness sanitization. |
 | 2.39.0 | 2026-04-06 | **[Implemented workspace-friendly output path policy](#version-2390)** | Default output now prefers a workspace-local temp/artifact directory and uses OS tmp only as fallback, avoiding plugin-cache-first placement. |
 | 2.38.0 | 2026-04-05 | **[Expanded README witness explanations](#version-2380)** | README now explains screenshot vs rendered HTML vs rendered text vs semantic/prerender witnesses in clearer practical terms. |
@@ -53,6 +54,26 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2401"></a>
+## Version 2.40.1: Synced preload-state skill surfaces
+
+**Date:** 2026-04-06
+**Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+
+### Changes
+- Updated active skill surfaces (`screenshot`, `frontend-review`, `responsive-review`, `reference-bundles`, `reference-live-review`, `reference-live-gate`) so they expose `--preloaded-state-json` / `--preloaded-state-file` where the underlying CLI now supports them.
+- Updated `agents/webview-vision-assist.md` so operator-facing guidance now explains bounded preload-state replay alongside cookies and headers.
+- Synced package/governance metadata to `2.40.1` for this surface-alignment follow-up.
+
+### Validation
+- checked active skill/agent docs now mention the preload-state inputs where relevant.
+- `claude plugins validate /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort` succeeds.
+
+### Summary
+The plugin-side work is now more complete operationally: the code supports bounded preload-state replay and the active front-door docs expose that support consistently.
 
 ---
 

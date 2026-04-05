@@ -1,7 +1,7 @@
 ---
 name: reference-bundles
 description: Browse saved reference bundles, create a new reference bundle from a compare session, apply a saved reference bundle to a fresh report, or route into the live-url replay flow when a baseline should be checked against the current page automatically. Use this when compare artifacts should become reusable baseline assets and the current page may need richer witness capture, not screenshot-only replay.
-argument-hint: list <bundle-dir> | create <compare-session.json> <bundle-name> <output.json> | apply <bundle.json> <current-report.json> <session-name> <comparison.json> <session.json> | apply-live --bundle <bundle.json> --url <live-url> --current-report <current-report.json> --comparison-json <comparison.json> --session-output <session.json> --session-name <session-name> [--witness-mode frontend-default|csr-debug|responsive|session-replay] [--header NAME:VALUE] [--origin-header Prerendercloud-Name:VALUE] [--cookie NAME=VALUE] [--cookie-file FILE]
+argument-hint: list <bundle-dir> | create <compare-session.json> <bundle-name> <output.json> | apply <bundle.json> <current-report.json> <session-name> <comparison.json> <session.json> | apply-live --bundle <bundle.json> --url <live-url> --current-report <current-report.json> --comparison-json <comparison.json> --session-output <session.json> --session-name <session-name> [--witness-mode frontend-default|csr-debug|responsive|session-replay] [--header NAME:VALUE] [--origin-header Prerendercloud-Name:VALUE] [--cookie NAME=VALUE] [--cookie-file FILE] [--preloaded-state-json JSON] [--preloaded-state-file FILE]
 allowed-tools: Bash, Read
 ---
 

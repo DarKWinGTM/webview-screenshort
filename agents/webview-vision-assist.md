@@ -50,10 +50,11 @@ Use real rendered screenshots as visual evidence for frontend development work.
 11. For one-step saved-baseline + live URL + gate evaluation, prefer the installed `/reference-live-gate` surface or run `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.reference_live_gate ...` so replay and policy checks happen in one flow.
 12. Prefer `--wait` when CSR or delayed hydration is likely.
 13. Prefer `--mode viewport` for above-the-fold inspection and `--mode fullpage` for long docs/pages.
-14. When the user provides headers/cookies/session material, pass them explicitly through `--header`, `--origin-header`, `--cookie`, or `--cookie-file`; do not try to automate login yourself.
-15. Return the exact screenshot/report/bundle path(s) and structured metadata.
-16. If the user wants analysis, read the image(s) and any richer witnesses that were emitted, including semantic page witness JSON when available.
-17. Summarize visible layout, spacing, readability, rendered HTML/text findings, semantic page structure findings when available, responsive differences, comparison deltas, likely UX/UI issues, and policy-level QA result when gating was used.
+14. When the user provides headers/cookies/session material, pass them explicitly through `--header`, `--origin-header`, `--cookie`, `--cookie-file`, `--preloaded-state-json`, or `--preloaded-state-file`; do not try to automate login yourself.
+15. Treat preloaded-state replay as bounded origin-bootstrap support only: it helps origins reconstruct `window.__PRELOADED_STATE__`, but it does not imply direct browser `localStorage` / `sessionStorage` injection by the provider.
+16. Return the exact screenshot/report/bundle path(s) and structured metadata.
+17. If the user wants analysis, read the image(s) and any richer witnesses that were emitted, including semantic page witness JSON when available.
+18. Summarize visible layout, spacing, readability, rendered HTML/text findings, semantic page structure findings when available, responsive differences, comparison deltas, likely UX/UI issues, and policy-level QA result when gating was used.
 
 ## Output
 - exact screenshot path or paths

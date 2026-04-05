@@ -1,7 +1,7 @@
 ---
 name: reference-live-review
 description: Capture a fresh live page evidence set from a URL, apply a saved reference bundle to it automatically, and emit an expected/actual compare session. Use this when a reusable baseline should be checked against the current live page in one flow.
-argument-hint: --bundle <bundle.json> --url <live-url> --current-report <current-report.json> --comparison-json <comparison.json> --session-output <session.json> --session-name <session-name> [--mode viewport|fullpage] [--device desktop|tablet|mobile] [--capture-set responsive] [--wait] [--engine auto|headless|aws] [--witness-mode frontend-default|csr-debug|session-replay|responsive] [--header NAME:VALUE] [--origin-header Prerendercloud-Name:VALUE] [--cookie NAME=VALUE] [--cookie-file FILE] [--diff-dir <dir>]
+argument-hint: --bundle <bundle.json> --url <live-url> --current-report <current-report.json> --comparison-json <comparison.json> --session-output <session.json> --session-name <session-name> [--mode viewport|fullpage] [--device desktop|tablet|mobile] [--capture-set responsive] [--wait] [--engine auto|headless|aws] [--witness-mode frontend-default|csr-debug|session-replay|responsive] [--header NAME:VALUE] [--origin-header Prerendercloud-Name:VALUE] [--cookie NAME=VALUE] [--cookie-file FILE] [--preloaded-state-json JSON] [--preloaded-state-file FILE] [--diff-dir <dir>]
 allowed-tools: Bash, Read
 ---
 

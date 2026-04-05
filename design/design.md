@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.40.0
+> **Current Version:** 2.40.1
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---

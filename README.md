@@ -1,6 +1,6 @@
 # Webview Screenshort
 
-> **Current Version:** 2.39.0
+> **Current Version:** 2.40.1
 
 A governed frontend-development screenshot plugin package for capturing real rendered webpages and giving Claude visual plus semantic page evidence during UI, UX, and layout work.
 

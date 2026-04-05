@@ -1,7 +1,7 @@
 ---
 name: frontend-review
 description: Capture one real rendered webpage, read the screenshot, and continue with frontend UI/UX/layout review. Prefer a richer witness bundle (screenshot + rendered HTML + rendered text + semantic page witness) when CSR/frontend-development context needs more than an image alone.
-argument-hint: <url> [--mode fullpage|viewport] [--device desktop|tablet|mobile] [--wait] [--engine auto|headless|aws] [--witness-mode frontend-default|csr-debug|session-replay] [--header NAME:VALUE] [--origin-header Prerendercloud-Name:VALUE] [--cookie NAME=VALUE] [--cookie-file FILE]
+argument-hint: <url> [--mode fullpage|viewport] [--device desktop|tablet|mobile] [--wait] [--engine auto|headless|aws] [--witness-mode frontend-default|csr-debug|session-replay] [--header NAME:VALUE] [--origin-header Prerendercloud-Name:VALUE] [--cookie NAME=VALUE] [--cookie-file FILE] [--preloaded-state-json JSON] [--preloaded-state-file FILE]
 allowed-tools: Bash, Read
 ---
 
@@ -18,7 +18,7 @@ Use this skill when the goal is not just to capture a page, but to continue dire
 2. Default to a richer witness mode for frontend-development review:
    - `frontend-default` for normal real-page review
    - `csr-debug` when CSR/hydration incompleteness is suspected
-   - `session-replay` when the user provides headers/cookies/session material explicitly
+   - `session-replay` when the user provides headers/cookies/session material explicitly, optionally paired with bounded preload-state replay for an origin that reconstructs `window.__PRELOADED_STATE__`
 
 3. Run the installed capture engine and force machine-readable output plus a persisted report file:
    ```bash

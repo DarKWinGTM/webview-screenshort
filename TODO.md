@@ -97,6 +97,7 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-06 | Synced the preload-state replay surface across active skills/agent docs so operator-facing entrypoints now expose `--preloaded-state-json` / `--preloaded-state-file` and explain the bounded origin-bootstrap model consistently, and the package version moved to `2.40.1`. |
 | 2026-04-06 | Added bounded preload-state replay alongside cookies: the package now accepts preload JSON/file inputs, transports them through generated `Prerendercloud-*` headers, persists only redacted summaries, sanitizes HTML witnesses, and the package version moved to `2.40.0`. |
 | 2026-04-06 | Implemented the output-path precedence (`explicit > env > workspace-local temp/artifact dir > OS tmp fallback`) so default artifact placement no longer falls back to package/plugin-cache paths first, and the package version moved to `2.39.0`. |
 | 2026-04-05 | Expanded README witness explanations so screenshot/rendered HTML/rendered text/semantic/prerender witnesses are easier to understand in practical frontend-review terms, and the package version moved to `2.38.0`. |
