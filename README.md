@@ -1,6 +1,6 @@
 # Webview Screenshort
 
-> **Current Version:** 2.35.0
+> **Current Version:** 2.36.0
 
 A governed frontend-development screenshot plugin package for capturing real rendered webpages and giving Claude visual plus semantic page evidence during UI, UX, and layout work.
 
@@ -115,7 +115,7 @@ Verified now:
 - `webview-vision-assist` now routes more clearly between focused review, responsive review, compare review, bundle-lifecycle paths, and live baseline replay paths
 - semantic page witness JSON is now emitted from rendered HTML where available, and responsive capture-set output now preserves capture-set semantic/acquisition witness indexes
 - the codebase now has internal package domains for compare, QA, references, CLI adapters, and shared schemas instead of keeping those flows only as root-script implementations
-- package CLI modules under `webview_screenshort/cli/` now own parser/main behavior and the active programmable command surface, while the retired root wrappers live under `prototype/root-wrappers/` for compatibility reference only
+- package CLI modules under `webview_screenshort/cli/` now own parser/main behavior and the active programmable command surface without depending on any prototype wrapper layer
 - higher-level review skills preserve an explicit operator-provided `--witness-mode` instead of silently overriding it with a hard-appended default
 - generated timestamped files under `screenshot/` are local evidence outputs, not package authority artifacts that should be tracked by default
 - `webview_screenshort/workflows.py` no longer imports root scripts directly, so the package boundary is cleaner than before
@@ -220,22 +220,6 @@ webview-screenshort/
       list_compare_sessions.py
       list_reference_bundles.py
       list_policy_presets.py
-  prototype/
-    policy_presets.py
-    root-wrappers/
-      screenshot.py
-      compare_reports.py
-      diff_images.py
-      compare_session.py
-      create_reference_bundle.py
-      apply_reference_bundle.py
-      qa_verdict.py
-      qa_gate.py
-      reference_live_bundle.py
-      reference_live_gate.py
-      list_compare_sessions.py
-      list_reference_bundles.py
-      list_policy_presets.py
   screenshot/
   design/
     design.md
@@ -260,7 +244,7 @@ The active programmable command surface is now the package CLI module layer:
 
 Why this matters:
 - the package CLI module layer is now the intended stable execution surface
-- the older root wrapper scripts have been removed from the active root structure and moved under `prototype/root-wrappers/` for retirement/compatibility reference only
+- the old root-wrapper retirement layer has now been removed entirely, so active execution no longer depends on or carries a prototype wrapper area
 
 It should let Claude:
 1. capture a page

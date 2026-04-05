@@ -3,7 +3,7 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.35.0
+> **Current Version:** 2.36.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
 
 ---
@@ -61,7 +61,6 @@ The intended package model is:
 - `webview_screenshort/cli/apply_reference_bundle.py` = active apply-reference command module
 - `webview_screenshort/cli/reference_live_bundle.py` = active live replay command module
 - `webview_screenshort/cli/list_reference_bundles.py` = active reference-bundle listing command module
-- retired root wrapper scripts now live under `prototype/root-wrappers/` and are no longer part of the active package structure
 - `screenshot/` = generated local screenshots and richer evidence artifacts for checked runs; timestamped runtime outputs here are local evidence, not portable package authority
 - `design/changelog/TODO/phase/patch` = governance authority at the standalone repo root
 
@@ -77,7 +76,7 @@ Why:
 - the user often wants a direct command
 - capture should happen before analysis
 - installed plugin execution should resolve through `${CLAUDE_PLUGIN_ROOT}` rather than a source-workspace-only path
-- the active command contract now runs through package CLI module execution via `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.<tool>`, while the retired root wrappers remain under `prototype/root-wrappers/` for compatibility reference only
+- the active command contract now runs through package CLI module execution via `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.<tool>` with no remaining prototype-wrapper dependency in the active structure
 - higher-level review surfaces may choose default witness modes for convenience, but they must not override an explicit operator-provided `--witness-mode`
 
 ### 3.2 Companion agent path
@@ -230,7 +229,7 @@ This package is considered successful for the current wave when:
 - non-diffable paired comparisons are now treated as failed instead of being reported as successful replay sessions
 - skills and `webview-vision-assist` route by witness need more explicitly instead of relying only on screenshot-era assumptions
 - comparison / QA / reference workflows now live behind package-internal domains instead of root-script-only implementation piles
-- package CLI modules now own the active programmable command surface, and the retired root wrappers now live only under `prototype/root-wrappers/` as compatibility reference artifacts
+- package CLI modules now own the active programmable command surface directly, with no remaining prototype-wrapper retirement layer in the active or retained package structure
 - higher-level review skills preserve explicit operator witness-mode choice instead of silently overriding it with a hard-appended default
 - generated local screenshot/evidence outputs do not need to be treated as tracked package content by default
 - capture auth/session parsing and headless-render-api integration now also have package-domain authority under `webview_screenshort/capture/`, with legacy file paths preserved as shims

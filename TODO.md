@@ -17,6 +17,7 @@
 - [x] Fixed higher-level review skills so an explicit `--witness-mode` is preserved instead of being silently overridden by hard-appended defaults.
 - [x] Ignored generated screenshot-side JSON/HTML/TXT evidence outputs so local runtime artifacts do not pollute release diffs by default.
 - [x] Realigned install/update authority wording so this environment keeps `webview-screenshort@darkwingtm` as the maintained runtime label.
+- [x] Removed the retained `prototype/` wrapper area so the package structure no longer carries a prototype execution layer at all.
 
 ---
 
@@ -91,6 +92,7 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-05 | Removed the retained `prototype/` wrapper layer so the package no longer carries prototype wrappers as stored compatibility artifacts, updated docs/governance to describe the direct package CLI structure only, and the package version moved to `2.36.0`. |
 | 2026-04-05 | Realigned install/update authority wording so this environment keeps `webview-screenshort@darkwingtm` as the maintained runtime label, while the standalone repo-local marketplace stays documented as a package-validation/cutover surface, and the package version moved to `2.35.0`. |
 | 2026-04-05 | Fixed release blockers before publish: higher-level review skills now preserve an explicit operator-provided `--witness-mode`, generated `screenshot/*.json|*.html|*.txt` runtime outputs are now ignored by default, and the package version moved to `2.34.0`. |
 | 2026-04-05 | Normalized the active command/gov-doc contract after wrapper retirement: package CLI modules are now the active programmable surface, `capture.service` is described as the active capture authority, retired wrappers stay under `prototype/root-wrappers/` for compatibility reference only, and the package version moved to `2.33.0`. |

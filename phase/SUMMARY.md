@@ -1,7 +1,7 @@
 # Webview Screenshort - Phase Summary
 
-> **Current Version:** 2.35.0
-> **Target Design:** [../design/design.md](../design/design.md) v2.35.0
+> **Current Version:** 2.36.0
+> **Target Design:** [../design/design.md](../design/design.md) v2.36.0
 > **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
 > **Status:** Implemented - Pending Review
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)
@@ -38,6 +38,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 018 | `phase-018-wrapper-retirement-governance-contract.md` | `design/design.md` active command/authority contract after wrapper retirement | `../patch/phase-018-wrapper-retirement-governance-contract.patch.md` | Normalize governance/docs after wrapper retirement so active package CLI execution and retired-wrapper placement are described consistently | The cleanup closes with one current-state command contract, one active capture authority surface, and one explicit retirement location for old wrappers |
 | 019 | `phase-019-release-blocker-fixes.md` | `design/design.md` higher-level review-skill witness-mode contract and generated-artifact hygiene | `../patch/phase-019-release-blocker-fixes.patch.md` | Fix release blockers before publish by preserving explicit witness-mode choice and ignoring generated runtime evidence outputs by default | The release surface no longer silently overrides operator witness-mode selection and no longer treats timestamped screenshot-side evidence outputs as normal tracked content |
 | 020 | `phase-020-darkwingtm-runtime-authority-wording.md` | `design/design.md` runtime-authority wording split between source/release authority and maintained local runtime authority | `../patch/phase-020-darkwingtm-runtime-authority-wording.patch.md` | Realign install/update wording so this environment keeps `webview-screenshort@darkwingtm` as the maintained runtime label while the standalone repo remains the code/release source | The docs stop blurring code/release authority with installed runtime authority and now match the real operating model for this environment |
+| 021 | `phase-021-prototype-retirement.md` | `design/design.md` final strategic package-structure cleanup with no retained prototype wrapper layer | `../patch/phase-021-prototype-retirement.patch.md` | Remove the retained `prototype/` wrapper area and normalize active docs/governance around the direct package CLI structure only | The package becomes more fully strategic: one active structure, no retained prototype execution layer, and no active-state docs that still lean on prototype retirement storage |
 
 ---
 
@@ -65,6 +66,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 018 | Implemented - Pending Review | `phase-018-wrapper-retirement-governance-contract.md` | Normalize governance/docs after wrapper retirement so active package CLI execution and retired-wrapper placement are described consistently |
 | 019 | Implemented - Pending Review | `phase-019-release-blocker-fixes.md` | Preserve explicit witness-mode choice in review skills and ignore generated screenshot-side runtime artifacts by default |
 | 020 | Implemented - Pending Review | `phase-020-darkwingtm-runtime-authority-wording.md` | Realign install/update wording so this environment keeps `webview-screenshort@darkwingtm` as the maintained runtime label |
+| 021 | Implemented - Pending Review | `phase-021-prototype-retirement.md` | Remove the retained `prototype/` wrapper area and normalize the package around the direct strategic structure only |
 
 ---
 
@@ -125,7 +127,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - responsive capture-set output now preserves capture-set semantic/acquisition witness indexes for cross-device frontend review
 - reference-bundle creation now copies semantic/acquisition/metadata witness artifacts when the source report already carries them
 - compare / QA / reference logic now lives behind package-internal domains instead of staying only as root-script implementations
-- package CLI modules now own the active programmable command surface, while retired root wrappers now live under `prototype/root-wrappers/` for compatibility reference only
+- package CLI modules now own the active programmable command surface directly, with no retained prototype-wrapper layer left in the package structure
 - `webview_screenshort/workflows.py` no longer imports root scripts directly and now acts as a package-internal compatibility surface
 - direct script-to-script subprocess coupling has been reduced where compare, QA, and reference flows now reuse package modules in-process
 - auth-context and headless-render-api ownership now live under `webview_screenshort/capture/` while legacy import paths remain as compatibility shims
@@ -133,12 +135,12 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - additional capture runtime modules now exist for models, engines, reporting, and runtime orchestration under `webview_screenshort/capture/`
 - key consumers such as package exports, screenshot CLI, and live replay now import through `capture.service` as the newer capture authority surface
 - `capture_service.py` now acts as a true compatibility facade instead of continuing to duplicate the remaining capture implementation
-- the active command/gov-doc contract is now normalized around `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.<tool>` and retired wrapper placement under `prototype/root-wrappers/`
+- the active command/gov-doc contract is now normalized around `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.<tool>` with no prototype retirement layer remaining in the package structure
 - compare, verdict, and gate artifacts now preserve semantic companion classification summaries on top of visual mismatch summaries
 - gate policy can now explicitly fail on semantic drift through semantic-aware policy keys such as missing semantic witness or semantic structure/content change
 - semantic gate policy can now target finer-grained drift such as title change, missing headings, structure-flag change, missing links/buttons, form-count change, and missing inputs
 - active skill and agent command guidance now points at package CLI module execution instead of root wrapper filenames
-- retired root wrappers now live only under `prototype/root-wrappers/` for compatibility reference and are no longer part of the active root structure
+- the retained prototype wrapper area has been removed, so the package now exposes only the direct strategic structure in both code and governance docs
 - higher-level review skills now preserve an explicit operator-provided `--witness-mode` instead of silently overriding it with a default
 - generated timestamped files under `screenshot/` now stay ignored by default so local runtime evidence does not pollute the package release surface
 
