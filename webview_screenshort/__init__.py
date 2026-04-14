@@ -15,6 +15,7 @@ from .capture.service import (
     write_evidence_bundle_file,
     write_report_file,
 )
+from .capture.url_policy import BLOCKED_CAPTURE_TARGET_MESSAGE, validate_public_capture_url
 from .compare.reports import build_comparison_result_from_paths
 from .compare.sessions import build_compare_session_payload
 from .qa.gate import apply_gate, load_policy
@@ -25,6 +26,7 @@ from .references.live import reference_live_bundle, reference_live_gate
 
 __all__ = [
     "AuthContext",
+    "BLOCKED_CAPTURE_TARGET_MESSAGE",
     "CaptureResult",
     "CaptureSetResult",
     "PreloadedStateContext",
@@ -45,6 +47,7 @@ __all__ = [
     "redact_auth_context",
     "reference_live_bundle",
     "reference_live_gate",
+    "validate_public_capture_url",
     "resolve_policy_preset_record",
     "run_capture",
     "run_responsive_capture_set",

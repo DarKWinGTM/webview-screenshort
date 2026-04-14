@@ -9,7 +9,7 @@ from ..references.live import reference_live_bundle
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Capture a live current report and apply a saved reference bundle automatically")
     parser.add_argument("--bundle", required=True, help="Path to reference bundle JSON")
-    parser.add_argument("--url", required=True, help="Live URL to capture before applying the bundle")
+    parser.add_argument("--url", required=True, help="Publicly reachable live URL to capture before applying the bundle")
     parser.add_argument("--current-report", required=True, help="Output path for the fresh current capture report")
     parser.add_argument("--comparison-json", required=True, help="Output path for compare_reports JSON")
     parser.add_argument("--session-output", required=True, help="Output path for compare-session JSON")

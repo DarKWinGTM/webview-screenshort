@@ -1,6 +1,6 @@
 # Webview Screenshort - TODO
 
-> **Last Updated:** 2026-04-05
+> **Last Updated:** 2026-04-14
 
 ---
 
@@ -21,6 +21,7 @@
 - [x] Added a complete current capability map to `README.md` so the package surfaces and artifact outputs are visible in one place.
 - [x] Expanded README witness explanations so screenshot/rendered HTML/rendered text/semantic/prerender witnesses are easier to understand in practical frontend-review terms.
 - [x] Documented the planned output-path precedence so the next implementation wave has explicit authority for workspace-local artifact placement.
+- [x] Added a public-target-only capture guard so localhost/private/local network targets are rejected before remote engine execution and the package contract now matches the real architecture.
 
 ---
 
@@ -97,6 +98,7 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-14 | Added a public-target-only capture guard so localhost/private/local network targets now fail fast before remote engine execution, updated active CLI/skill/agent/docs wording around publicly reachable `http(s)` URLs only, and the package version moved to `2.41.0`. |
 | 2026-04-06 | Synced the preload-state replay surface across active skills/agent docs so operator-facing entrypoints now expose `--preloaded-state-json` / `--preloaded-state-file` and explain the bounded origin-bootstrap model consistently, and the package version moved to `2.40.1`. |
 | 2026-04-06 | Added bounded preload-state replay alongside cookies: the package now accepts preload JSON/file inputs, transports them through generated `Prerendercloud-*` headers, persists only redacted summaries, sanitizes HTML witnesses, and the package version moved to `2.40.0`. |
 | 2026-04-06 | Implemented the output-path precedence (`explicit > env > workspace-local temp/artifact dir > OS tmp fallback`) so default artifact placement no longer falls back to package/plugin-cache paths first, and the package version moved to `2.39.0`. |

@@ -1,13 +1,15 @@
 ---
 name: screenshot
 description: Capture a real rendered webpage for frontend-development review. Default to screenshot evidence, but support richer witness modes such as rendered HTML and rendered text when CSR/debug context needs more than an image alone.
-argument-hint: <url> [--mode fullpage|viewport] [--device desktop|tablet|mobile] [--capture-set responsive] [--report-file FILE] [--bundle-file FILE] [--wait] [--engine auto|headless|aws] [--witness-mode visual|frontend-default|csr-debug|responsive|session-replay] [--header NAME:VALUE] [--origin-header Prerendercloud-Name:VALUE] [--cookie NAME=VALUE] [--cookie-file FILE] [--preloaded-state-json JSON] [--preloaded-state-file FILE] [--output FILE] [--output-format json]
+argument-hint: <public-url> [--mode fullpage|viewport] [--device desktop|tablet|mobile] [--capture-set responsive] [--report-file FILE] [--bundle-file FILE] [--wait] [--engine auto|headless|aws] [--witness-mode visual|frontend-default|csr-debug|responsive|session-replay] [--header NAME:VALUE] [--origin-header Prerendercloud-Name:VALUE] [--cookie NAME=VALUE] [--cookie-file FILE] [--preloaded-state-json JSON] [--preloaded-state-file FILE] [--output FILE] [--output-format json]
 allowed-tools: Bash, Read
 ---
 
 # Screenshot Skill
 
 Capture a webpage screenshot from `$ARGUMENTS` so Claude can inspect the real rendered UI.
+
+This skill is for publicly reachable http(s) pages only. It is not designed for `localhost`, `127.0.0.1`, or private/local network targets because the current capture engines run through remote services.
 
 ## What this skill is for
 Use it when frontend work needs real page evidence, for example:
@@ -22,7 +24,7 @@ Use it when frontend work needs real page evidence, for example:
 ## Execution Steps
 
 1. Parse arguments from `$ARGUMENTS`.
-   - first positional arg = URL
+   - first positional arg = publicly reachable http(s) URL
    - optional flags: `--mode`, `--device`, `--capture-set`, `--report-file`, `--bundle-file`, `--wait`, `--engine`, `--witness-mode`, `--header`, `--origin-header`, `--cookie`, `--cookie-file`, `--preloaded-state-json`, `--preloaded-state-file`, `--output`, `--output-format`
 
 2. Choose the witness mode intentionally:
@@ -60,7 +62,8 @@ Use it when frontend work needs real page evidence, for example:
 
 11. If capture fails:
    - report the error clearly
-   - suggest a narrower retry such as `--wait`, `--mode viewport`, `--engine headless`, or a richer witness mode when CSR timing is the likely cause
+   - if the target was rejected because it is `localhost`, loopback, or private/local network scope, explain that this package currently supports only publicly reachable http(s) pages and suggest using a public domain or tunnel first
+   - otherwise suggest a narrower retry such as `--wait`, `--mode viewport`, `--engine headless`, or a richer witness mode when CSR timing is the likely cause
 
 ## Default Behavior
 - Engine: `auto`

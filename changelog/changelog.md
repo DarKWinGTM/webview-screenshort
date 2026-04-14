@@ -1,8 +1,8 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.40.1
-> **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+> **Current Version:** 2.41.0
+> **Session:** d7dcb67a-20d7-48df-bbbd-a3f0247649ee
 
 ---
 
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.41.0 | 2026-04-14 | **[Added public-target reachability guard](#version-2410)** | Capture entrypoints now reject localhost/private targets early so the remote-engine contract stays explicit and public-web-only. |
 | 2.40.1 | 2026-04-06 | **[Synced preload-state skill surfaces](#version-2401)** | Active skill and agent docs now expose the preload-state flags and the bounded origin-bootstrap model consistently. |
 | 2.40.0 | 2026-04-06 | **[Added bounded preload-state replay](#version-2400)** | The package now supports cookies plus bounded origin-bootstrap replay through generated `Prerendercloud-*` headers, with redacted summaries and HTML witness sanitization. |
 | 2.39.0 | 2026-04-06 | **[Implemented workspace-friendly output path policy](#version-2390)** | Default output now prefers a workspace-local temp/artifact directory and uses OS tmp only as fallback, avoiding plugin-cache-first placement. |
@@ -54,6 +55,28 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2410"></a>
+## Version 2.41.0: Added public-target reachability guard
+
+**Date:** 2026-04-14
+**Session:** d7dcb67a-20d7-48df-bbbd-a3f0247649ee
+
+### Changes
+- Added `webview_screenshort/capture/url_policy.py` plus capture-entrypoint validation so `localhost`, loopback, private network, and other non-public-style targets are rejected before remote engine execution starts.
+- Updated screenshot, live replay, and live gate CLI help text so the target contract now says publicly reachable `http(s)` URL explicitly.
+- Updated README, design, active skills, and the companion agent so the package now describes itself consistently as a public-web evidence tool rather than a localhost/private-network capture tool.
+- Synced the package/governance metadata to `2.41.0` for the public-target-contract wave.
+
+### Validation
+- `python3 -m py_compile /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/capture/url_policy.py /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/capture/service.py /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/cli/screenshot.py /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/cli/reference_live_bundle.py /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/cli/reference_live_gate.py` succeeds.
+- a direct capture probe against `http://127.0.0.1:5174` now fails fast with the public-target contract message instead of surfacing downstream remote-engine errors.
+- `claude plugins validate /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort` succeeds.
+
+### Summary
+The package now matches its real runtime architecture more honestly: it supports publicly reachable web pages through remote capture engines and rejects localhost/private targets before those engines are called.
 
 ---
 

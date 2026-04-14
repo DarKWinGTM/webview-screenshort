@@ -10,7 +10,7 @@ from ..capture.service import Reporter, capture_from_args, emit_result
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Hybrid Screenshot Tool")
-    parser.add_argument("url", help="URL to capture")
+    parser.add_argument("url", help="Publicly reachable http(s) URL to capture")
     parser.add_argument("--output", "-o", help="Output file path or base file path when using --capture-set")
     parser.add_argument("--output-dir", help="Output directory for generated screenshots")
     parser.add_argument("--device", choices=["desktop", "tablet", "mobile"], help="Viewport preset override for focused frontend review")

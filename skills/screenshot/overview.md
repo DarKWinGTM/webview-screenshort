@@ -3,6 +3,10 @@
 This skill is for frontend-development visual work.
 
 Use it when Claude needs to see the real rendered page so it can help with:
+
+Target contract:
+- use publicly reachable `http(s)` page URLs
+- do not use `localhost`, `127.0.0.1`, loopback, or private/local network targets in the current remote-engine architecture
 - layout balance
 - spacing and hierarchy
 - UX/UI inspection

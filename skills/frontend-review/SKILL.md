@@ -1,7 +1,7 @@
 ---
 name: frontend-review
 description: Capture one real rendered webpage, read the screenshot, and continue with frontend UI/UX/layout review. Prefer a richer witness bundle (screenshot + rendered HTML + rendered text + semantic page witness) when CSR/frontend-development context needs more than an image alone.
-argument-hint: <url> [--mode fullpage|viewport] [--device desktop|tablet|mobile] [--wait] [--engine auto|headless|aws] [--witness-mode frontend-default|csr-debug|session-replay] [--header NAME:VALUE] [--origin-header Prerendercloud-Name:VALUE] [--cookie NAME=VALUE] [--cookie-file FILE] [--preloaded-state-json JSON] [--preloaded-state-file FILE]
+argument-hint: <public-url> [--mode fullpage|viewport] [--device desktop|tablet|mobile] [--wait] [--engine auto|headless|aws] [--witness-mode frontend-default|csr-debug|session-replay] [--header NAME:VALUE] [--origin-header Prerendercloud-Name:VALUE] [--cookie NAME=VALUE] [--cookie-file FILE] [--preloaded-state-json JSON] [--preloaded-state-file FILE]
 allowed-tools: Bash, Read
 ---
 
@@ -9,10 +9,12 @@ allowed-tools: Bash, Read
 
 Use this skill when the goal is not just to capture a page, but to continue directly into evidence-first frontend review.
 
+This workflow is for publicly reachable http(s) pages only. It is not designed for `localhost`, `127.0.0.1`, or private/local network targets because the current capture engines use remote services.
+
 ## Workflow
 
 1. Parse `$ARGUMENTS`.
-   - first positional arg = URL
+   - first positional arg = publicly reachable http(s) URL
    - optional flags: `--mode`, `--device`, `--wait`, `--engine`
 
 2. Default to a richer witness mode for frontend-development review:

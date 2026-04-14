@@ -1,8 +1,8 @@
 # Webview Screenshort - Phase Summary
 
-> **Current Version:** 2.40.1
-> **Target Design:** [../design/design.md](../design/design.md) v2.40.1
-> **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e
+> **Current Version:** 2.41.0
+> **Target Design:** [../design/design.md](../design/design.md) v2.41.0
+> **Session:** d7dcb67a-20d7-48df-bbbd-a3f0247649ee
 > **Status:** Implemented - Pending Review
 > **Full history:** [../changelog/changelog.md](../changelog/changelog.md)
 
@@ -43,6 +43,7 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 023 | `phase-023-readme-witness-explanations.md` | `design/design.md` operator-facing witness clarity for screenshot/rendered HTML/rendered text/semantic/prerender outputs | `../patch/phase-023-readme-witness-explanations.patch.md` | Expand README so the witness layers are explained in practical frontend-review terms instead of only being listed as artifact names | Users can understand what each witness means, when to use it, and what the rendered-HTML capability can and cannot provide |
 | 024 | `phase-024-output-path-policy.md` | `design/design.md` output-path precedence for workspace-friendly artifact placement | `../patch/phase-024-output-path-policy.patch.md` | Move the default no-override output policy away from package/plugin-cache paths toward workspace-local temp/artifact placement, with OS tmp only as fallback | The package becomes safer for installed-plugin usage and more compatible with workspace-limited MCP/image-analysis flows when no explicit output path is provided |
 | 025 | `phase-025-bounded-preload-state-plan.md` | `design/design.md` bounded preload-state + cookie replay model for authenticated rendering | `../patch/phase-025-bounded-preload-state-plan.patch.md` | Add bounded authenticated-rendering replay around cookies plus origin-side `window.__PRELOADED_STATE__` reconstruction | The package now has an implemented bounded replay model with explicit limits, redaction, and origin-bootstrap semantics instead of only a planned contract |
+| 026 | `phase-026-public-target-reachability-guard.md` | `design/design.md` public-target reachability contract for remote capture engines | `../patch/phase-026-public-target-reachability-guard.patch.md` | Reject localhost/private/local network targets before remote engine execution and sync the operator-facing contract around publicly reachable `http(s)` URLs only | The package now fails fast on unreachable local/private targets instead of surfacing confusing downstream remote-engine errors |
 
 ---
 
@@ -75,14 +76,15 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 | 023 | Implemented - Pending Review | `phase-023-readme-witness-explanations.md` | Expand README so the witness layers are explained in practical frontend-review terms |
 | 024 | Implemented - Pending Review | `phase-024-output-path-policy.md` | Move the default no-override output policy toward workspace-local temp/artifact placement instead of package/plugin-cache defaults |
 | 025 | Implemented - Pending Review | `phase-025-bounded-preload-state-plan.md` | Add bounded cookie + preloaded-state replay support without assuming direct browser-storage injection |
+| 026 | Implemented - Pending Review | `phase-026-public-target-reachability-guard.md` | Reject localhost/private/local network targets early and lock the package to publicly reachable `http(s)` capture targets |
 
 ---
 
 ## Global TODO / Changelog Coordination
 
 - `TODO.md` should track the active package work and shipped execution history clearly, not only the earlier cutover slice.
-- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, diff-assisted compare outcomes, named compare-session outcomes, compare-session history outcomes, expected-reference bundle outcomes, apply-reference workflow outcomes, reference-bundle browsing outcomes, bundle-lifecycle skill-surface outcomes, live baseline replay outcomes, qa-verdict outcomes, qa-gate outcomes, one-step baseline gate outcomes, semantic preset outcomes, policy-family outcomes, mismatch-classification outcomes, repo-local marketplace install outcomes, agent-orchestration hardening outcomes, strategic runtime-package extraction, richer witness-mode output, evidence-bundle output, bounded session-replay capture outcomes, metadata/acquisition witness outcomes, semantic page witness outcomes, package-reorganization outcomes, capture-domain authority outcomes, capture-service split outcomes, capture authority-surface outcomes, capture facade cleanup outcomes, semantic-aware QA outcomes, semantic-aware gate-rule outcomes, and semantic-policy-granularity outcomes only.
-- `design/design.md` remains the authority for frontend-vision intent, plugin boundaries, standalone-repo install posture, richer witness modes, semantic page witness boundaries, package-domain organization boundaries, capture-domain authority boundaries, and session-replay capture boundaries.
+- `changelog/changelog.md` should record shipped plugin-structure, CSR-validation, repo-root install-normalization, responsive capture-set workflow, report-file/review-skill workflow, compare-review/report-schema workflow, structured compare-helper outcomes, diff-assisted compare outcomes, named compare-session outcomes, compare-session history outcomes, expected-reference bundle outcomes, apply-reference workflow outcomes, reference-bundle browsing outcomes, bundle-lifecycle skill-surface outcomes, live baseline replay outcomes, qa-verdict outcomes, qa-gate outcomes, one-step baseline gate outcomes, semantic preset outcomes, policy-family outcomes, mismatch-classification outcomes, repo-local marketplace install outcomes, agent-orchestration hardening outcomes, strategic runtime-package extraction, richer witness-mode output, evidence-bundle output, bounded session-replay capture outcomes, metadata/acquisition witness outcomes, semantic page witness outcomes, package-reorganization outcomes, capture-domain authority outcomes, capture-service split outcomes, capture authority-surface outcomes, capture facade cleanup outcomes, semantic-aware QA outcomes, semantic-aware gate-rule outcomes, semantic-policy-granularity outcomes, and public-target reachability-guard outcomes only.
+- `design/design.md` remains the authority for frontend-vision intent, plugin boundaries, standalone-repo install posture, richer witness modes, semantic page witness boundaries, package-domain organization boundaries, capture-domain authority boundaries, session-replay capture boundaries, and the public-target-only remote-capture contract.
 
 ---
 
@@ -153,5 +155,6 @@ This phase workspace tracks the conversion of `webview-screenshort` from an olde
 - generated timestamped files under `screenshot/` now stay ignored by default so local runtime evidence does not pollute the package release surface
 - default no-override output now prefers a workspace-local temp/artifact path and uses OS tmp only as fallback when no usable workspace path can be determined
 - bounded preload-state replay now exists alongside cookies through generated `Prerendercloud-*` headers, with redacted summaries and no direct browser-storage injection claim
+- capture entrypoints now reject localhost/private/local network targets before remote engine execution so the package contract matches the real public-web-only remote-capture architecture
 
 ---

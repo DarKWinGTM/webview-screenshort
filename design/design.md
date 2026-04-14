@@ -3,8 +3,8 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.40.1
-> **Session:** dd0bf4af-a66b-4b07-bb9d-a90a0e57b54e (2026-04-03)
+> **Current Version:** 2.41.0
+> **Session:** d7dcb67a-20d7-48df-bbbd-a3f0247649ee (2026-04-14)
 
 ---
 
@@ -121,6 +121,15 @@ Replay precedence:
 2. bounded preloaded-state replay for origin-side bootstrap state
 3. app-side reconstruction into `window.__PRELOADED_STATE__`
 
+### 3.5 Public-target reachability contract
+The current package is designed for publicly reachable `http(s)` pages only.
+
+That means:
+- capture entrypoints should reject `localhost`, loopback addresses, and private/local network targets before remote engine execution begins
+- single-label/internal-style hosts should be treated as non-public targets unless they resolve to a real public web address through a stronger future contract
+- the package should fail fast with a direct contract message instead of surfacing confusing downstream remote-engine errors for unreachable local/private targets
+- local development pages should be exposed through a public tunnel/domain first if they still need to be reviewed through the current remote-engine architecture
+
 ---
 
 ## 4) Frontend vision workflow
@@ -215,6 +224,7 @@ Checked semantic witness validation now also shows:
 - a DOM testing framework
 - a generic backend tool
 - an interactive login automation tool
+- a localhost/private-network capture tool in the current remote-engine architecture
 - a replacement for deeper UI analysis tools; it is the frontend evidence input layer
 
 ---
@@ -226,6 +236,7 @@ Checked semantic witness validation now also shows:
 - current workflow still relies heavily on screenshot evidence, even though richer witness modes are now the strategic direction
 - compare/verdict/gate now preserve semantic companion summaries, built-in gate presets can now carry semantic-aware failure rules, and semantic rule granularity can now target title/headings/structure/form/input/link/button drift, but the semantic layer is still a bounded rule set rather than a deeper semantic QA engine
 - logged-in-state capture depends on operator-provided headers/cookies/session material and does not automate interactive login
+- the package currently relies on remote capture engines only, so local/private targets such as `localhost`, loopback addresses, and private network hosts are intentionally rejected before engine execution
 - headless-render-api documentation only clearly documents origin forwarding through `Prerendercloud-*` header names plus `Origin-Header-Whitelist`, so logged-in-state capture must stay within that bounded forwarding model unless stronger provider evidence appears
 - the maintained local runtime install/update authority label in this environment remains `webview-screenshort@darkwingtm`, while the standalone repo-local marketplace manifest remains available for source-side validation/cutover work
 - default no-override output now prefers a workspace-local temp/artifact path and uses OS tmp only as fallback when a usable workspace path cannot be determined

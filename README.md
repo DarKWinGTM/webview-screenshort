@@ -1,6 +1,6 @@
 # Webview Screenshort
 
-> **Current Version:** 2.40.1
+> **Current Version:** 2.41.0
 
 A governed frontend-development screenshot plugin package for capturing real rendered webpages and giving Claude visual plus semantic page evidence during UI, UX, and layout work.
 
@@ -16,6 +16,11 @@ It is meant for workflows where Claude should:
 - inspect semantic page witness JSON as structure evidence derived from rendered HTML
 - help with layout, spacing, hierarchy, UX, and UI decisions
 - verify CSR/SPA rendering before recommending frontend changes
+
+Target contract:
+- use publicly reachable `http(s)` page URLs
+- do not use `localhost`, `127.0.0.1`, loopback, or private/local network targets in the current remote-engine architecture
+- if the page is still local, expose it through a public tunnel/domain first and then capture that public URL
 
 ---
 
@@ -77,6 +82,7 @@ Checked local validation from the repo root:
 
 Verified now:
 - screenshot capture works through the package CLI module surface
+- capture entrypoints now reject localhost/private/local network targets before remote engine execution so the package contract matches the real public-web-only architecture
 - CSR-heavy page capture works when `--wait` is used
 - viewport and fullpage capture both work
 - mobile and tablet viewport presets now work for responsive frontend review
@@ -362,6 +368,7 @@ Use this package when the goal is to inspect:
 ## Current limitations
 
 - restart/reload lifecycle is now validated for the current installed package path
+- the package currently uses remote capture engines only, so local/private targets such as `localhost`, loopback addresses, and private network hosts are intentionally rejected instead of being treated like reachable web targets
 - semantic page witness is currently a lightweight HTML-derived summary and does not yet model deeper DOM semantics or visual salience
 - `capture/auth.py` and `capture/headless_api.py` now own those domains directly, config/path/witness extraction is in place, and `capture.service` is the active authority surface, while `capture_service.py` remains only as a legacy compatibility facade for older imports
 - compare/verdict/gate workflows are still screenshot-era first-class flows and need broader bundle-aware continuity review
@@ -376,6 +383,7 @@ Use this package when the goal is to inspect:
 ## Recommended usage model
 
 ### For focused capture
+- use a publicly reachable `http(s)` page URL, not `localhost` or a private/local host
 - `/screenshot <url> --wait --mode viewport`
 - `/screenshot <url> --wait --mode fullpage`
 - `/screenshot <url> --wait --mode viewport --witness-mode frontend-default --output-format json --report-file /tmp/capture.json`

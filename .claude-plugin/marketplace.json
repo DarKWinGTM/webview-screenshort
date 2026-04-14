@@ -1,11 +1,11 @@
 {
-  "name": "webview-screenshort",
+  "name": "darkwingtm",
   "owner": {
     "name": "DarKWinGTM"
   },
   "metadata": {
-    "description": "Standalone marketplace manifest for the webview-screenshort plugin repo.",
-    "version": "2.40.1"
+    "description": "Shared darkwingtm marketplace manifest for the webview-screenshort plugin package.",
+    "version": "2.41.0"
   },
   "plugins": [
     {
