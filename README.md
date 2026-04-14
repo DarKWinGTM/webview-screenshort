@@ -1,6 +1,6 @@
 # Webview Screenshort
 
-> **Current Version:** 2.41.0
+> **Current Version:** 2.42.0
 
 A governed frontend-development screenshot plugin package for capturing real rendered webpages and giving Claude visual plus semantic page evidence during UI, UX, and layout work.
 
@@ -19,6 +19,7 @@ It is meant for workflows where Claude should:
 
 Target contract:
 - use publicly reachable `http(s)` page URLs
+- use the package's API-based capture path only; do not probe or depend on Playwright, Chromium, Chrome, or any other local browser stack
 - do not use `localhost`, `127.0.0.1`, loopback, or private/local network targets in the current remote-engine architecture
 - if the page is still local, expose it through a public tunnel/domain first and then capture that public URL
 
@@ -83,6 +84,7 @@ Checked local validation from the repo root:
 Verified now:
 - screenshot capture works through the package CLI module surface
 - capture entrypoints now reject localhost/private/local network targets before remote engine execution so the package contract matches the real public-web-only architecture
+- the package now states API-only capture more explicitly and does not rely on Playwright, Chromium, Chrome, or any other local browser stack for normal review workflows
 - CSR-heavy page capture works when `--wait` is used
 - viewport and fullpage capture both work
 - mobile and tablet viewport presets now work for responsive frontend review
@@ -369,6 +371,7 @@ Use this package when the goal is to inspect:
 
 - restart/reload lifecycle is now validated for the current installed package path
 - the package currently uses remote capture engines only, so local/private targets such as `localhost`, loopback addresses, and private network hosts are intentionally rejected instead of being treated like reachable web targets
+- the package does not use Playwright, Chromium, Chrome, or any other local browser stack as a fallback path; agent/skill behavior should stay on the API-based capture flow only
 - semantic page witness is currently a lightweight HTML-derived summary and does not yet model deeper DOM semantics or visual salience
 - `capture/auth.py` and `capture/headless_api.py` now own those domains directly, config/path/witness extraction is in place, and `capture.service` is the active authority surface, while `capture_service.py` remains only as a legacy compatibility facade for older imports
 - compare/verdict/gate workflows are still screenshot-era first-class flows and need broader bundle-aware continuity review

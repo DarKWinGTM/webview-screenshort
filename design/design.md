@@ -3,8 +3,8 @@
 ## 0) Document Control
 
 > **Parent Scope:** TEMPLATE / PLUGIN / webview-screenshort
-> **Current Version:** 2.41.0
-> **Session:** d7dcb67a-20d7-48df-bbbd-a3f0247649ee (2026-04-14)
+> **Current Version:** 2.42.0
+> **Session:** d7dcb67a-20d7-48df-bbbd-a3f0247649ee (2026-04-15)
 
 ---
 
@@ -130,6 +130,15 @@ That means:
 - the package should fail fast with a direct contract message instead of surfacing confusing downstream remote-engine errors for unreachable local/private targets
 - local development pages should be exposed through a public tunnel/domain first if they still need to be reviewed through the current remote-engine architecture
 
+### 3.6 API-only capture execution contract
+The package is intentionally API-based.
+
+That means:
+- normal capture/review flows should run only through the package CLI/API path
+- agent and skill behavior should not probe for Playwright, Chromium, Chrome, or any other local browser stack as a fallback strategy
+- agent and skill behavior should not try to switch into heavy local-browser automation when the API-based path already defines the supported architecture
+- if API-based capture cannot satisfy a target, the package should report that contract/limitation directly instead of trying to bootstrap local browser tooling ad hoc
+
 ---
 
 ## 4) Frontend vision workflow
@@ -225,6 +234,7 @@ Checked semantic witness validation now also shows:
 - a generic backend tool
 - an interactive login automation tool
 - a localhost/private-network capture tool in the current remote-engine architecture
+- a Playwright/Chromium/Chrome local-browser orchestration tool
 - a replacement for deeper UI analysis tools; it is the frontend evidence input layer
 
 ---
@@ -237,6 +247,7 @@ Checked semantic witness validation now also shows:
 - compare/verdict/gate now preserve semantic companion summaries, built-in gate presets can now carry semantic-aware failure rules, and semantic rule granularity can now target title/headings/structure/form/input/link/button drift, but the semantic layer is still a bounded rule set rather than a deeper semantic QA engine
 - logged-in-state capture depends on operator-provided headers/cookies/session material and does not automate interactive login
 - the package currently relies on remote capture engines only, so local/private targets such as `localhost`, loopback addresses, and private network hosts are intentionally rejected before engine execution
+- agent and skill behavior should stay on the API-based capture path and should not probe Playwright, Chromium, Chrome, or other local browser tooling as a fallback strategy
 - headless-render-api documentation only clearly documents origin forwarding through `Prerendercloud-*` header names plus `Origin-Header-Whitelist`, so logged-in-state capture must stay within that bounded forwarding model unless stronger provider evidence appears
 - the maintained local runtime install/update authority label in this environment remains `webview-screenshort@darkwingtm`, while the standalone repo-local marketplace manifest remains available for source-side validation/cutover work
 - default no-override output now prefers a workspace-local temp/artifact path and uses OS tmp only as fallback when a usable workspace path cannot be determined

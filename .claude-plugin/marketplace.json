@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Shared darkwingtm marketplace manifest for the webview-screenshort plugin package.",
-    "version": "2.41.0"
+    "version": "2.42.0"
   },
   "plugins": [
     {

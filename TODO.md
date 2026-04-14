@@ -1,6 +1,6 @@
 # Webview Screenshort - TODO
 
-> **Last Updated:** 2026-04-14
+> **Last Updated:** 2026-04-15
 
 ---
 
@@ -22,6 +22,7 @@
 - [x] Expanded README witness explanations so screenshot/rendered HTML/rendered text/semantic/prerender witnesses are easier to understand in practical frontend-review terms.
 - [x] Documented the planned output-path precedence so the next implementation wave has explicit authority for workspace-local artifact placement.
 - [x] Added a public-target-only capture guard so localhost/private/local network targets are rejected before remote engine execution and the package contract now matches the real architecture.
+- [x] Hardened the active agent/skill surfaces so they now stay on the API-based package path and explicitly ban Playwright/Chromium/local-browser probing.
 
 ---
 
@@ -98,6 +99,7 @@
 
 | Date | Changes |
 |------|---------|
+| 2026-04-15 | Hardened the API-only execution contract so active agent/skill surfaces now explicitly ban Playwright/Chromium/local-browser probing, synced README/design/governance wording around the API-based capture path, updated the installed plugin, and moved the package version to `2.42.0`. |
 | 2026-04-14 | Added a public-target-only capture guard so localhost/private/local network targets now fail fast before remote engine execution, updated active CLI/skill/agent/docs wording around publicly reachable `http(s)` URLs only, and the package version moved to `2.41.0`. |
 | 2026-04-06 | Synced the preload-state replay surface across active skills/agent docs so operator-facing entrypoints now expose `--preloaded-state-json` / `--preloaded-state-file` and explain the bounded origin-bootstrap model consistently, and the package version moved to `2.40.1`. |
 | 2026-04-06 | Added bounded preload-state replay alongside cookies: the package now accepts preload JSON/file inputs, transports them through generated `Prerendercloud-*` headers, persists only redacted summaries, sanitizes HTML witnesses, and the package version moved to `2.40.0`. |

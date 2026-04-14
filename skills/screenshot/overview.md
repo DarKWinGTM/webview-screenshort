@@ -6,6 +6,7 @@ Use it when Claude needs to see the real rendered page so it can help with:
 
 Target contract:
 - use publicly reachable `http(s)` page URLs
+- stay on the API-based package path only; do not probe Playwright, Chromium, Chrome, or any other local browser stack
 - do not use `localhost`, `127.0.0.1`, loopback, or private/local network targets in the current remote-engine architecture
 - layout balance
 - spacing and hierarchy

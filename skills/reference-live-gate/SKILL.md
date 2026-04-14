@@ -11,24 +11,27 @@ Use this skill when a saved expected baseline should be replayed against the cur
 
 The `--url` target must be a publicly reachable http(s) page. This flow is not designed for `localhost`, `127.0.0.1`, or private/local network targets because the current capture engines use remote services.
 
+This flow must stay on the API-based package path. It must never probe or depend on Playwright, Chromium, Chrome, WebKit, Selenium, Puppeteer, or any other local browser stack.
+
 ## Workflow
 
 1. Parse `$ARGUMENTS`.
-2. Choose a live witness mode first:
+2. Never run local browser discovery or fallback commands such as Playwright imports, Chromium lookup, or Chrome availability probes.
+3. Choose a live witness mode first:
    - `frontend-default` for normal baseline replay
    - `csr-debug` when late render / hydration incompleteness is suspected
    - `responsive` when cross-breakpoint replay matters
    - `session-replay` when the operator provides headers/cookies/session material explicitly
-3. Run the higher-level helper:
+4. Run the higher-level helper:
    ```bash
    PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.reference_live_gate $ARGUMENTS
    ```
-4. Read the returned JSON payload.
-5. Read the fresh current report from `live_replay.current_report_path`.
-6. If richer witnesses were emitted for the live capture, read them before explaining gate failure as purely visual.
-7. If semantic page witness JSON was emitted for the live capture, use it to check for missing headings/nav/forms/content-shape drift before reducing the result to screenshot delta only.
-8. Read the emitted gate result from `gate_output_path`.
-9. Report the policy used, violated rules, and per-device gate outcome clearly.
+5. Read the returned JSON payload.
+6. Read the fresh current report from `live_replay.current_report_path`.
+7. If richer witnesses were emitted for the live capture, read them before explaining gate failure as purely visual.
+8. If semantic page witness JSON was emitted for the live capture, use it to check for missing headings/nav/forms/content-shape drift before reducing the result to screenshot delta only.
+9. Read the emitted gate result from `gate_output_path`.
+10. Report the policy used, violated rules, and per-device gate outcome clearly.
 
 ## Output expectations
 - exact bundle path used

@@ -4,6 +4,8 @@ Use this workflow when Claude should both capture the page and immediately conti
 
 This workflow expects a publicly reachable `http(s)` page URL. It is not designed for `localhost`, `127.0.0.1`, or private/local network targets in the current remote-engine architecture.
 
+Stay on the API-based package path only. Do not probe Playwright, Chromium, Chrome, or any other local browser stack.
+
 ## Recommended sequence
 1. Capture the page with the screenshot skill using `--output-format json`.
 2. If responsive review matters across the full breakpoint set, prefer `--capture-set responsive`; otherwise choose one of `--device desktop`, `--device tablet`, or `--device mobile`.

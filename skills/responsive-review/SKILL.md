@@ -11,28 +11,32 @@ Use this skill when Claude should capture the same page across the core breakpoi
 
 This workflow is for publicly reachable http(s) pages only. It is not designed for `localhost`, `127.0.0.1`, or private/local network targets because the current capture engines use remote services.
 
+This workflow must stay on the API-based package path. It must never probe or depend on Playwright, Chromium, Chrome, WebKit, Selenium, Puppeteer, or any other local browser stack.
+
 ## Workflow
 
 1. Parse `$ARGUMENTS`.
    - first positional arg = publicly reachable http(s) URL
    - optional flags: `--mode`, `--wait`, `--engine`
 
-2. Prefer `--witness-mode responsive` so the capture run can emit richer responsive witnesses rather than screenshots only.
+2. Never run local browser discovery or fallback commands such as Playwright imports, Chromium lookup, or Chrome availability probes.
 
-3. Run the installed screenshot engine with one responsive capture set and persist a machine-readable report file:
+3. Prefer `--witness-mode responsive` so the capture run can emit richer responsive witnesses rather than screenshots only.
+
+4. Run the installed screenshot engine with one responsive capture set and persist a machine-readable report file:
    ```bash
    report_file="$(mktemp /tmp/webview_responsive_review_XXXXXX.json)" && extra_witness_args="" && case " $ARGUMENTS " in *" --witness-mode "*) ;; *) extra_witness_args="--witness-mode responsive" ;; esac && PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.screenshot $ARGUMENTS --capture-set responsive $extra_witness_args --output-format json --report-file "$report_file"
    ```
 
-4. Read the JSON report file from the returned `report_path`.
+5. Read the JSON report file from the returned `report_path`.
 
-5. If capture succeeded, read each image file from `captures[].output_path`.
+6. If capture succeeded, read each image file from `captures[].output_path`.
 
-6. If rendered HTML / rendered text witnesses were emitted for each responsive capture, read them too before concluding on content or CSR differences.
+7. If rendered HTML / rendered text witnesses were emitted for each responsive capture, read them too before concluding on content or CSR differences.
 
-7. If semantic page witnesses were emitted for each responsive capture, read them too so heading/nav/form/content-shape drift across breakpoints is easier to spot.
+8. If semantic page witnesses were emitted for each responsive capture, read them too so heading/nav/form/content-shape drift across breakpoints is easier to spot.
 
-8. Continue with responsive review using the images as evidence. Compare:
+9. Continue with responsive review using the images as evidence. Compare:
    - content hierarchy
    - overflow / cropping risk
    - card stacking
@@ -40,7 +44,7 @@ This workflow is for publicly reachable http(s) pages only. It is not designed f
    - readability and spacing density
    - issues that are desktop-only, tablet-only, mobile-only, or cross-device
 
-9. Only then recommend frontend changes.
+10. Only then recommend frontend changes.
 
 ## Output expectations
 - exact capture-set report path

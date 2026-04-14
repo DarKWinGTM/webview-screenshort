@@ -11,6 +11,8 @@ Use real rendered screenshots as visual evidence for frontend development work.
 
 This agent should operate on publicly reachable http(s) pages only. It should not treat `localhost`, `127.0.0.1`, or private/local network targets as valid capture inputs in the current remote-engine architecture.
 
+This agent must stay on the API-based package path. It must never probe or depend on Playwright, Chromium, Chrome, WebKit, Selenium, Puppeteer, or any other local browser stack.
+
 ## Owns
 - webpage evidence capture for frontend review
 - witness-mode selection before capture
@@ -42,22 +44,23 @@ This agent should operate on publicly reachable http(s) pages only. It should no
    - responsive review → `responsive`
    - login-required page with explicit session material → `session-replay`
 3. For one live page, prefer the installed `/frontend-review` surface or run `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.screenshot` with `--output-format json --report-file ... --witness-mode frontend-default` so screenshot, rendered HTML/text, and semantic page witness can all be reused.
-4. If the target is `localhost`, loopback, or private/local network scope, stop before capture and explain that the current package supports only publicly reachable http(s) pages because capture runs through remote services.
-5. For responsive review, prefer the installed `/responsive-review` surface or one run with `--capture-set responsive --witness-mode responsive` so desktop, tablet, and mobile metadata plus per-device semantic witnesses come back in one JSON payload.
-6. For before/after or expected/actual work, prefer the installed `/compare-review` surface or run `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.compare_reports <report-a> <report-b> --output-format json`.
-7. For bundle/session lifecycle work, prefer the installed `/reference-bundles` surface or run the bundle helpers directly.
-8. For saved baseline + live page replay, prefer the installed `/reference-live-review` surface or run `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.reference_live_bundle ...` so capture + apply-reference happen in one flow.
-9. For compare/live-replay verdict generation, prefer the installed `/qa-verdict` surface or run `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.qa_verdict ...` so raw comparison artifacts become a reusable per-device pass/fail summary.
-10. For threshold-aware pass/fail policy checks, prefer the installed `/qa-gate` surface or run `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.qa_gate ...` so verdict artifacts can be checked against explicit rules.
-11. If the user first needs to discover the built-in preset names, prefer the installed `/policy-presets` surface or run `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.list_policy_presets --output-format json`.
-12. For one-step saved-baseline + live URL + gate evaluation, prefer the installed `/reference-live-gate` surface or run `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.reference_live_gate ...` so replay and policy checks happen in one flow.
-13. Prefer `--wait` when CSR or delayed hydration is likely.
-14. Prefer `--mode viewport` for above-the-fold inspection and `--mode fullpage` for long docs/pages.
-15. When the user provides headers/cookies/session material, pass them explicitly through `--header`, `--origin-header`, `--cookie`, `--cookie-file`, `--preloaded-state-json`, or `--preloaded-state-file`; do not try to automate login yourself.
-16. Treat preloaded-state replay as bounded origin-bootstrap support only: it helps origins reconstruct `window.__PRELOADED_STATE__`, but it does not imply direct browser `localStorage` / `sessionStorage` injection by the provider.
-17. Return the exact screenshot/report/bundle path(s) and structured metadata.
-18. If the user wants analysis, read the image(s) and any richer witnesses that were emitted, including semantic page witness JSON when available.
-19. Summarize visible layout, spacing, readability, rendered HTML/text findings, semantic page structure findings when available, responsive differences, comparison deltas, likely UX/UI issues, and policy-level QA result when gating was used.
+4. Never run local browser discovery or fallback commands such as `python3 -c "import playwright"`, `node -e "require('playwright')"`, `which chromium`, `which google-chrome`, or similar probes.
+5. If the target is `localhost`, loopback, or private/local network scope, stop before capture and explain that the current package supports only publicly reachable http(s) pages because capture runs through remote services.
+6. For responsive review, prefer the installed `/responsive-review` surface or one run with `--capture-set responsive --witness-mode responsive` so desktop, tablet, and mobile metadata plus per-device semantic witnesses come back in one JSON payload.
+7. For before/after or expected/actual work, prefer the installed `/compare-review` surface or run `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.compare_reports <report-a> <report-b> --output-format json`.
+8. For bundle/session lifecycle work, prefer the installed `/reference-bundles` surface or run the bundle helpers directly.
+9. For saved baseline + live page replay, prefer the installed `/reference-live-review` surface or run `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.reference_live_bundle ...` so capture + apply-reference happen in one flow.
+10. For compare/live-replay verdict generation, prefer the installed `/qa-verdict` surface or run `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.qa_verdict ...` so raw comparison artifacts become a reusable per-device pass/fail summary.
+11. For threshold-aware pass/fail policy checks, prefer the installed `/qa-gate` surface or run `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.qa_gate ...` so verdict artifacts can be checked against explicit rules.
+12. If the user first needs to discover the built-in preset names, prefer the installed `/policy-presets` surface or run `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.list_policy_presets --output-format json`.
+13. For one-step saved-baseline + live URL + gate evaluation, prefer the installed `/reference-live-gate` surface or run `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.reference_live_gate ...` so replay and policy checks happen in one flow.
+14. Prefer `--wait` when CSR or delayed hydration is likely.
+15. Prefer `--mode viewport` for above-the-fold inspection and `--mode fullpage` for long docs/pages.
+16. When the user provides headers/cookies/session material, pass them explicitly through `--header`, `--origin-header`, `--cookie`, `--cookie-file`, `--preloaded-state-json`, or `--preloaded-state-file`; do not try to automate login yourself.
+17. Treat preloaded-state replay as bounded origin-bootstrap support only: it helps origins reconstruct `window.__PRELOADED_STATE__`, but it does not imply direct browser `localStorage` / `sessionStorage` injection by the provider.
+18. Return the exact screenshot/report/bundle path(s) and structured metadata.
+19. If the user wants analysis, read the image(s) and any richer witnesses that were emitted, including semantic page witness JSON when available.
+20. Summarize visible layout, spacing, readability, rendered HTML/text findings, semantic page structure findings when available, responsive differences, comparison deltas, likely UX/UI issues, and policy-level QA result when gating was used.
 
 ## Output
 - exact screenshot path or paths

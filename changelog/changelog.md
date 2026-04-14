@@ -1,7 +1,7 @@
 # Changelog - Webview Screenshort
 
 > **Parent Document:** [../design/design.md](../design/design.md)
-> **Current Version:** 2.41.0
+> **Current Version:** 2.42.0
 > **Session:** d7dcb67a-20d7-48df-bbbd-a3f0247649ee
 
 ---
@@ -10,6 +10,7 @@
 
 | Version | Date | Changes | Summary |
 |---------|------|---------|---------|
+| 2.42.0 | 2026-04-15 | **[Hardened API-only execution contract](#version-2420)** | Agent and skill surfaces now explicitly ban Playwright/Chromium/local-browser probing and stay on the API-based capture path only. |
 | 2.41.0 | 2026-04-14 | **[Added public-target reachability guard](#version-2410)** | Capture entrypoints now reject localhost/private targets early so the remote-engine contract stays explicit and public-web-only. |
 | 2.40.1 | 2026-04-06 | **[Synced preload-state skill surfaces](#version-2401)** | Active skill and agent docs now expose the preload-state flags and the bounded origin-bootstrap model consistently. |
 | 2.40.0 | 2026-04-06 | **[Added bounded preload-state replay](#version-2400)** | The package now supports cookies plus bounded origin-bootstrap replay through generated `Prerendercloud-*` headers, with redacted summaries and HTML witness sanitization. |
@@ -55,6 +56,28 @@
 | 2.1.0 | 2026-04-03 | **[Normalized public install docs to repo-root marketplace guidance](#version-210)** | Reworked the public install story around repo-root local marketplace usage, validated `./`-based install from the standalone repo root, and kept the shared `darkwingtm` route scoped as local workspace development context. |
 | 2.0.0 | 2026-04-03 | **[Plugin package and CSR frontend-vision validation](#version-200)** | Refactored the old project-local screenshot skill into a governed plugin package, added a frontend-review workflow surface, and verified real CSR capture against the NodeNetwork docs page. |
 | 1.8 | 2026-02-07 | **[Project-Local Skill Implementation](#version-18)** | Implemented the older project-local screenshot skill model. |
+
+---
+
+<a id="version-2420"></a>
+## Version 2.42.0: Hardened API-only execution contract
+
+**Date:** 2026-04-15
+**Session:** d7dcb67a-20d7-48df-bbbd-a3f0247649ee
+
+### Changes
+- Updated `agents/webview-vision-assist.md` so the agent now says directly that it must stay on the API-based package path and must never probe Playwright, Chromium, Chrome, WebKit, Selenium, Puppeteer, or other local browser tooling.
+- Updated the active screenshot/review/live-replay skill surfaces so they now explicitly ban local browser discovery/fallback behavior instead of only describing the public-target URL contract.
+- Updated README/design/TODO/phase/governance wording so the package now describes itself as API-only more directly, not only as remote-engine/public-target-only.
+- Synced the package/governance metadata to `2.42.0` for the API-only hardening wave.
+
+### Validation
+- `python3 -m py_compile /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/capture/url_policy.py /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/capture/service.py /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/cli/screenshot.py /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/cli/reference_live_bundle.py /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort/webview_screenshort/cli/reference_live_gate.py` succeeds.
+- `claude plugins validate /home/node/workplace/AWCLOUD/TEMPLATE/PLUGIN/webview-screenshort` succeeds.
+- `claude plugin update "webview-screenshort@darkwingtm" --scope user` updates the installed plugin to `2.42.0`.
+
+### Summary
+The package now states the API-only architecture more explicitly: use the API-based capture flow, do not probe local browser stacks, and do not let agent behavior drift into heavy local-browser fallback work.
 
 ---
 

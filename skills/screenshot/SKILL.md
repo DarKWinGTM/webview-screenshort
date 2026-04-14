@@ -11,6 +11,8 @@ Capture a webpage screenshot from `$ARGUMENTS` so Claude can inspect the real re
 
 This skill is for publicly reachable http(s) pages only. It is not designed for `localhost`, `127.0.0.1`, or private/local network targets because the current capture engines run through remote services.
 
+This skill must stay on the API-based package path. It must never probe or depend on Playwright, Chromium, Chrome, WebKit, Selenium, Puppeteer, or any other local browser stack.
+
 ## What this skill is for
 Use it when frontend work needs real page evidence, for example:
 - layout review
@@ -34,24 +36,26 @@ Use it when frontend work needs real page evidence, for example:
    - `responsive` = richer witness bundle across desktop/tablet/mobile, including semantic page witnesses per device
    - `session-replay` = richer witness bundle plus user-provided auth context and optional bounded origin-bootstrap preload replay
 
-3. Run the capture engine from this installed plugin package:
+3. Do not run local browser discovery or fallback commands such as Playwright imports, Chromium lookup, or Chrome availability probes.
+
+4. Run the capture engine from this installed plugin package:
    ```bash
    PYTHONPATH="${CLAUDE_PLUGIN_ROOT}" python3 -m webview_screenshort.cli.screenshot $ARGUMENTS
    ```
 
-4. Prefer adding `--output-format json` when the result will feed a follow-on review workflow.
+5. Prefer adding `--output-format json` when the result will feed a follow-on review workflow.
 
-5. Prefer `--report-file` when compatibility with current compare/replay flows matters.
+6. Prefer `--report-file` when compatibility with current compare/replay flows matters.
 
-6. Prefer `--bundle-file` or a non-`visual` witness mode when the task needs more than screenshots alone.
+7. Prefer `--bundle-file` or a non-`visual` witness mode when the task needs more than screenshots alone.
 
-7. If the task needs one-shot responsive review, prefer `--capture-set responsive` so the tool returns one machine-readable payload with desktop, tablet, and mobile results together.
+8. If the task needs one-shot responsive review, prefer `--capture-set responsive` so the tool returns one machine-readable payload with desktop, tablet, and mobile results together.
 
-8. If the page requires login and the user can provide session material, use explicit `--header`, `--origin-header`, `--cookie`, `--cookie-file`, `--preloaded-state-json`, or `--preloaded-state-file` inputs. Treat authenticated capture as operator-provided, not as an interactive login workflow.
+9. If the page requires login and the user can provide session material, use explicit `--header`, `--origin-header`, `--cookie`, `--cookie-file`, `--preloaded-state-json`, or `--preloaded-state-file` inputs. Treat authenticated capture as operator-provided, not as an interactive login workflow.
 
-9. Use bounded preloaded-state replay only when the origin/app is prepared to reconstruct forwarded preload headers into `window.__PRELOADED_STATE__`. Do not treat this as direct browser `localStorage` / `sessionStorage` injection.
+10. Use bounded preloaded-state replay only when the origin/app is prepared to reconstruct forwarded preload headers into `window.__PRELOADED_STATE__`. Do not treat this as direct browser `localStorage` / `sessionStorage` injection.
 
-10. If capture succeeds:
+11. If capture succeeds:
    - report the exact screenshot file path
    - if `--report-file` was used, report the exact JSON report path
    - if an evidence bundle was emitted, report the exact bundle path
@@ -60,7 +64,7 @@ Use it when frontend work needs real page evidence, for example:
    - if `--capture-set responsive` was used, report the per-device screenshot paths and viewport metadata
    - if the user wants visual review, read the image file next and continue from the screenshot evidence
 
-11. If capture fails:
+12. If capture fails:
    - report the error clearly
    - if the target was rejected because it is `localhost`, loopback, or private/local network scope, explain that this package currently supports only publicly reachable http(s) pages and suggest using a public domain or tunnel first
    - otherwise suggest a narrower retry such as `--wait`, `--mode viewport`, `--engine headless`, or a richer witness mode when CSR timing is the likely cause

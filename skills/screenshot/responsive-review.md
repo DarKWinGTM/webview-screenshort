@@ -4,6 +4,8 @@ Use this workflow when frontend review should compare the same page across deskt
 
 This workflow expects a publicly reachable `http(s)` page URL. It is not designed for `localhost`, `127.0.0.1`, or private/local network targets in the current remote-engine architecture.
 
+Stay on the API-based package path only. Do not probe Playwright, Chromium, Chrome, or any other local browser stack.
+
 ## Recommended sequence
 1. Capture the page with `--capture-set responsive --output-format json` when one combined workflow result is preferred.
 2. Read the JSON result and collect each entry from `captures[]`:
